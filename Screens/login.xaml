@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LalabotApplication.Screens.login"
+             Title="login">
+
+    <Grid RowDefinitions=".3*, .7*">
+        <Image Aspect="AspectFill" Source="lalabot_background.png"/>
+        <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
+        <Grid ColumnDefinitions="*,*">
+            <Image Aspect="AspectFit"
+                   HeightRequest="180"
+                   Source="lalabot_logo_wlogobackground_.png"/>
+        </Grid>
+    </Grid>
+    
+</ContentPage>
