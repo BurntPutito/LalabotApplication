@@ -9,8 +9,36 @@
         <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
         <Grid ColumnDefinitions="*,*">
             <Image Aspect="AspectFit"
-                   HeightRequest="180"
-                   Source="lalabot_logo_wlogobackground_.png"/>
+                   HeightRequest="200"
+                   Source="lalabot_logo_wlogobackground.png"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.ColumnSpan="2"/>
+            
+        </Grid>
+        <Grid Grid.Row="1">
+            <RoundRectangle Margin="-5, -30, -5, -2"
+                            CornerRadius="35, 35, 0, 0"
+                            Fill="White"/>
+            <VerticalStackLayout Margin="30, 0, 30, 0">
+                <Label FontAttributes="Bold"
+                       FontFamily="bold"
+                       FontSize="Medium"
+                       Text="Welcome!"
+                       TextColor="#2D2D2D"/>
+                <Label FontFamily="mdeium"
+                       Text="Log in to continue"
+                       TextColor="#A3A3A4"/>
+                <Grid Margin="0, 30, 0, 0" ColumnDefinitions=".2*, .8*">
+                    <RoundRectangle BackgroundColor="#EDEBF6"
+                                    CornerRadius="10"
+                                    HeightRequest="60"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="60">
+                    </RoundRectangle>
+                </Grid>
+            </VerticalStackLayout>
         </Grid>
     </Grid>
     
