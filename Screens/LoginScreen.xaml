@@ -11,7 +11,7 @@
      
         <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
         <Grid ColumnDefinitions="*,*">
-            <Image Aspect="AspectFit"
+            <Image Aspect="Fill"
                    HeightRequest="200"
                    Source="lalabot_logo_wlogobackground.png"
                    HorizontalOptions="Center"
@@ -54,7 +54,6 @@
                     </Image>
                     <Entry Grid.Column="1"
                            Placeholder="EMAIL"
-                           Text="example@gmail.com"
                            VerticalOptions="Center"/>
                 </Grid>
 
@@ -78,7 +77,6 @@
                     <Entry Grid.Column="1"
                            Placeholder="PASSWORD"
                            IsPassword="True"
-                           Text="1234567890"
                            VerticalOptions="Center"/>
                 </Grid>
 
@@ -105,18 +103,16 @@
                     Text="Create account"
                     TextColor="Gray"/>
 
-
-                <Grid RowDefinitions="*,*"
-                      Margin="-30, 85, -30, 0">
-                    
-                    <Image Aspect="Fill" 
-                           Source="lalabot_delivery_logo.png"
-                           HorizontalOptions="Fill"/>
-                </Grid>
-
-
-
             </VerticalStackLayout>
+
+
+            <Grid Margin="-30, 85, -30, 0">
+                <Image Aspect="AspectFit"
+                    Source="lalabot_delivery_logo.png"
+                    VerticalOptions="End"
+                    HorizontalOptions="Fill"
+                    Margin="0, 0, 0, 0"/> 
+            </Grid>
         </Grid>
     </Grid>
     

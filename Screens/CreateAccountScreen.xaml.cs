@@ -2,8 +2,10 @@ namespace LalabotApplication.Screens;
 
 public partial class CreateAccountScreen : ContentPage
 {
-	public CreateAccountScreen()
+	public CreateAccountScreen(CreateAccountScreenModel screenModel)
 	{
 		InitializeComponent();
+
+		BindingContext = screenModel;
 	}
 }

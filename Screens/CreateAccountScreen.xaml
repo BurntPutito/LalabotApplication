@@ -28,7 +28,7 @@
 				<Label FontAttributes="Bold"
                        FontFamily="bold"
                        FontSize="Large"
-                       Text="Create your account"
+                       Text="Create your account!"
                        TextColor="#2D2D2D"/>
         
 				<!-- enter name field -->
@@ -50,7 +50,6 @@
 					</Image>
 					<Entry Grid.Column="1"
                            Placeholder="NAME"
-                           Text="Mark Fiscbach"
                            VerticalOptions="Center"/>
 				</Grid>
 				
@@ -73,7 +72,6 @@
 					</Image>
 					<Entry Grid.Column="1"
                            Placeholder="EMAIL"
-                           Text="example@gmail.com"
                            VerticalOptions="Center"/>
 				</Grid>
 
@@ -97,7 +95,6 @@
 					<Entry Grid.Column="1"
                            Placeholder="PASSWORD"
                            IsPassword="True"
-                           Text="1234567890"
                            VerticalOptions="Center"/>
 				</Grid>
 
