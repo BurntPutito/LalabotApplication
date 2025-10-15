@@ -31,7 +31,7 @@
                        Text="Create your account"
                        TextColor="#2D2D2D"/>
         
-				   <!-- enter name field -->
+				<!-- enter name field -->
 				<Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
 					<RoundRectangle BackgroundColor="#EDEBF6"
                                     CornerRadius="10"
@@ -55,7 +55,7 @@
 				</Grid>
 				
 				<!-- username field -->
-				<Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
+				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
 					<RoundRectangle BackgroundColor="#EDEBF6"
                                     CornerRadius="10"
                                     HeightRequest="50"
@@ -102,21 +102,19 @@
 				</Grid>
 
 				<Button
-                    Margin="0, 20, 0, 0"
+                    Margin="0, 30, 0, 0"
                     BackgroundColor="#2D4A6E"
                     HeightRequest="50"
                     Text="Create Account"
                     TextColor="#FBF6FD"/>
+            </VerticalStackLayout>
 
-				<Grid RowDefinitions="*,*"
-                      Margin="-30, 85, -30, 0">
-
-					<Image Aspect="Fill"
-                           Source="lalabot_delivery_logo.png"
-                           HorizontalOptions="Fill"/>
-				</Grid>
-
-			</VerticalStackLayout>
+            <!-- Delivery Logo positioned at the bottom -->
+            <Image Aspect="AspectFit"
+                   Source="lalabot_delivery_logo.png"
+                   VerticalOptions="End"
+                   HorizontalOptions="Fill"
+                   Margin="0, 0, 0, 0"/>
 		</Grid>
 	</Grid>
 </ContentPage>

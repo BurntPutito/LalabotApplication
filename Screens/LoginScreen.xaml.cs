@@ -1,8 +1,8 @@
 namespace LalabotApplication.Screens;
 
-public partial class login : ContentPage
+public partial class Login : ContentPage
 {
-	public login()
+	public Login()
 	{
 		InitializeComponent();
 	}

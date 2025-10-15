@@ -67,7 +67,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Screens\login.xaml">
+	  <Compile Update="Screens\LoginScreen.xaml.cs">
+	    <DependentUpon>LoginScreen.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="Screens\CreateAccountScreen.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Screens\LoginScreen.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>
