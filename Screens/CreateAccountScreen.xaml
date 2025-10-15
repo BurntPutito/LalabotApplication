@@ -2,11 +2,121 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.CreateAccountScreen"
-             Title="CreateAccountScreen">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="CreateAccountScreen"
+			 NavigationPage.HasNavigationBar="False">
+	
+	<!-- Main Screen ratio -->
+	<Grid RowDefinitions=".3*, .7*">
+		<Image Aspect="AspectFill" Source="lalabot_background.png"/>
+
+		<Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
+		<Grid ColumnDefinitions="*,*">
+			<Image Aspect="AspectFit"
+                   HeightRequest="200"
+                   Source="lalabot_logo_wlogobackground.png"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Grid.ColumnSpan="2"/>
+		</Grid>
+
+		<!-- Login UI Background -->
+		<Grid Grid.Row="1">
+			<RoundRectangle Margin="-3, -30, -3, -2"
+                            CornerRadius="35, 35, 0, 0"
+                            Fill="White"/>
+			<VerticalStackLayout Margin="30, 0, 30, 0">
+				<Label FontAttributes="Bold"
+                       FontFamily="bold"
+                       FontSize="Large"
+                       Text="Create your account"
+                       TextColor="#2D2D2D"/>
+        
+				   <!-- enter name field -->
+				<Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
+					<RoundRectangle BackgroundColor="#EDEBF6"
+                                    CornerRadius="10"
+                                    HeightRequest="50"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50"/>
+					<Image HorizontalOptions="Center">
+						<Image.Source>
+							<FontImageSource
+                                FontFamily="AwesomeSolid"
+                                Glyph="&#xf007;"
+                                Size="30"
+                                Color="#2D4A6E"/>
+						</Image.Source>
+					</Image>
+					<Entry Grid.Column="1"
+                           Placeholder="NAME"
+                           Text="Mark Fiscbach"
+                           VerticalOptions="Center"/>
+				</Grid>
+				
+				<!-- username field -->
+				<Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
+					<RoundRectangle BackgroundColor="#EDEBF6"
+                                    CornerRadius="10"
+                                    HeightRequest="50"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50"/>
+					<Image HorizontalOptions="Center">
+						<Image.Source>
+							<FontImageSource
+                                FontFamily="AwesomeSolid"
+                                Glyph="&#xf0e0;"
+                                Size="30"
+                                Color="#2D4A6E"/>
+						</Image.Source>
+					</Image>
+					<Entry Grid.Column="1"
+                           Placeholder="EMAIL"
+                           Text="example@gmail.com"
+                           VerticalOptions="Center"/>
+				</Grid>
+
+				<!-- password field -->
+				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
+					<RoundRectangle BackgroundColor="#EDEBF6"
+                                    CornerRadius="10"
+                                    HeightRequest="50"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
+                                    WidthRequest="50"/>
+					<Image HorizontalOptions="Center">
+						<Image.Source>
+							<FontImageSource
+                                FontFamily="AwesomeSolid"
+                                Glyph="&#xf084;"
+                                Size="30"
+                                Color="#2D4A6E"/>
+						</Image.Source>
+					</Image>
+					<Entry Grid.Column="1"
+                           Placeholder="PASSWORD"
+                           IsPassword="True"
+                           Text="1234567890"
+                           VerticalOptions="Center"/>
+				</Grid>
+
+				<Button
+                    Margin="0, 20, 0, 0"
+                    BackgroundColor="#2D4A6E"
+                    HeightRequest="50"
+                    Text="Create Account"
+                    TextColor="#FBF6FD"/>
+
+				<Grid RowDefinitions="*,*"
+                      Margin="-30, 85, -30, 0">
+
+					<Image Aspect="Fill"
+                           Source="lalabot_delivery_logo.png"
+                           HorizontalOptions="Fill"/>
+				</Grid>
+
+			</VerticalStackLayout>
+		</Grid>
+	</Grid>
 </ContentPage>

@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.login"
-             Title="login">
+             Title="login"
+			 NavigationPage.HasNavigationBar="False">
 
     <!-- Main Screen ratio -->
     <Grid RowDefinitions=".3*, .7*">
@@ -81,6 +82,7 @@
                            VerticalOptions="Center"/>
                 </Grid>
 
+				<!-- login button -->
                 <Button
                     Margin="0, 20, 0, 0"
                     BackgroundColor="#2D4A6E"
@@ -94,7 +96,10 @@
                     Text="Forgot your password?"
                     TextColor="Blue"/>
 
+				<!-- create account button -->
                 <Button
+					x:Name="CreateAccount"
+					Clicked="CreateAccount_Clicked"
                     Margin="0, 30, 0, 0"
                     BackgroundColor="#EDEBF6"
                     Text="Create account"

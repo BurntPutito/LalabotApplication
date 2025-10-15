@@ -11,7 +11,7 @@ namespace LalabotApplication
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new login());
+            return new NavigationPage(new LoginScreen());
         }
     }
 }
