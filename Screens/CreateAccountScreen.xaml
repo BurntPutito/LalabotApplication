@@ -49,11 +49,12 @@
 						</Image.Source>
 					</Image>
 					<Entry Grid.Column="1"
+                           Text="{Binding Username}"
                            Placeholder="NAME"
                            VerticalOptions="Center"/>
 				</Grid>
 				
-				<!-- username field -->
+				<!-- email field -->
 				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
 					<RoundRectangle BackgroundColor="#EDEBF6"
                                     CornerRadius="10"
@@ -71,6 +72,7 @@
 						</Image.Source>
 					</Image>
 					<Entry Grid.Column="1"
+                           Text="{Binding Email}"
                            Placeholder="EMAIL"
                            VerticalOptions="Center"/>
 				</Grid>
@@ -93,6 +95,7 @@
 						</Image.Source>
 					</Image>
 					<Entry Grid.Column="1"
+                           Text="{Binding Password}"
                            Placeholder="PASSWORD"
                            IsPassword="True"
                            VerticalOptions="Center"/>
@@ -102,6 +105,7 @@
                     Margin="0, 30, 0, 0"
                     BackgroundColor="#2D4A6E"
                     HeightRequest="50"
+                    Command="{Binding CreateAccountCommand}"
                     Text="Create Account"
                     TextColor="#FBF6FD"/>
             </VerticalStackLayout>

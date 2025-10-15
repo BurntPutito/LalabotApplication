@@ -53,6 +53,7 @@
                         </Image.Source>
                     </Image>
                     <Entry Grid.Column="1"
+                           Text="{Binding Email}"
                            Placeholder="EMAIL"
                            VerticalOptions="Center"/>
                 </Grid>
@@ -75,6 +76,7 @@
                         </Image.Source>
                     </Image>
                     <Entry Grid.Column="1"
+                           Text="{Binding Password}"
                            Placeholder="PASSWORD"
                            IsPassword="True"
                            VerticalOptions="Center"/>
@@ -86,6 +88,7 @@
                     BackgroundColor="#2D4A6E"
                     HeightRequest="50"
                     Text="Login"
+                    Command="{Binding LoginCommand}"
                     TextColor="#FBF6FD"/>
 
                 <Label
@@ -96,11 +99,10 @@
 
 				<!-- create account button -->
                 <Button
-					x:Name="CreateAccount"
-					Clicked="CreateAccount_Clicked"
                     Margin="0, 30, 0, 0"
                     BackgroundColor="#EDEBF6"
-                    Text="Create account"
+                    Text="Create Account"
+                    Command="{Binding NavigateCreateAccountCommand}"
                     TextColor="Gray"/>
 
             </VerticalStackLayout>

@@ -4,16 +4,22 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:screens="clr-namespace:LalabotApplication.Screens"
+    xmlns:local="clr-namespace:LalabotApplication"
     Title="LalabotApplication">
 
     <ShellContent
-        Title="Log In"
+        Title="Login"
         ContentTemplate="{DataTemplate screens:Login}"
         Route="Login" />
-    
+
     <ShellContent
         Title="Create Account"
         ContentTemplate="{DataTemplate screens:CreateAccountScreen}"
-        Route="CreateAccount" />
+        Route="CreateAccountScreen" />
+
+    <ShellContent
+        Title="Main"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
 
 </Shell>

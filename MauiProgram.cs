@@ -1,5 +1,6 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
+using LalabotApplication.Screens;
 using Microsoft.Extensions.Logging;
 
 namespace LalabotApplication
@@ -31,6 +32,11 @@ namespace LalabotApplication
                     new EmailProvider()
                 }
             }));
+
+            builder.Services.AddSingleton<Login>();
+            builder.Services.AddSingleton<LoginScreenModel>();
+            builder.Services.AddSingleton<CreateAccountScreen>();
+            builder.Services.AddSingleton<CreateAccountScreenModel>();
 
             return builder.Build();
         }
