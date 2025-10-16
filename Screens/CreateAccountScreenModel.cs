@@ -14,13 +14,13 @@ namespace LalabotApplication.Screens
         private readonly FirebaseAuthClient _authClient;
 
         [ObservableProperty]
-        private string _email;
+        private string _email = string.Empty;
 
         [ObservableProperty]
-        private string _username;
+        private string _username = string.Empty;
 
         [ObservableProperty]
-        private string _password;
+        private string _password = string.Empty;
 
         public CreateAccountScreenModel(FirebaseAuthClient authClient)
         {
@@ -50,15 +50,21 @@ namespace LalabotApplication.Screens
         [RelayCommand]
         private async Task CreateAccount()
         {
+
             try
             {
                 var result = await _authClient.CreateUserWithEmailAndPasswordAsync(Email, Password, Username);
-                
-                if(result != null && !string.IsNullOrEmpty(result.User?.Uid))
+
+                if (result != null && !string.IsNullOrEmpty(result.User?.Uid))
                 {
-                   await Shell.Current.GoToAsync("///Login"); 
+                    // Account creation was successful
+                    await Shell.Current.GoToAsync("///SuccessfulCreateAccountScreen");
                 }
-                
+                else
+                {
+                    // Account creation failed but didn't throw an exception
+                    await Shell.Current.DisplayAlert("Error", "Failed to create account. Please try again.", "OK");
+                }
             }
             catch (Exception ex)
             {
