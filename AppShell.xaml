@@ -22,4 +22,9 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+    <ShellContent
+        Title="Success"
+        ContentTemplate="{DataTemplate screens:SuccessfulCreateAccountScreen}"
+        Route="SuccessfulCreateAccountScreen" />
+
 </Shell>

@@ -7,5 +7,6 @@ public partial class CreateAccountScreen : ContentPage
 		InitializeComponent();
 
 		BindingContext = screenModel;
-	}
+
+    }
 }
