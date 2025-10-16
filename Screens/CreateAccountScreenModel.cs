@@ -30,7 +30,6 @@ namespace LalabotApplication.Screens
         private string GetUserFriendlyErrorMessage(Exception ex)
         {
             string errorMessage = ex.Message.ToLower();
-
             return errorMessage switch
             {
                 var msg when msg.Contains("email") && msg.Contains("already") =>
@@ -50,19 +49,36 @@ namespace LalabotApplication.Screens
         [RelayCommand]
         private async Task CreateAccount()
         {
+            // Validate username before creating account
+            if (string.IsNullOrWhiteSpace(Username))
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please enter a username.", "OK");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please enter an email address.", "OK");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please enter a password.", "OK");
+                return;
+            }
 
             try
             {
-                var result = await _authClient.CreateUserWithEmailAndPasswordAsync(Email, Password, Username);
+                // Create account with email and password only
+                var result = await _authClient.CreateUserWithEmailAndPasswordAsync(Email, Password);
 
                 if (result != null && !string.IsNullOrEmpty(result.User?.Uid))
                 {
-                    // Account creation was successful
                     await Shell.Current.GoToAsync("///SuccessfulCreateAccountScreen");
                 }
                 else
                 {
-                    // Account creation failed but didn't throw an exception
                     await Shell.Current.DisplayAlert("Error", "Failed to create account. Please try again.", "OK");
                 }
             }
