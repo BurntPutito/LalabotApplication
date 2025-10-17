@@ -32,7 +32,7 @@
                        TextColor="#2D2D2D"/>
         
 				<!-- enter name field -->
-				<Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
+				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
 					<RoundRectangle BackgroundColor="#EDEBF6"
                                     CornerRadius="10"
                                     HeightRequest="50"
@@ -101,6 +101,7 @@
                            VerticalOptions="Center"/>
 				</Grid>
 
+                <!-- Create account button -->
 				<Button
                     Margin="0, 30, 0, 0"
                     BackgroundColor="#2D4A6E"
@@ -108,6 +109,58 @@
                     Command="{Binding CreateAccountCommand}"
                     Text="Create Account"
                     TextColor="#FBF6FD"/>
+                
+                
+                <!-- Sign in with -->
+
+                <Grid ColumnDefinitions="*,Auto,*" Margin="0, 15, 0, 15">
+                    <BoxView Grid.Column="0"
+                             HeightRequest="1"
+                             Opacity="0.3"
+                             BackgroundColor="Black"
+                             VerticalOptions="Center"/>
+
+                    <Label Grid.Column="1"
+                           Opacity="0.5"
+                           Margin="5, 0, 5, 0"
+                           Text="Or continue with"/>
+
+                    <BoxView Grid.Column="2"
+                             Opacity="0.3"
+                             HeightRequest="1"
+                             BackgroundColor="Black"
+                             VerticalOptions="Center"/>
+                </Grid>
+
+
+                <Grid>
+                    <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+                        <Grid HeightRequest="50" WidthRequest="50">
+                            <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
+                            <Image
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Source="google_logo.png"
+                                WidthRequest="40"
+                                HeightRequest="40">
+                            </Image>
+                        </Grid>
+
+                        <Grid HeightRequest="50" WidthRequest="50">
+                            <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
+                            <Image
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                Source="facebook_logo.png"
+                                WidthRequest="40"
+                                HeightRequest="40">
+                            </Image>
+                        </Grid>
+
+                    </HorizontalStackLayout>
+                </Grid>
+
+
             </VerticalStackLayout>
 
             <!-- Delivery Logo positioned at the bottom -->
