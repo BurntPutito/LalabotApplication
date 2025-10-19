@@ -15,6 +15,12 @@ public partial class SuccessfulCreateAccountScreen : ContentPage
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        //reloads the animation
+        var source = SuccessAnimation.Source;
+        SuccessAnimation.Source = null;
+        SuccessAnimation.Source = source;
+
         StartCountdown();
     }
 

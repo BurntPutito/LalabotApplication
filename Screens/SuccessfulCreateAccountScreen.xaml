@@ -9,9 +9,12 @@
         <VerticalStackLayout
             VerticalOptions="Center"
             HorizontalOptions="Center">
+            
+            <!-- Animation -->
             <skia:SKLottieView
+                x:Name="SuccessAnimation"
                 HeightRequest="200"
-                RepeatCount="-1"
+                RepeatCount="0"
                 Source="Sucesso.json"/>
             <Label
                 Text="Account Successfully Created!"
