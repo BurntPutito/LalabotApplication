@@ -39,6 +39,7 @@
             <Label
                 x:Name="TimerLabel"
                 Text="Redirecting to login in 5 seconds..."
+                FontAttributes="Bold"
                 FontSize="14"
                 TextColor="#A3A3A4"
                 HorizontalOptions="Center"/>
