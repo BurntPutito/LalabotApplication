@@ -10,4 +10,20 @@ public partial class Login : ContentPage
 
 		BindingContext = screenModel;
 	}
+
+	private bool _isPasswordVisible = false;
+    private void TogglePasswordVisibility(object sender, EventArgs e)
+    {
+		_isPasswordVisible = !_isPasswordVisible;
+		PasswordEntry.IsPassword = !_isPasswordVisible;
+
+        if (_isPasswordVisible)
+        {
+			EyeIcon.Glyph = "\uf070";
+        }
+        else
+        {
+            EyeIcon.Glyph = "\uf06e";
+        }
+    }
 }
