@@ -7,11 +7,14 @@
 
     <!-- Main Screen ratio -->
     <Grid RowDefinitions=".3*, .7*">
+        <!-- background of logo -->
         <Image Aspect="AspectFill" Source="lalabot_background.png"/>
-     
         <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
         <Grid ColumnDefinitions="*,*">
-            <Image Aspect="Fill"
+            
+            <!--main logo-->
+            <Image Margin="0,0,0,30"
+                   Aspect="Fill"
                    HeightRequest="200"
                    Source="lalabot_logo_wlogobackground.png"
                    HorizontalOptions="Center"

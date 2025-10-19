@@ -6,25 +6,31 @@
     xmlns:screens="clr-namespace:LalabotApplication.Screens"
     xmlns:local="clr-namespace:LalabotApplication"
     Title="LalabotApplication">
+    <!-- FlyoutBehavior="Flyout" -->
+    
 
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate screens:Login}"
-        Route="Login" />
+        Route="Login"/>
+        <!-- NavBarIsVisible="False" -->
 
     <ShellContent
         Title="Create Account"
         ContentTemplate="{DataTemplate screens:CreateAccountScreen}"
-        Route="CreateAccountScreen" />
+        Route="CreateAccountScreen"
+        Shell.NavBarIsVisible="False"/>
 
     <ShellContent
         Title="Main"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="MainPage"
+        Shell.NavBarIsVisible="False"/>
 
     <ShellContent
         Title="Success"
         ContentTemplate="{DataTemplate screens:SuccessfulCreateAccountScreen}"
-        Route="SuccessfulCreateAccountScreen" />
+        Route="SuccessfulCreateAccountScreen"
+        Shell.NavBarIsVisible="False"/>
 
 </Shell>
