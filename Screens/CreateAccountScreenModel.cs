@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
+using Firebase.Auth.Providers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,14 +46,14 @@ namespace LalabotApplication.Screens
                 _ => "Failed to create account. Please try again."
             };
         }
-
+        /*
         // Placeholder for Google Sign-In implementation
         [RelayCommand]
         private async Task SignInWithGoogle()
         {
             try
             {
-                var credential = await _authClient.SignInWithGoogleAsync();
+                var credential = await _authClient.SignInWithGoogle();
 
                 if (credential != null && !string.IsNullOrEmpty(credential.User?.Uid))
                 {
@@ -73,7 +74,7 @@ namespace LalabotApplication.Screens
         {
             try
             {
-                var credential = await _authClient.SignInWithFacebookAsync();
+                var credential = await _authClient.SignInWithFacebook();
 
                 if (credential != null && !string.IsNullOrEmpty(credential.User?.Uid))
                 {
@@ -86,7 +87,7 @@ namespace LalabotApplication.Screens
                 string friendlyMessage = GetUserFriendlyErrorMessage(ex);
                 await Shell.Current.DisplayAlert("Facebook Sign-In Failed", friendlyMessage, "OK");
             }
-        }
+        }*/
 
         [RelayCommand]
         private async Task CreateAccount()
