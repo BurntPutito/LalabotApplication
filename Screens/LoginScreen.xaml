@@ -112,11 +112,17 @@
                     Command="{Binding LoginCommand}"
                     TextColor="#FBF6FD"/>
 
+                <!--forgot password-->
                 <Label
                     Margin="0, 20, 0, -10"
                     HorizontalOptions="Center"
                     Text="Forgot your password?"
-                    TextColor="Blue"/>
+                    TextColor="Blue">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                    
 
 				<!-- create account button -->
                 <Button

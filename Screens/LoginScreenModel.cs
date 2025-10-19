@@ -44,8 +44,63 @@ namespace LalabotApplication.Screens
                     "Network error. Please check your internet connection.",
                 var msg when msg.Contains("invalid credential") || msg.Contains("invalid login") =>
                     "Invalid email or password. Please try again.",
-                //_ => "Login failed. Please check your credentials and try again."
+                _ => "Login failed. Please check your credentials and try again."
             };
+        }
+
+        private string GetForgotPasswordErrorMessage(Exception ex)
+        {
+            string errorMessage = ex.Message.ToLower();
+            return errorMessage switch
+            {
+                var msg when msg.Contains("user not found") || msg.Contains("no user record") =>
+                    "No account found with this email address.",
+                var msg when msg.Contains("invalid email") || msg.Contains("badly formatted") =>
+                    "Please enter a valid email address.",
+                var msg when msg.Contains("network") =>
+                    "Network error. Please check your internet connection.",
+                var msg when msg.Contains("too many requests") =>
+                    "Too many requests. Please try again later.",
+                _ => "Failed to send reset email. Please try again."
+            };
+        }
+
+        [RelayCommand]
+        private async Task ForgotPassword()
+        {
+            //prompts user to enter their email if not yet entered
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                string emailInput = await Shell.Current.DisplayPromptAsync(
+                    "Reset Password",
+                    "Please enter your email address:",
+                    placeholder: "email@example.com",
+                    keyboard: Keyboard.Email);
+
+                if (string.IsNullOrWhiteSpace(emailInput))
+                {
+                    return;
+                }
+
+                Email = emailInput;
+
+            }
+
+            try
+            {
+                // send password reset email
+                await _authClient.ResetEmailPasswordAsync(Email);
+
+                await Shell.Current.DisplayAlert(
+                    "Password Reset",
+                    $"A password reset link has been sent to {Email}. Please check your email, it could also be in your spam folder.",
+                    "OK");
+            }
+            catch (Exception ex)
+            {
+                string friendlyMessage = GetForgotPasswordErrorMessage(ex);
+                await Shell.Current.DisplayAlert("Reset Failed", friendlyMessage, "OK");
+            }
         }
 
         [RelayCommand]
