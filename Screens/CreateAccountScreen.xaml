@@ -7,11 +7,12 @@
 	
 	<!-- Main Screen ratio -->
 	<Grid RowDefinitions=".3*, .7*">
-		<Image Aspect="AspectFill" Source="lalabot_background.png"/>
-
-		<Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
+        <Image Aspect="AspectFill" Source="lalabot_background.png"/>
+        <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
 		<Grid ColumnDefinitions="*,*">
-			<Image Aspect="AspectFit"
+            <!--main logo-->
+            <Image Margin="0,0,0,30"
+                   Aspect="AspectFit"
                    HeightRequest="200"
                    Source="lalabot_logo_wlogobackground.png"
                    HorizontalOptions="Center"
@@ -150,9 +151,10 @@
                              VerticalOptions="Center"/>
                 </Grid>
 
-
+                <!--facebook and google option-->
                 <Grid>
                     <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
+                        <!--google-->
                         <Grid HeightRequest="50" WidthRequest="50">
                             <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
                             <Image
@@ -161,9 +163,13 @@
                                 Source="google_logo.png"
                                 WidthRequest="40"
                                 HeightRequest="40">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SignInWithGoogleCommand}"/>
+                                </Image.GestureRecognizers>
                             </Image>
                         </Grid>
 
+                        <!--facebook-->
                         <Grid HeightRequest="50" WidthRequest="50">
                             <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
                             <Image
@@ -172,12 +178,13 @@
                                 Source="facebook_logo.png"
                                 WidthRequest="40"
                                 HeightRequest="40">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding SignInWithFacebookCommand}"/>
+                                </Image.GestureRecognizers>
                             </Image>
                         </Grid>
-
                     </HorizontalStackLayout>
                 </Grid>
-
 
             </VerticalStackLayout>
 

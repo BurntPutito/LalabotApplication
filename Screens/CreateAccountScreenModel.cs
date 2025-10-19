@@ -46,6 +46,48 @@ namespace LalabotApplication.Screens
             };
         }
 
+        // Placeholder for Google Sign-In implementation
+        [RelayCommand]
+        private async Task SignInWithGoogle()
+        {
+            try
+            {
+                var credential = await _authClient.SignInWithGoogleAsync();
+
+                if (credential != null && !string.IsNullOrEmpty(credential.User?.Uid))
+                {
+                    await Shell.Current.DisplayAlert("Success", "Signed in with Google successfully!", "OK");
+                    await Shell.Current.GoToAsync("///MainPage");
+                }
+            }
+            catch (Exception ex)
+            {
+                string friendlyMessage = GetUserFriendlyErrorMessage(ex);
+                await Shell.Current.DisplayAlert("Google Sign-In Failed", friendlyMessage, "OK");
+            }
+        }
+
+        // Placeholder for Facebook Sign-In implementation
+        [RelayCommand]
+        private async Task SignInWithFacebook()
+        {
+            try
+            {
+                var credential = await _authClient.SignInWithFacebookAsync();
+
+                if (credential != null && !string.IsNullOrEmpty(credential.User?.Uid))
+                {
+                    await Shell.Current.DisplayAlert("Success", "Signed in with Facebook successfully!", "OK");
+                    await Shell.Current.GoToAsync("///MainPage");
+                }
+            }
+            catch (Exception ex)
+            {
+                string friendlyMessage = GetUserFriendlyErrorMessage(ex);
+                await Shell.Current.DisplayAlert("Facebook Sign-In Failed", friendlyMessage, "OK");
+            }
+        }
+
         [RelayCommand]
         private async Task CreateAccount()
         {

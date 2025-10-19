@@ -31,7 +31,9 @@ namespace LalabotApplication
                 AuthDomain = "lalabotapplication.firebaseapp.com",
                 Providers = new FirebaseAuthProvider[]
                 {
-                    new EmailProvider()
+                    new EmailProvider(),
+                    new GoogleProvider(),
+                    new FacebookProvider()
                 }
             }));
 
