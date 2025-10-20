@@ -129,8 +129,20 @@
                     Text="Create Account"
                     TextColor="#FBF6FD"/>
                 
+                <!--entry suggestions-->
+                <Grid Margin="0, 15, 0,0 ">
+                    <Label
+                        FontAttributes="Italic"
+                        FontSize="14"                        
+                        Text="*We recommend to use your official Gmail to recover forgotten password.
+                        &#10;*Minimum 12 characters and should have numbers and special characters.
+                        &#10;*Avoid common passwords or related to your personal information.">
+                        
+                    </Label>
+                </Grid>
                 
-                <!-- Sign in with -->
+                
+                <!-- Sign in with 
 
                 <Grid ColumnDefinitions="*,Auto,*" Margin="0, 15, 0, 15">
                     <BoxView Grid.Column="0"
@@ -151,10 +163,11 @@
                              VerticalOptions="Center"/>
                 </Grid>
 
-                <!--facebook and google option-->
+                
+                facebook and google option
                 <Grid>
                     <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
-                        <!--google-->
+                        google
                         <Grid HeightRequest="50" WidthRequest="50">
                             <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
                             <Image
@@ -169,7 +182,7 @@
                             </Image>
                         </Grid>
 
-                        <!--facebook-->
+                        facebook
                         <Grid HeightRequest="50" WidthRequest="50">
                             <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
                             <Image
@@ -185,7 +198,8 @@
                         </Grid>
                     </HorizontalStackLayout>
                 </Grid>
-
+                -->
+                
             </VerticalStackLayout>
 
             <!-- Delivery Logo positioned at the bottom -->

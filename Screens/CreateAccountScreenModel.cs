@@ -46,6 +46,7 @@ namespace LalabotApplication.Screens
                 _ => "Failed to create account. Please try again."
             };
         }
+        
         /*
         // Placeholder for Google Sign-In implementation
         [RelayCommand]
