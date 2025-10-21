@@ -32,5 +32,30 @@
         ContentTemplate="{DataTemplate screens:SuccessfulCreateAccountScreen}"
         Route="SuccessfulCreateAccountScreen"
         Shell.NavBarIsVisible="False"/>
+    
+    <!-- Main screen with 3 bottom tabs-->
+    <TabBar Route="MainPage">
+        <!--Home-->
+        <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate screens:HomeScreen}"
+        Route="HomeScreen"
+        Shell.NavBarIsVisible="False"/>
 
+        <!--History-->
+        <ShellContent
+        Title="History"
+        ContentTemplate="{DataTemplate screens:HistoryScreen}"
+        Route="HistoryScreen"
+        Shell.NavBarIsVisible="False"/>
+
+        <!--Settings-->
+        <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate screens:SettingsScreen}"
+        Route="SettingsScreen"
+        Shell.NavBarIsVisible="False"/>
+    </TabBar>
+    
+    
 </Shell>
