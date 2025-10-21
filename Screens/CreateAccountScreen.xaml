@@ -131,9 +131,17 @@
                 
                 <!--entry suggestions-->
                 <Grid Margin="0, 15, 0,0 ">
+                    <RoundRectangle
+                        Background="LightGray"
+                        BackgroundColor="Aqua"
+                        CornerRadius="20"
+                        Opacity="0.5"/>
                     <Label
-                        FontAttributes="Italic"
-                        FontSize="14"                        
+                        Margin="10, 10, 10, 10"
+                        FontAttributes="Bold,Italic"
+                        FontSize="14"     
+                        LineHeight="1.1"
+                        TextColor="IndianRed"
                         Text="*We recommend to use your official Gmail to recover forgotten password.
                         &#10;*Minimum 12 characters and should have numbers and special characters.
                         &#10;*Avoid common passwords or related to your personal information.">

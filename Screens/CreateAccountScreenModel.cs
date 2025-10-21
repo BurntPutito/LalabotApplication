@@ -112,6 +112,12 @@ namespace LalabotApplication.Screens
                 return;
             }
 
+            if (Password.Length < 12)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please enter at least a minimum of 12 characters.", "OK");
+                return;
+            }
+
             try
             {
                 // Create account with email and password only
