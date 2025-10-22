@@ -43,11 +43,11 @@
 					<Image HorizontalOptions="Center">
 						<Image.Source>
 							<FontImageSource
-                                FontFamily="AwesomeSolid"
-                                Glyph="&#xf007;"
-                                Size="30"
-                                Color="#2D4A6E"/>
-						</Image.Source>
+                                FontFamily="LineIcons"
+                                Glyph="&#xec2e;"
+                                Size="40"
+                                Color="#2D4A6E"/> 
+                        </Image.Source>
 					</Image>
 					<Entry Grid.Column="1"
                            Text="{Binding Username}"
@@ -63,12 +63,12 @@
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
                                     WidthRequest="50"/>
-					<Image HorizontalOptions="Center">
+                    <Image HorizontalOptions="Center">
 						<Image.Source>
 							<FontImageSource
-                                FontFamily="AwesomeSolid"
-                                Glyph="&#xf0e0;"
-                                Size="30"
+                                FontFamily="LineIcons"
+                                Glyph="&#xeacd;"
+                                Size="40"
                                 Color="#2D4A6E"/>
 						</Image.Source>
 					</Image>
@@ -89,9 +89,9 @@
 					<Image HorizontalOptions="Center">
 						<Image.Source>
 							<FontImageSource
-                                FontFamily="AwesomeSolid"
-                                Glyph="&#xf084;"
-                                Size="30"
+                                FontFamily="LineIcons"
+                                Glyph="&#xeb2f;"
+                                Size="40"
                                 Color="#2D4A6E"/>
 						</Image.Source>
 					</Image>

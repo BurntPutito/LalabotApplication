@@ -19,6 +19,8 @@ namespace LalabotApplication
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddFont("FontAwesomeSolid.otf", "AwesomeSolid");
+                    fonts.AddFont("boxicons-brands.ttf", "BoxIcons");
+                    fonts.AddFont("Lineicons.ttf", "LineIcons");
                 });
 
 #if DEBUG
