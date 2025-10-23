@@ -18,11 +18,11 @@ public partial class CreateAccountScreen : ContentPage
 
         if (_isPasswordVisible)
         {
-            EyeIcon.Glyph = "\uf070";
+            ((ImageButton)sender).Source = "eye_closed.png";
         }
         else
         {
-            EyeIcon.Glyph = "\uf06e";
+            ((ImageButton)sender).Source = "eye_big.png";
         }
     }
 

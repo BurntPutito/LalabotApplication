@@ -16,24 +16,24 @@
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate screens:Login}"
-        Route="Login"/>
-        <!-- NavBarIsVisible="False" -->
+        Route="Login"
+        Shell.NavBarIsVisible="True"/>
 
     <ShellContent
         Title="Create Account"
         ContentTemplate="{DataTemplate screens:CreateAccountScreen}"
         Route="CreateAccountScreen"
-        Shell.NavBarIsVisible="False"/>
+        Shell.NavBarIsVisible="True"/>
 
     <ShellContent
         Title="Success"
         ContentTemplate="{DataTemplate screens:SuccessfulCreateAccountScreen}"
         Route="SuccessfulCreateAccountScreen"
-        Shell.NavBarIsVisible="False"/>
+        Shell.NavBarIsVisible="True"/>
 
     <!-- Main screen with 3 bottom tabs-->
     <TabBar Route="MainPage">
-
+        
         <!--Home-->
         <ShellContent
             Title="Home"

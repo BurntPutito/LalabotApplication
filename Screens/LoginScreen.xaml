@@ -93,12 +93,7 @@
                                  Padding="10"
                                  Clicked="TogglePasswordVisibility">
                         <ImageButton.Source>
-                            <FontImageSource
-                                x:Name="EyeIcon"
-                                FontFamily="AwesomeSolid"
-                                Glyph="&#xf06e;"
-                                Size="20"
-                                Color="#A3A3A4"/>
+                            <FileImageSource File="eye_big.png"/>
                         </ImageButton.Source>
                     </ImageButton>
                 </Grid>
