@@ -21,6 +21,11 @@ namespace LalabotApplication
                     fonts.AddFont("FontAwesomeSolid.otf", "AwesomeSolid");
                     fonts.AddFont("boxicons-brands.ttf", "BoxIcons");
                     fonts.AddFont("Lineicons.ttf", "LineIcons");
+                    fonts.AddFont("Outfit-VariableFont_wght.ttf", "OutfitVariable");
+                    // Thin - 100, ExtraLight - 200, Light - 300, Regular - 400, Medium - 500, SemiBold - 600, Bold - 700, ExtraBold - 800, Black - 900
+                    fonts.AddFont("Outfit-ExtraLight.ttf", "OutfitExtraLight");
+                    fonts.AddFont("Outfit-Regular.ttf", "OutfitRegular");
+                    fonts.AddFont("Outfit-Light.ttf", "OutfitLight");
                 });
 
 #if DEBUG
@@ -43,6 +48,8 @@ namespace LalabotApplication
             builder.Services.AddSingleton<LoginScreenModel>();
             builder.Services.AddSingleton<CreateAccountScreen>();
             builder.Services.AddSingleton<CreateAccountScreenModel>();
+            builder.Services.AddTransient<HomeScreenModel>();
+            builder.Services.AddTransient<HomeScreen>();
 
             return builder.Build();
         }

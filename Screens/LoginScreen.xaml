@@ -29,11 +29,12 @@
                             Fill="White"/>
             <VerticalStackLayout Margin="30, 0, 30, 0">
                 <Label FontAttributes="Bold"
-                       FontFamily="bold"
+                       FontFamily="OutfitRegular"
+                       FontAutoScalingEnabled="True"
                        FontSize="Large"
                        Text="Welcome!"
                        TextColor="#2D2D2D"/>
-                <Label FontFamily="Empty"
+                <Label FontFamily="OutfitExtraLight"
                        FontSize="Medium"
                        Text="Log in to continue"
                        TextColor="#A3A3A4"/>
