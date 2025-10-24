@@ -59,6 +59,7 @@
                     <Entry Grid.Column="1"
                            Text="{Binding Email}"
                            FontFamily="OutfitLight"
+                           FontSize="16"
                            Placeholder="EMAIL"
                            VerticalOptions="Center"/>
                 </Grid>
@@ -82,6 +83,7 @@
                     </Image>
                     <Entry x:Name="PasswordEntry"
                            FontFamily="OutfitLight"
+                           FontSize="16"
                            Grid.Column="1"
                            Text="{Binding Password}"
                            Placeholder="PASSWORD"

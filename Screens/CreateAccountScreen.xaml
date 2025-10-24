@@ -52,6 +52,7 @@
 					<Entry Grid.Column="1"
                            Text="{Binding Username}"
                            FontFamily="OutfitLight"
+                           FontSize="16"
                            Placeholder="NAME"
                            VerticalOptions="Center"/>
 				</Grid>
@@ -76,6 +77,7 @@
 					<Entry Grid.Column="1"
                            Text="{Binding Email}"
                            FontFamily="OutfitLight"
+                           FontSize="16"
                            Placeholder="EMAIL"
                            VerticalOptions="Center"/>
 				</Grid>
@@ -101,6 +103,7 @@
                            Grid.Column="1"
                            Text="{Binding Password}"
                            FontFamily="OutfitLight"
+                           FontSize="16"
                            Placeholder="PASSWORD"
                            IsPassword="True"
                            VerticalOptions="Center"/>
