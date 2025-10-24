@@ -4,27 +4,156 @@
              x:Class="LalabotApplication.Screens.HomeScreen"
              Title="Home">
 
-    <VerticalStackLayout Margin="20" Spacing="10">
+    <VerticalStackLayout
+            Margin="20"
+            Spacing="10">
 
         <Label
-        Text="Welcome! User"
-        FontFamily="OutfitRegular"
-        FontSize="30"
-        FontAttributes="Bold"
-        HorizontalOptions="Start"/>
+                Text="Welcome! User"
+                FontFamily="OutfitRegular"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalOptions="Start"/>
 
+        <Label
+                Text="Here’s what’s happening with your deliveries today."
+                FontFamily="OutfitLight"
+                FontSize="16"
+                HorizontalOptions="Center"
+                Margin="0, 0, 0, -5"/>
+
+
+        <!--status card-->
         <Grid>
             <RoundRectangle
                 Background="AliceBlue"
                 CornerRadius="15"
                 HeightRequest="150"
-                HorizontalOptions="Start"/>
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill"/>
 
             <Label
-                Margin="10"
+                Padding="10"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
                 Text="You don't have any delivery request yet."
                 FontFamily="OutfitRegular"
                 FontSize="20"/>
+        </Grid>
+
+        <BoxView
+                Margin="0, 5, 0, 0"
+                HeightRequest="2"
+                Opacity="1"
+                BackgroundColor="Black"
+                VerticalOptions="Center"/>
+
+        <!--new delivery-->
+        <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NewDeliveryTapCommand}"/>
+            </Grid.GestureRecognizers>
+            <RoundRectangle
+                Background="AliceBlue"
+                CornerRadius="15"
+                HeightRequest="60"
+                WidthRequest="200"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"/>
+            <Grid
+                ColumnDefinitions="Auto, *"
+                Padding="15"
+                VerticalOptions="Center">
+                <Image
+                    VerticalOptions="Center"
+                    Grid.Column="0"
+                    Scale=".5"
+                    Margin="-20, -20,-20, -20">
+                    <Image.Source>
+                        <FileImageSource File="package.png"/>
+                    </Image.Source>
+                </Image>
+                <Label
+                    Grid.Column="1"
+                    Text="New Deliery"
+                    FontFamily="OutfitRegular"
+                    FontSize="16"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Start"
+                    Margin="10, 0,0,0"/>
+            </Grid>
+        </Grid>
+
+        <!--send to friend-->
+        <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SendToFriendTapCommand}"/>
+            </Grid.GestureRecognizers>
+            <RoundRectangle
+                Background="AliceBlue"
+                CornerRadius="15"
+                HeightRequest="60"
+                WidthRequest="200"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"/>
+            <Grid
+                ColumnDefinitions="Auto, *"
+                Padding="15"
+                VerticalOptions="Center">
+                <Image
+                    VerticalOptions="Center"
+                    Grid.Column="0"
+                    Scale=".5"
+                    Margin="-20, -20,-20, -20">
+                    <Image.Source>
+                        <FileImageSource File="user_search.png"/>
+                    </Image.Source>
+                </Image>
+                <Label
+                    Grid.Column="1"
+                    Text="Send to Friend"
+                    FontFamily="OutfitRegular"
+                    FontSize="16"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Start"
+                    Margin="10, 0,0,0"/>
+            </Grid>
+        </Grid>
+
+        <!--track delivery-->
+        <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding TrackPackageTapCommand}"/>
+            </Grid.GestureRecognizers>
+            <RoundRectangle
+                Background="AliceBlue"
+                CornerRadius="15"
+                HeightRequest="60"
+                WidthRequest="200"
+                HorizontalOptions="Start"
+                VerticalOptions="Center"/>
+            <Grid
+                ColumnDefinitions="Auto, *"
+                Padding="15"
+                VerticalOptions="Center">
+                <Image
+                    VerticalOptions="Center"
+                    Grid.Column="0"
+                    Scale=".5"
+                    Margin="-20, -20,-20, -20">
+                    <Image.Source>
+                        <FileImageSource File="location.png"/>
+                    </Image.Source>
+                </Image>
+                <Label
+                    Grid.Column="1"
+                    Text="Track Package"
+                    FontFamily="OutfitRegular"
+                    FontSize="16"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Start"
+                    Margin="10, 0,0,0"/>
+            </Grid>
         </Grid>
 
     </VerticalStackLayout>
