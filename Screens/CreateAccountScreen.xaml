@@ -27,7 +27,7 @@
                             Fill="White"/>
 			<VerticalStackLayout Margin="30, 0, 30, 0">
 				<Label FontAttributes="Bold"
-                       FontFamily="bold"
+                       FontFamily="OutfitRegular"
                        FontSize="Large"
                        Text="Create your account!"
                        TextColor="#2D2D2D"/>
@@ -51,6 +51,7 @@
 					</Image>
 					<Entry Grid.Column="1"
                            Text="{Binding Username}"
+                           FontFamily="OutfitLight"
                            Placeholder="NAME"
                            VerticalOptions="Center"/>
 				</Grid>
@@ -74,6 +75,7 @@
 					</Image>
 					<Entry Grid.Column="1"
                            Text="{Binding Email}"
+                           FontFamily="OutfitLight"
                            Placeholder="EMAIL"
                            VerticalOptions="Center"/>
 				</Grid>
@@ -98,6 +100,7 @@
 					<Entry x:Name="PasswordEntry"
                            Grid.Column="1"
                            Text="{Binding Password}"
+                           FontFamily="OutfitLight"
                            Placeholder="PASSWORD"
                            IsPassword="True"
                            VerticalOptions="Center"/>
@@ -117,15 +120,18 @@
 
                 <!-- Create account button -->
 				<Button
-                    Margin="0, 30, 0, 0"
+                    Margin="0, 25, 0, 0"
                     BackgroundColor="#2D4A6E"
                     HeightRequest="50"
                     Command="{Binding CreateAccountCommand}"
                     Text="Create Account"
+                    FontFamily="OutfitRegular"
+                    FontAttributes="Bold"
+                    FontSize="16"
                     TextColor="#FBF6FD"/>
                 
                 <!--entry suggestions-->
-                <Grid Margin="0, 15, 0,0 ">
+                <Grid Margin="0, 15, 0, 0">
                     <RoundRectangle
                         Background="LightGray"
                         BackgroundColor="Aqua"
@@ -133,6 +139,7 @@
                         Opacity="0.5"/>
                     <Label
                         Margin="10, 10, 10, 10"
+                        FontFamily="OutfitExtraLight"
                         FontAttributes="Bold,Italic"
                         FontSize="14"     
                         LineHeight="1.1"
@@ -140,7 +147,6 @@
                         Text="*We recommend to use your official Gmail to recover forgotten password.
                         &#10;*Minimum 12 characters and should have numbers and special characters.
                         &#10;*Avoid common passwords or related to your personal information.">
-                        
                     </Label>
                 </Grid>
                 
