@@ -30,7 +30,9 @@
                 CornerRadius="15"
                 HeightRequest="150"
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill"/>
+                VerticalOptions="Fill"
+                Stroke="#2D4A6E"
+                StrokeThickness="5"/>
 
             <Label
                 Padding="10"
@@ -42,11 +44,16 @@
         </Grid>
 
         <BoxView
-                Margin="0, 5, 0, 0"
+                Margin="0, 15, 0, 10"
                 HeightRequest="2"
                 Opacity="1"
                 BackgroundColor="Black"
                 VerticalOptions="Center"/>
+
+        <Label
+            Text="What do you want to do?"
+            FontFamily="OutfitLight"
+            FontSize="Medium"/>
 
         <!--new delivery-->
         <Grid>
@@ -59,7 +66,9 @@
                 HeightRequest="60"
                 WidthRequest="200"
                 HorizontalOptions="Start"
-                VerticalOptions="Center"/>
+                VerticalOptions="Center"
+                Stroke="#2D4A6E"
+                StrokeThickness="3"/>
             <Grid
                 ColumnDefinitions="Auto, *"
                 Padding="15"
@@ -70,7 +79,7 @@
                     Scale=".5"
                     Margin="-20, -20,-20, -20">
                     <Image.Source>
-                        <FileImageSource File="package.png"/>
+                        <FileImageSource File="delivery.png"/>
                     </Image.Source>
                 </Image>
                 <Label
@@ -95,7 +104,9 @@
                 HeightRequest="60"
                 WidthRequest="200"
                 HorizontalOptions="Start"
-                VerticalOptions="Center"/>
+                VerticalOptions="Center"
+                Stroke="#2D4A6E"
+                StrokeThickness="3"/>
             <Grid
                 ColumnDefinitions="Auto, *"
                 Padding="15"
@@ -131,7 +142,9 @@
                 HeightRequest="60"
                 WidthRequest="200"
                 HorizontalOptions="Start"
-                VerticalOptions="Center"/>
+                VerticalOptions="Center"
+                Stroke="#2D4A6E"
+                StrokeThickness="3"/>
             <Grid
                 ColumnDefinitions="Auto, *"
                 Padding="15"
