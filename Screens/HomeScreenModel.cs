@@ -46,7 +46,7 @@ namespace LalabotApplication.Screens
             catch (Exception ex)
             {
                 // If error, keep default "User"
-                Username = "Kupal";
+                Username = "User";
             }
         }
     }

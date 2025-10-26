@@ -38,10 +38,10 @@ namespace LalabotApplication.Screens
             string errorMessage = ex.Message.ToLower();
             return errorMessage switch
             {
-                var msg when msg.Contains("email") && msg.Contains("already") =>
+                var msg when msg.Contains("email") && msg.Contains("exists") =>
                     "This email is already registered. Please use a different email or try logging in.",
                 var msg when msg.Contains("password") && msg.Contains("weak") =>
-                    "Password is too weak. Please use at least 6 characters.",
+                    "Password is too weak. Please use at least 12 characters.",
                 var msg when msg.Contains("invalid email") || msg.Contains("badly formatted") =>
                     "Please enter a valid email address.",
                 var msg when msg.Contains("network") =>
