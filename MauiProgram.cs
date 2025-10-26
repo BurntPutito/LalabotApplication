@@ -3,6 +3,7 @@ using Firebase.Auth.Providers;
 using LalabotApplication.Screens;
 using Microsoft.Extensions.Logging;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using Firebase.Database;
 
 namespace LalabotApplication
 {
@@ -44,6 +45,7 @@ namespace LalabotApplication
                 }
             }));
 
+            builder.Services.AddSingleton(new FirebaseClient("https://lalabotapplication-default-rtdb.asia-southeast1.firebasedatabase.app/"));
             builder.Services.AddSingleton<Login>();
             builder.Services.AddSingleton<LoginScreenModel>();
             builder.Services.AddSingleton<CreateAccountScreen>();

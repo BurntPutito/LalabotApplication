@@ -2,6 +2,8 @@
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
+using Firebase.Database; // Add this
+using Firebase.Database.Query; // Add this
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,7 @@ namespace LalabotApplication.Screens
     public partial class CreateAccountScreenModel : ObservableObject
     {
         private readonly FirebaseAuthClient _authClient;
+        private readonly FirebaseClient _firebaseDb; // Add this
 
         [ObservableProperty]
         private string _email = string.Empty;
@@ -23,9 +26,11 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private string _password = string.Empty;
 
-        public CreateAccountScreenModel(FirebaseAuthClient authClient)
+        // Update constructor to accept FirebaseClient
+        public CreateAccountScreenModel(FirebaseAuthClient authClient, FirebaseClient firebaseDb)
         {
             _authClient = authClient;
+            _firebaseDb = firebaseDb; // Add this
         }
 
         private string GetUserFriendlyErrorMessage(Exception ex)
@@ -125,6 +130,12 @@ namespace LalabotApplication.Screens
 
                 if (result != null && !string.IsNullOrEmpty(result.User?.Uid))
                 {
+                    // Save username to Firebase Database
+                    await _firebaseDb
+                        .Child("users")
+                        .Child(result.User.Uid)
+                        .PutAsync(new { Username = Username, Email = Email });
+
                     await Shell.Current.GoToAsync("///SuccessfulCreateAccountScreen");
                 }
                 else
