@@ -24,5 +24,14 @@
             BorderColor="#2D4A6E"
             BorderWidth="2"/>
 
+        <Button
+            Text="Logout"
+            TextColor="Black"
+            FontFamily="OutfitLight"
+            FontSize="Medium"
+            BackgroundColor="AliceBlue"
+            BorderColor="#2D4A6E"
+            BorderWidth="2"/>
+
     </VerticalStackLayout>
 </ContentPage>

@@ -15,5 +15,43 @@
                 FontAttributes="Bold"
                 HorizontalOptions="Start"/>
 
+        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" HorizontalOptions="Fill">
+            <Button
+                x:Name="DeliveredBtn"
+                Clicked="OnButtonClicked"
+                Grid.Column="0"
+                Text="Delivered"
+                TextColor="Black"
+                FontFamily="OutfitLight"
+                FontSize="16"
+                BackgroundColor="AliceBlue"
+                BorderColor="#2D4A6E"
+                BorderWidth="2"/>
+            <Button
+                x:Name="CancelledBtn"
+                Clicked="OnButtonClicked"
+                Grid.Column="1"
+                Text="Cancelled"
+                TextColor="Black"
+                FontFamily="OutfitLight"
+                FontSize="16"
+                BackgroundColor="AliceBlue"
+                BorderColor="#2D4A6E"
+                BorderWidth="2"/>
+            <Button
+                x:Name="PendingBtn"
+                Clicked="OnButtonClicked"
+                Grid.Column="2"
+                Text="Pending"
+                TextColor="Black"
+                FontFamily="OutfitLight"
+                FontSize="16"
+                BackgroundColor="AliceBlue"
+                BorderColor="#2D4A6E"
+                BorderWidth="2"/>
+        </Grid>
+
+
+
     </VerticalStackLayout>
 </ContentPage>
