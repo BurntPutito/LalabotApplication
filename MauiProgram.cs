@@ -50,8 +50,11 @@ namespace LalabotApplication
             builder.Services.AddSingleton<LoginScreenModel>();
             builder.Services.AddSingleton<CreateAccountScreen>();
             builder.Services.AddSingleton<CreateAccountScreenModel>();
+
             builder.Services.AddTransient<HomeScreenModel>();
             builder.Services.AddTransient<HomeScreen>();
+            builder.Services.AddTransient<SettingsScreenModel>();
+            builder.Services.AddTransient<SettingsScreen>();
 
             return builder.Build();
         }

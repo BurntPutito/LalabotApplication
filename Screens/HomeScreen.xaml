@@ -8,11 +8,14 @@
             Margin="20"
             Spacing="10">
 
-        <Label 
-            Text="{Binding Username, StringFormat='Welcome! {0}'}"
-            FontSize="30"
-            VerticalOptions="Center" 
-            HorizontalOptions="Start" />
+        <Label VerticalOptions="Center" HorizontalOptions="Start">
+            <Label.FormattedText>
+                <FormattedString>
+                    <Span Text="Welcome! " FontSize="30" FontFamily="OutfitRegular" FontAttributes="Bold" />
+                    <Span Text="{Binding Username}" FontSize="30" FontFamily="OutfitRegular"/>
+                </FormattedString>
+            </Label.FormattedText>
+        </Label>
 
         <Label
             Text="Here’s what’s happening with your deliveries today."
