@@ -3,10 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.SettingsScreen"
              Title="SettingsScreen">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+
+    <VerticalStackLayout
+            Margin="20"
+            Spacing="10">
+
+        <Label
+                Text="Settings"
+                FontFamily="OutfitRegular"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalOptions="Start"/>
+
+        <Button
+            Text="About"
+            TextColor="Black"
+            FontFamily="OutfitLight"
+            FontSize="Medium"
+            BackgroundColor="AliceBlue"
+            BorderColor="#2D4A6E"
+            BorderWidth="2"/>
+
     </VerticalStackLayout>
 </ContentPage>
