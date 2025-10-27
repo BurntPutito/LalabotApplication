@@ -41,7 +41,7 @@
                 
                 <!-- username field -->
                 <Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
-                    <RoundRectangle BackgroundColor="#EDEBF6"
+                    <RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
@@ -66,7 +66,7 @@
 
                 <!-- password field -->
                 <Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-                    <RoundRectangle BackgroundColor="#EDEBF6"
+                    <RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
@@ -102,7 +102,21 @@
                         </ImageButton.Source>
                     </ImageButton>
                 </Grid>
-
+                
+                <!--forgot password-->
+                <Label
+                    Margin="0, 0, 0, 5"
+                    HorizontalOptions="End"
+                    Text="Forgot your password?"
+                    FontFamily="OutfitLight"
+                    FontAttributes="Bold"
+                    FontSize="14"
+                    TextColor="Blue">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                
 				<!-- login button -->
                 <Button
                     Margin="0, 20, 0, 0"
@@ -115,31 +129,37 @@
                     Command="{Binding LoginCommand}"
                     TextColor="#FBF6FD"/>
 
-                <!--forgot password-->
-                <Label
-                    Margin="0, 20, 0, -10"
-                    HorizontalOptions="Center"
-                    Text="Forgot your password?"
-                    FontFamily="OutfitLight"
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    TextColor="Blue">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                    
+                <!--or-->
+                <Grid ColumnDefinitions="*,Auto,*" Margin="0, 15, 0, 15">
+                    <BoxView Grid.Column="0"
+                             HeightRequest="1"
+                             Opacity="0.3"
+                             BackgroundColor="Black"
+                             VerticalOptions="Center"/>
+
+                    <Label Grid.Column="1"
+                           Opacity="0.5"
+                           Margin="5, 0, 5, 0"
+                           Text="Or"/>
+
+                    <BoxView Grid.Column="2"
+                             Opacity="0.3"
+                             HeightRequest="1"
+                             BackgroundColor="Black"
+                             VerticalOptions="Center"/>
+                </Grid>
 
 				<!-- create account button -->
                 <Button
-                    Margin="0, 30, 0, 0"
-                    BackgroundColor="#EDEBF6"
+                    BackgroundColor="AliceBlue"
                     Text="Create Account"
                     FontFamily="OutfitLight"
                     FontAttributes="Bold"
                     FontSize="16"
                     Command="{Binding NavigateCreateAccountCommand}"
-                    TextColor="Gray"/>
+                    TextColor="#2D4A6E"
+                    BorderWidth="1"
+                    BorderColor="#2D4A6E"/>
 
             </VerticalStackLayout>
 
