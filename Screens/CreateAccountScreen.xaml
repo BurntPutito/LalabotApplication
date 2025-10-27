@@ -34,7 +34,7 @@
         
 				<!-- enter name field -->
 				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-					<RoundRectangle BackgroundColor="#EDEBF6"
+					<RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
@@ -59,7 +59,7 @@
 				
 				<!-- email field -->
 				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-					<RoundRectangle BackgroundColor="#EDEBF6"
+					<RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
@@ -84,7 +84,7 @@
 
 				<!-- password field -->
 				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-					<RoundRectangle BackgroundColor="#EDEBF6"
+					<RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
