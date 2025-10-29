@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LalabotApplication.Screens.CreateDeliveryScreen"
+             Title="CreateDeliveryScreen">
+    <VerticalStackLayout
+        Margin="20"
+        Spacing="10"
+        HorizontalOptions="Fill">
+
+        <Label
+                Text="Create Delivery"
+                FontFamily="OutfitRegular"
+                FontSize="30"
+                FontAttributes="Bold"
+                HorizontalOptions="Start"/>
+
+        <Label
+            Text="Name"
+            FontFamily="OutfitLight"
+            FontSize="Medium"/>
+
+        <Grid>
+            <RoundRectangle
+                BackgroundColor="AliceBlue"
+                HeightRequest="50"
+                CornerRadius="15"
+                Stroke="#2D4A6E"
+                StrokeThickness="2"/>
+            <Entry
+                Margin="10, 10, 10, 5"/>
+        </Grid>
+
+        <Label
+            Text="Destination"
+            FontFamily="OutfitLight"
+            FontSize="Medium"/>
+
+        <Grid>
+            <RoundRectangle
+                BackgroundColor="AliceBlue"
+                HeightRequest="50"
+                CornerRadius="15"
+                Stroke="#2D4A6E"
+                StrokeThickness="2"/>
+            <Entry
+                Margin="10, 10, 10, 5"/>
+        </Grid>
+
+        <Label
+            Text="Compartment"
+            FontFamily="OutfitLight"
+            FontSize="Medium"/>
+
+        <Grid>
+            <RoundRectangle
+                BackgroundColor="AliceBlue"
+                HeightRequest="50"
+                CornerRadius="15"
+                Stroke="#2D4A6E"
+                StrokeThickness="2"/>
+            <Entry
+                Margin="10, 10, 10, 5"/>
+        </Grid>
+
+        <Label
+            Text="Receiver"
+            FontFamily="OutfitLight"
+            FontSize="Medium"/>
+
+        <Grid>
+            <RoundRectangle
+                BackgroundColor="AliceBlue"
+                HeightRequest="50"
+                CornerRadius="15"
+                Stroke="#2D4A6E"
+                StrokeThickness="2"/>
+            <Entry
+                Margin="10, 10, 10, 5"/>
+        </Grid>
+
+        <Label
+            Text="Message"
+            FontFamily="OutfitLight"
+            FontSize="Medium"/>
+
+        <Grid>
+            <RoundRectangle
+                BackgroundColor="AliceBlue"
+                HeightRequest="50"
+                CornerRadius="15"
+                Stroke="#2D4A6E"
+                StrokeThickness="2"/>
+            <Entry
+                Margin="10, 10, 10, 5"/>
+        </Grid>
+
+
+    </VerticalStackLayout>
+</ContentPage>
