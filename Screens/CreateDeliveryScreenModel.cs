@@ -101,12 +101,22 @@ namespace LalabotApplication.Screens
                     .Child(deliveryId)
                     .PutAsync(delivery);
 
-                // update robot status
+                // Update robot status - get current compartments first
+                var currentCompartments = await _firebaseDb
+                    .Child("robot_status")
+                    .Child("currentDeliveries")
+                    .OnceSingleAsync<CompartmentStatus>();
+
+                // Update the entire currentDeliveries object
                 await _firebaseDb
                     .Child("robot_status")
                     .Child("currentDeliveries")
-                    .Child($"compartment{compartment}")
-                    .PutAsync(deliveryId);
+                    .PutAsync(new
+                    {
+                        compartment1 = compartment == 1 ? deliveryId : (currentCompartments?.Compartment1 ?? ""),
+                        compartment2 = compartment == 2 ? deliveryId : (currentCompartments?.Compartment2 ?? ""),
+                        compartment3 = compartment == 3 ? deliveryId : (currentCompartments?.Compartment3 ?? "")
+                    });
 
                 await Shell.Current.DisplayAlert(
                     "Delivery Created!",

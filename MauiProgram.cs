@@ -45,7 +45,26 @@ namespace LalabotApplication
                 }
             }));
 
-            builder.Services.AddSingleton(new FirebaseClient("https://lalabotapplication-default-rtdb.asia-southeast1.firebasedatabase.app/"));
+            // NEW (With auth token):
+            builder.Services.AddSingleton<FirebaseClient>(provider =>
+            {
+                var authClient = provider.GetRequiredService<FirebaseAuthClient>();
+
+                return new FirebaseClient(
+                    "https://lalabotapplication-default-rtdb.asia-southeast1.firebasedatabase.app/",
+                    new FirebaseOptions
+                    {
+                        AuthTokenAsyncFactory = async () =>
+                        {
+                            if (authClient.User != null)
+                            {
+                                return await authClient.User.GetIdTokenAsync();
+                            }
+                            return string.Empty;
+                        }
+                    });
+            });
+
             builder.Services.AddSingleton<Login>();
             builder.Services.AddSingleton<LoginScreenModel>();
             builder.Services.AddSingleton<CreateAccountScreen>();
