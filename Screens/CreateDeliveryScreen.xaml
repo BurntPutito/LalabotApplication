@@ -3,98 +3,118 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.CreateDeliveryScreen"
              Title="CreateDeliveryScreen">
-    <VerticalStackLayout
-        Margin="20"
-        Spacing="10"
-        HorizontalOptions="Fill">
 
-        <Label
+    <ScrollView>
+        <VerticalStackLayout
+            Margin="20"
+            Spacing="10"
+            HorizontalOptions="Fill">
+
+            <Label
                 Text="Create Delivery"
                 FontFamily="OutfitRegular"
                 FontSize="30"
                 FontAttributes="Bold"
-                HorizontalOptions="Start"/>
+                HorizontalOptions="Start"
+                Margin="0, 0, 0, 20"/>
 
-        <Label
-            Text="Name"
-            FontFamily="OutfitLight"
-            FontSize="Medium"/>
+            <!--Receiver Entry-->
+            <Label
+                Text="Receiver Name"
+                FontFamily="OutfitLight"
+                FontSize="Medium"/>
+            <Grid Margin="0, 0, 0, 20">
+                <RoundRectangle
+                    BackgroundColor="AliceBlue"
+                    HeightRequest="50"
+                    CornerRadius="15"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="2"/>
+                <Entry
+                    Text="{Binding Receiver}"
+                    Placeholder="Enter receiver name"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    BackgroundColor="Transparent"
+                    Margin="15, 0"/>
+            </Grid>
 
-        <Grid>
-            <RoundRectangle
-                BackgroundColor="AliceBlue"
+            <!--Destination Picker-->
+            <Label
+                Text="Destination"
+                FontFamily="OutfitLight"
+                FontSize="Medium"/>
+            <Grid Margin="0, 0, 0, 20">
+                <RoundRectangle
+                    BackgroundColor="AliceBlue"
+                    HeightRequest="50"
+                    CornerRadius="15"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="2"/>
+                <Picker
+                    x:Name="DestinationPicker"
+                    Title="Select destination"
+                    SelectedIndex="{Binding SelectedDestinationIndex}"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    BackgroundColor="Transparent"
+                    Margin="10, 0">
+                    <Picker.Items>
+                        <x:String>Destination 1 - Room A</x:String>
+                        <x:String>Destination 2 - Room B</x:String>
+                        <x:String>Destination 3 - Room C</x:String>
+                    </Picker.Items>
+                </Picker>
+            </Grid>
+
+            <!--Message Entry-->
+            <Label
+                Text="Message"
+                FontFamily="OutfitLight"
+                FontSize="Medium"/>
+            <Grid Margin="0, 0, 0, 30">
+                <RoundRectangle
+                    BackgroundColor="AliceBlue"
+                    HeightRequest="120"
+                    CornerRadius="15"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="2"/>
+                <Editor
+                    Text="{Binding Message}"
+                    Placeholder="Enter optional message"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    BackgroundColor="Transparent"
+                    AutoSize="TextChanges"
+                    MaximumHeightRequest="120"
+                    Margin="15, 10"/>
+            </Grid>
+
+            <!-- Submit Button -->
+            <Button
+                Text="Create Delivery Request"
+                BackgroundColor="#2D4A6E"
+                TextColor="White"
+                FontFamily="OutfitRegular"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="15"
+                Command="{Binding CreateDeliveryCommand}"
+                Margin="0, 10, 0, 20"/>
+
+            <!-- Cancel Button -->
+            <Button
+                Text="Cancel"
+                BackgroundColor="Transparent"
+                TextColor="#2D4A6E"
+                FontFamily="OutfitLight"
+                FontSize="16"
+                BorderColor="#2D4A6E"
+                BorderWidth="2"
                 HeightRequest="50"
                 CornerRadius="15"
-                Stroke="#2D4A6E"
-                StrokeThickness="2"/>
-            <Entry
-                Margin="10, 10, 10, 5"/>
-        </Grid>
+                Command="{Binding CancelCommand}"/>
 
-        <Label
-            Text="Destination"
-            FontFamily="OutfitLight"
-            FontSize="Medium"/>
-
-        <Grid>
-            <RoundRectangle
-                BackgroundColor="AliceBlue"
-                HeightRequest="50"
-                CornerRadius="15"
-                Stroke="#2D4A6E"
-                StrokeThickness="2"/>
-            <Entry
-                Margin="10, 10, 10, 5"/>
-        </Grid>
-
-        <Label
-            Text="Compartment"
-            FontFamily="OutfitLight"
-            FontSize="Medium"/>
-
-        <Grid>
-            <RoundRectangle
-                BackgroundColor="AliceBlue"
-                HeightRequest="50"
-                CornerRadius="15"
-                Stroke="#2D4A6E"
-                StrokeThickness="2"/>
-            <Entry
-                Margin="10, 10, 10, 5"/>
-        </Grid>
-
-        <Label
-            Text="Receiver"
-            FontFamily="OutfitLight"
-            FontSize="Medium"/>
-
-        <Grid>
-            <RoundRectangle
-                BackgroundColor="AliceBlue"
-                HeightRequest="50"
-                CornerRadius="15"
-                Stroke="#2D4A6E"
-                StrokeThickness="2"/>
-            <Entry
-                Margin="10, 10, 10, 5"/>
-        </Grid>
-
-        <Label
-            Text="Message"
-            FontFamily="OutfitLight"
-            FontSize="Medium"/>
-
-        <Grid>
-            <RoundRectangle
-                BackgroundColor="AliceBlue"
-                HeightRequest="50"
-                CornerRadius="15"
-                Stroke="#2D4A6E"
-                StrokeThickness="2"/>
-            <Entry
-                Margin="10, 10, 10, 5"/>
-        </Grid>
-
-
-    </VerticalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>
