@@ -1,0 +1,13 @@
+{
+  "robot_status": {
+    "status": "idle",
+    "currentDeliveries": {
+      "compartment1": null,
+      "compartment2": null,
+      "compartment3": null
+    },
+    "currentDestination": 0,
+    "battery": 100,
+    "location": "base"
+  }
+}

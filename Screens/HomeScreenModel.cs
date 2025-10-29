@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
@@ -48,6 +49,12 @@ namespace LalabotApplication.Screens
                 // If error, keep default "User"
                 Username = "User";
             }
+        }
+
+        [RelayCommand]
+        private async Task NewDeliveryTap()
+        {
+            await Shell.Current.GoToAsync("///CreateDeliveryScreen");
         }
     }
 }

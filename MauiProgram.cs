@@ -55,6 +55,8 @@ namespace LalabotApplication
             builder.Services.AddTransient<HomeScreen>();
             builder.Services.AddTransient<SettingsScreenModel>();
             builder.Services.AddTransient<SettingsScreen>();
+            builder.Services.AddTransient<CreateDeliveryScreenModel>();
+            builder.Services.AddTransient<CreateDeliveryScreen>();
 
             return builder.Build();
         }
