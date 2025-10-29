@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LalabotApplication.Screens"
              x:Class="LalabotApplication.Screens.CreateDeliveryScreen"
              Title="CreateDeliveryScreen">
 
@@ -18,12 +19,14 @@
                 HorizontalOptions="Start"
                 Margin="0, 0, 0, 20"/>
 
-            <!--Receiver Entry-->
+            <!--Receiver Search with Suggestions-->
             <Label
-                Text="Receiver Name"
+                Text="Select Receiver"
                 FontFamily="OutfitLight"
                 FontSize="Medium"/>
-            <Grid Margin="0, 0, 0, 20">
+
+            <!-- Search Entry -->
+            <Grid Margin="0, 0, 0, 10">
                 <RoundRectangle
                     BackgroundColor="AliceBlue"
                     HeightRequest="50"
@@ -31,12 +34,85 @@
                     Stroke="#2D4A6E"
                     StrokeThickness="2"/>
                 <Entry
-                    Text="{Binding Receiver}"
-                    Placeholder="Enter receiver name"
+                    Text="{Binding ReceiverSearchText}"
+                    Placeholder="Type receiver name..."
                     FontFamily="OutfitLight"
                     FontSize="16"
                     BackgroundColor="Transparent"
                     Margin="15, 0"/>
+            </Grid>
+
+            <!-- Filtered User Suggestions -->
+            <CollectionView
+                ItemsSource="{Binding FilteredUsers}"
+                IsVisible="{Binding HasFilteredUsers}"
+                HeightRequest="150"
+                Margin="0, 0, 0, 20">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10, 5">
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:CreateDeliveryScreenModel}}, Path=SelectReceiverCommand}"
+                                    CommandParameter="{Binding .}"/>
+                            </Grid.GestureRecognizers>
+
+                            <RoundRectangle
+                                BackgroundColor="AliceBlue"
+                                CornerRadius="10"/>
+
+                            <VerticalStackLayout Padding="15, 10">
+                                <Label 
+                        Text="{Binding Username}"
+                        FontFamily="OutfitRegular"
+                        FontSize="16"
+                        TextColor="#2D4A6E"/>
+                                <Label 
+                        Text="{Binding Email}"
+                        FontFamily="OutfitLight"
+                        FontSize="12"
+                        TextColor="Gray"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Selected Receiver Display -->
+            <Grid 
+                IsVisible="{Binding HasSelectedReceiver}"
+                Margin="0, 0, 0, 20">
+                <RoundRectangle
+                    BackgroundColor="#E8F5E9"
+                    CornerRadius="15"
+                    Stroke="#4CAF50"
+                    StrokeThickness="2"/>
+                <HorizontalStackLayout Padding="15" Spacing="10">
+                    <Label 
+                        Text="✓"
+                        FontSize="20"
+                        TextColor="#4CAF50"
+                        VerticalOptions="Center"/>
+                    <VerticalStackLayout>
+                        <Label 
+                            Text="{Binding SelectedReceiver.Username}"
+                            FontFamily="OutfitRegular"
+                            FontSize="16"
+                            TextColor="#2D4A6E"/>
+                        <Label 
+                            Text="{Binding SelectedReceiver.Email}"
+                            FontFamily="OutfitLight"
+                            FontSize="12"
+                            TextColor="Gray"/>
+                    </VerticalStackLayout>
+                    <Button 
+                        Text="✕"
+                        BackgroundColor="Transparent"
+                        TextColor="#F44336"
+                        FontSize="20"
+                        HorizontalOptions="End"
+                        Command="{Binding ClearReceiverCommand}"/>
+                </HorizontalStackLayout>
             </Grid>
 
             <!--Destination Picker-->

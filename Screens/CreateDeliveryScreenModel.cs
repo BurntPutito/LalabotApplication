@@ -4,6 +4,8 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
 using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LalabotApplication.Screens
@@ -13,8 +15,16 @@ namespace LalabotApplication.Screens
         private readonly FirebaseAuthClient _authClient;
         private readonly FirebaseClient _firebaseDb;
 
+        private ObservableCollection<UserInfo> _allUsers = new();
+
         [ObservableProperty]
-        private string _receiver = string.Empty;
+        private ObservableCollection<UserInfo> _filteredUsers = new();
+
+        [ObservableProperty]
+        private UserInfo _selectedReceiver;
+
+        [ObservableProperty]
+        private string _receiverSearchText = string.Empty;
 
         [ObservableProperty]
         private int _selectedDestinationIndex = -1;
@@ -22,19 +32,106 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private string _message = string.Empty;
 
+        public bool HasFilteredUsers => FilteredUsers?.Count > 0 && SelectedReceiver == null;
+        public bool HasSelectedReceiver => SelectedReceiver != null;
+
         public CreateDeliveryScreenModel(FirebaseAuthClient authClient, FirebaseClient firebaseDb)
         {
             _authClient = authClient;
             _firebaseDb = firebaseDb;
+            _ = LoadAvailableUsers();
+        }
+
+        partial void OnReceiverSearchTextChanged(string value)
+        {
+            FilterUsers(value);
+        }
+
+        private void FilterUsers(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                FilteredUsers.Clear();
+                OnPropertyChanged(nameof(HasFilteredUsers));
+                return;
+            }
+
+            var filtered = _allUsers
+                .Where(u => u.Username.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+                           u.Email.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .Take(5) // Show max 5 suggestions
+                .ToList();
+
+            FilteredUsers.Clear();
+            foreach (var user in filtered)
+            {
+                FilteredUsers.Add(user);
+            }
+
+            OnPropertyChanged(nameof(HasFilteredUsers));
+        }
+
+        [RelayCommand]
+        private void SelectReceiver(UserInfo user)
+        {
+            SelectedReceiver = user;
+            ReceiverSearchText = user.Username;
+            FilteredUsers.Clear();
+            OnPropertyChanged(nameof(HasFilteredUsers));
+            OnPropertyChanged(nameof(HasSelectedReceiver));
+        }
+
+        [RelayCommand]
+        private void ClearReceiver()
+        {
+            SelectedReceiver = null;
+            ReceiverSearchText = string.Empty;
+            FilteredUsers.Clear();
+            OnPropertyChanged(nameof(HasFilteredUsers));
+            OnPropertyChanged(nameof(HasSelectedReceiver));
+        }
+
+        private async Task LoadAvailableUsers()
+        {
+            try
+            {
+                var currentUser = _authClient.User;
+                if (currentUser == null) return;
+
+                // Get all users from Firebase
+                var usersData = await _firebaseDb
+                    .Child("users")
+                    .OnceAsync<UserData>();
+
+                _allUsers.Clear();
+
+                foreach (var user in usersData)
+                {
+                    // Don't include current user
+                    if (user.Key != currentUser.Uid)
+                    {
+                        _allUsers.Add(new UserInfo
+                        {
+                            Uid = user.Key,
+                            Username = user.Object.Username ?? "Unknown",
+                            Email = user.Object.Email ?? ""
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to load users: {ex.Message}", "OK");
+            }
         }
 
         [RelayCommand]
         private async Task CreateDelivery()
         {
-            //Validation
-            if (string.IsNullOrWhiteSpace(Receiver))
+            // Validation
+            if (SelectedReceiver == null)
             {
-                await Shell.Current.DisplayAlert("Validation Error", "Please enter the receiver's name.", "OK");
+                await Shell.Current.DisplayAlert("Validation Error", "Please select a receiver.", "OK");
                 return;
             }
 
@@ -53,7 +150,7 @@ namespace LalabotApplication.Screens
                     return;
                 }
 
-                // get sender username from database
+                // Get sender username
                 var senderData = await _firebaseDb
                     .Child("users")
                     .Child(user.Uid)
@@ -62,7 +159,7 @@ namespace LalabotApplication.Screens
 
                 string senderName = senderData ?? "Unknown";
 
-                // get available compartment
+                // Get available compartment
                 int compartment = await GetAvailableCompartment();
 
                 if (compartment == -1)
@@ -71,20 +168,19 @@ namespace LalabotApplication.Screens
                     return;
                 }
 
-                // will generete a unique delivery ID and verification code
-                string deliveryId = $"del_{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}";
+                // Generate unique delivery ID and verification code
+                string deliveryId = $"del_{DateTimeOffset.UtcNow.ToUnixTimeSeconds()}";
                 string verificationCode = GenerateVerificationCode();
-
-                // calculate actual destination number 
                 int destination = SelectedDestinationIndex + 1;
 
-                // create delivery object
+                // Create delivery object
                 var delivery = new
                 {
                     id = deliveryId,
                     sender = senderName,
                     senderUid = user.Uid,
-                    receiver = Receiver,
+                    receiver = SelectedReceiver.Username,
+                    receiverUid = SelectedReceiver.Uid,
                     destination = destination,
                     compartment = compartment,
                     message = Message,
@@ -95,36 +191,54 @@ namespace LalabotApplication.Screens
                     completedAt = (string)null
                 };
 
-                // save to firebase
+                // Save delivery
                 await _firebaseDb
                     .Child("delivery_requests")
                     .Child(deliveryId)
                     .PutAsync(delivery);
 
-                // Update robot status - get current compartments first
+                // Update robot status
                 var currentCompartments = await _firebaseDb
                     .Child("robot_status")
                     .Child("currentDeliveries")
                     .OnceSingleAsync<CompartmentStatus>();
 
-                // Update the entire currentDeliveries object
                 await _firebaseDb
                     .Child("robot_status")
                     .Child("currentDeliveries")
                     .PutAsync(new
                     {
-                        compartment1 = compartment == 1 ? deliveryId : (currentCompartments?.Compartment1 ?? ""),
-                        compartment2 = compartment == 2 ? deliveryId : (currentCompartments?.Compartment2 ?? ""),
-                        compartment3 = compartment == 3 ? deliveryId : (currentCompartments?.Compartment3 ?? "")
+                        compartment1 = compartment == 1 ? deliveryId : (currentCompartments?.compartment1 ?? ""),
+                        compartment2 = compartment == 2 ? deliveryId : (currentCompartments?.compartment2 ?? ""),
+                        compartment3 = compartment == 3 ? deliveryId : (currentCompartments?.compartment3 ?? "")
                     });
 
+                // Create notification for receiver
+                await _firebaseDb
+                    .Child("notifications")
+                    .Child(SelectedReceiver.Uid)
+                    .Child(deliveryId)
+                    .PutAsync(new
+                    {
+                        deliveryId = deliveryId,
+                        from = senderName,
+                        message = $"New delivery from {senderName}",
+                        verificationCode = verificationCode,
+                        destination = destination,
+                        timestamp = DateTime.UtcNow.ToString("o"),
+                        read = false
+                    });
+
+                // Show success
                 await Shell.Current.DisplayAlert(
                     "Delivery Created!",
-                    $"Verification Code: {verificationCode}\n\nShare this code with {Receiver}. They will need it to receive the delivery.",
+                    $"Delivery to {SelectedReceiver.Username}\n\n" +
+                    $"Verification Code: {verificationCode}\n\n" +
+                    $"The receiver will be notified automatically.",
                     "OK");
 
-                // navigate back to home
-                await Shell.Current.GoToAsync("///MainPage");
+                // Navigate back
+                await Shell.Current.GoToAsync("//HomeScreen");
             }
             catch (Exception ex)
             {
@@ -135,7 +249,7 @@ namespace LalabotApplication.Screens
         [RelayCommand]
         private async Task Cancel()
         {
-            await Shell.Current.GoToAsync("///MainPage");
+            await Shell.Current.GoToAsync("//HomeScreen");
         }
 
         private async Task<int> GetAvailableCompartment()
@@ -149,43 +263,55 @@ namespace LalabotApplication.Screens
 
                 if (compartments == null)
                 {
-                    // initialize if doesn't exist
                     await _firebaseDb
                         .Child("robot_status")
                         .Child("currentDeliveries")
                         .PutAsync(new
                         {
-                            compartment1 = (string)null,
-                            compartment2 = (string)null,
-                            compartment3 = (string)null,
+                            compartment1 = "",
+                            compartment2 = "",
+                            compartment3 = ""
                         });
-                    return 1; // first compartment is available
+                    return 1;
                 }
 
-                if (string.IsNullOrEmpty(compartments.Compartment1)) return 1;
-                if (string.IsNullOrEmpty(compartments.Compartment2)) return 2;
-                if (string.IsNullOrEmpty(compartments.Compartment3)) return 3;
-                return -1; // no compartments available
+                if (string.IsNullOrEmpty(compartments.compartment1)) return 1;
+                if (string.IsNullOrEmpty(compartments.compartment2)) return 2;
+                if (string.IsNullOrEmpty(compartments.compartment3)) return 3;
+
+                return -1;
             }
             catch
             {
-                return 1; // Default to first compartment if error
+                return 1;
             }
         }
 
         private string GenerateVerificationCode()
         {
-            // Generate 4-digit code
             Random random = new Random();
             return random.Next(1000, 9999).ToString();
         }
     }
 
-    // Helper class to map compartment status
+    // Helper classes
+    public class UserInfo
+    {
+        public string Uid { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class UserData
+    {
+        public string Username { get; set; }
+        public string Email { get; set; }
+    }
+
     public class CompartmentStatus
     {
-        public string Compartment1 { get; set; }
-        public string Compartment2 { get; set; }
-        public string Compartment3 { get; set; }
+        public string compartment1 { get; set; }
+        public string compartment2 { get; set; }
+        public string compartment3 { get; set; }
     }
 }
