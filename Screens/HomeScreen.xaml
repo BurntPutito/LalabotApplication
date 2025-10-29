@@ -73,7 +73,7 @@
                     CornerRadius="15"
                     HeightRequest="60"
                     Stroke="#2D4A6E"
-                    StrokeThickness="3" />
+                    StrokeThickness="3"/>
 
                 <Grid
                     ColumnDefinitions="*, *"
