@@ -46,8 +46,7 @@
             <CollectionView
                 ItemsSource="{Binding FilteredUsers}"
                 IsVisible="{Binding HasFilteredUsers}"
-                HeightRequest="150"
-                Margin="0, 0, 0, 20">
+                HeightRequest="150">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10, 5">
@@ -63,15 +62,15 @@
 
                             <VerticalStackLayout Padding="15, 10">
                                 <Label 
-                        Text="{Binding Username}"
-                        FontFamily="OutfitRegular"
-                        FontSize="16"
-                        TextColor="#2D4A6E"/>
+                                    Text="{Binding Username}"
+                                    FontFamily="OutfitRegular"
+                                    FontSize="16"
+                                    TextColor="#2D4A6E"/>
                                 <Label 
-                        Text="{Binding Email}"
-                        FontFamily="OutfitLight"
-                        FontSize="12"
-                        TextColor="Gray"/>
+                                    Text="{Binding Email}"
+                                    FontFamily="OutfitLight"
+                                    FontSize="12"
+                                    TextColor="Gray"/>
                             </VerticalStackLayout>
                         </Grid>
                     </DataTemplate>
