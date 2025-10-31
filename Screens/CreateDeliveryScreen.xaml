@@ -67,10 +67,10 @@
                                     FontSize="16"
                                     TextColor="#2D4A6E"/>
                                 <Label 
-                                    Text="{Binding Email}"
-                                    FontFamily="OutfitLight"
-                                    FontSize="12"
-                                    TextColor="Gray"/>
+                                Text="{Binding Email}"
+                                FontFamily="OutfitLight"
+                                FontSize="12"
+                                TextColor="Gray"/>
                             </VerticalStackLayout>
                         </Grid>
                     </DataTemplate>
@@ -78,40 +78,55 @@
             </CollectionView>
 
             <!-- Selected Receiver Display -->
-            <Grid 
+            <Grid
                 IsVisible="{Binding HasSelectedReceiver}"
-                Margin="0, 0, 0, 20">
+                RowDefinitions="Auto"
+                ColumnDefinitions=".1*, Auto, .6*"
+                HeightRequest="70">
+                <!--background-->
                 <RoundRectangle
+                    Grid.ColumnSpan="2"
                     BackgroundColor="#E8F5E9"
                     CornerRadius="15"
                     Stroke="#4CAF50"
+                    Margin="0"
                     StrokeThickness="2"/>
-                <HorizontalStackLayout Padding="15" Spacing="10">
+                <!--check icon-->
+                <Label
+                    Grid.Column="0"
+                    Text="✓"
+                    FontSize="24"
+                    TextColor="#4CAF50"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"/>
+                <!--name and email-->
+                <VerticalStackLayout
+                    Grid.Column="1"
+                    Spacing="0"
+                    VerticalOptions="Center">
                     <Label 
-                        Text="✓"
-                        FontSize="20"
-                        TextColor="#4CAF50"
-                        VerticalOptions="Center"/>
-                    <VerticalStackLayout>
-                        <Label 
-                            Text="{Binding SelectedReceiver.Username}"
-                            FontFamily="OutfitRegular"
-                            FontSize="16"
-                            TextColor="#2D4A6E"/>
-                        <Label 
-                            Text="{Binding SelectedReceiver.Email}"
-                            FontFamily="OutfitLight"
-                            FontSize="12"
-                            TextColor="Gray"/>
-                    </VerticalStackLayout>
-                    <Button 
-                        Text="✕"
-                        BackgroundColor="Transparent"
-                        TextColor="#F44336"
-                        FontSize="20"
-                        HorizontalOptions="End"
-                        Command="{Binding ClearReceiverCommand}"/>
-                </HorizontalStackLayout>
+                        Text="{Binding SelectedReceiver.Username}"
+                        FontFamily="OutfitRegular"
+                        FontSize="16"
+                        TextColor="#2D4A6E"/>
+                    <Label 
+                        Text="{Binding SelectedReceiver.Email}"
+                        FontFamily="OutfitLight"
+                        FontSize="12"
+                        Margin="0,0,10,0"
+                        TextColor="Gray"/>
+                </VerticalStackLayout>
+                <!--close button-->
+                <Button 
+                    Grid.Column="2"
+                    Text="✕"
+                    BackgroundColor="Transparent"
+                    TextColor="#F44336"
+                    FontAttributes="Bold"
+                    FontSize="22"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    Command="{Binding ClearReceiverCommand}"/>
             </Grid>
 
             <!--Destination Picker-->
