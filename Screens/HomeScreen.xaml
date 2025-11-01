@@ -1,228 +1,232 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:LalabotApplication.Screens"
              x:Class="LalabotApplication.Screens.HomeScreen"
              Title="Home">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="20" Spacing="20">
+    <RefreshView
+        IsRefreshing="{Binding IsRefreshing}"
+        Command="{Binding RefreshCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
 
-            <!-- Welcome Header -->
-            <Label>
-                <Label.FormattedText>
-                    <FormattedString>
-                        <Span Text="Welcome! " FontSize="30" FontFamily="OutfitRegular"/>
-                        <Span Text="{Binding Username}" FontSize="30" FontFamily="OutfitRegular" FontAttributes="Bold"/>
-                    </FormattedString>
-                </Label.FormattedText>
-            </Label>
+                <!-- Welcome Header -->
+                <Label>
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Welcome! " FontSize="30" FontFamily="OutfitRegular"/>
+                            <Span Text="{Binding Username}" FontSize="30" FontFamily="OutfitRegular" FontAttributes="Bold"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
 
-            <!-- New Delivery Button -->
-            <Grid>
-                <Grid.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding NewDeliveryTapCommand}" />
-                </Grid.GestureRecognizers>
-                <RoundRectangle
-                    Background="AliceBlue"
-                    CornerRadius="15"
-                    HeightRequest="60"
-                    Stroke="#2D4A6E"
-                    StrokeThickness="3"/>
-                <Grid
-                    ColumnDefinitions="*, *"
-                    Padding="15"
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center">
-                    <Image
-                        VerticalOptions="Center"
-                        Grid.Column="0"
-                        Scale=".5"
-                        Margin="-20">
-                        <Image.Source>
-                            <FileImageSource File="delivery.png" />
-                        </Image.Source>
-                    </Image>
-                    <Label
-                        Grid.Column="1"
-                        Text="New Delivery"
-                        FontFamily="OutfitRegular"
-                        FontSize="18"
-                        VerticalTextAlignment="Center"
-                        HorizontalTextAlignment="Start"
-                        Margin="10,0,0,0" />
+                <!-- New Delivery Button -->
+                <Grid>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NewDeliveryTapCommand}" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle
+                            Background="AliceBlue"
+                            CornerRadius="15"
+                            HeightRequest="60"
+                            Stroke="#2D4A6E"
+                            StrokeThickness="3"/>
+                    <Grid
+                            ColumnDefinitions="*, *"
+                            Padding="15"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center">
+                        <Image
+                                VerticalOptions="Center"
+                                Grid.Column="0"
+                                Scale=".5"
+                                Margin="-20">
+                            <Image.Source>
+                                <FileImageSource File="delivery.png" />
+                            </Image.Source>
+                        </Image>
+                        <Label
+                                Grid.Column="1"
+                                Text="New Delivery"
+                                FontFamily="OutfitRegular"
+                                FontSize="18"
+                                VerticalTextAlignment="Center"
+                                HorizontalTextAlignment="Start"
+                                Margin="10,0,0,0" />
+                    </Grid>
                 </Grid>
-            </Grid>
 
-            <!-- Active Deliveries Section -->
-            <Label
-                Text="Active Deliveries"
-                FontFamily="OutfitRegular"
-                FontSize="22"
-                FontAttributes="Bold"
-                Margin="0, 10, 0, 0"/>
+                <!-- Active Deliveries Section -->
+                <Label
+                        Text="Active Deliveries"
+                        FontFamily="OutfitRegular"
+                        FontSize="22"
+                        FontAttributes="Bold"
+                        Margin="0, 10, 0, 0"/>
 
-            <!-- Outgoing Deliveries -->
-            <Label
-                Text="Outgoing"
-                FontFamily="OutfitRegular"
-                FontSize="16"
-                TextColor="Gray"
-                IsVisible="{Binding HasOutgoingDeliveries}"/>
+                <!-- Outgoing Deliveries -->
+                <Label
+                        Text="Outgoing"
+                        FontFamily="OutfitRegular"
+                        FontSize="16"
+                        TextColor="Gray"
+                        IsVisible="{Binding HasOutgoingDeliveries}"/>
 
-            <Grid IsVisible="{Binding HasOutgoingDeliveries}">
-                <VerticalStackLayout Spacing="10">
-                    <!-- Swipeable Carousel -->
-                    <CarouselView
-                        ItemsSource="{Binding OutgoingDeliveries}"
-                        HeightRequest="140"
-                        PeekAreaInsets="40"
-                        CurrentItem="{Binding CurrentOutgoingDelivery}">
-                        <CarouselView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Padding="5">
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CopyVerificationCodeCommand}"
-                                            CommandParameter="{Binding .}"/>
-                                    </Grid.GestureRecognizers>
+                <Grid IsVisible="{Binding HasOutgoingDeliveries}">
+                    <VerticalStackLayout Spacing="10">
+                        <!-- Swipeable Carousel -->
+                        <CarouselView
+                                ItemsSource="{Binding OutgoingDeliveries}"
+                                HeightRequest="140"
+                                PeekAreaInsets="40"
+                                CurrentItem="{Binding CurrentOutgoingDelivery}">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CopyVerificationCodeCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
 
-                                    <RoundRectangle
-                                        Fill="{Binding StatusColor}"
-                                        CornerRadius="15"
-                                        Stroke="#2D4A6E"
-                                        StrokeThickness="2"/>
+                                        <RoundRectangle
+                                                Fill="{Binding StatusColor}"
+                                                CornerRadius="15"
+                                                Stroke="#2D4A6E"
+                                                StrokeThickness="2"/>
 
-                                    <VerticalStackLayout Padding="15" Spacing="5">
-                                        <Label
-                                            Text="{Binding ReceiverText}"
-                                            FontFamily="OutfitBold"
-                                            FontSize="18"
-                                            FontAttributes="Bold"/>
-                                        <Label
-                                            Text="{Binding VerificationText}"
-                                            FontFamily="OutfitRegular"
-                                            FontSize="16"/>
-                                        <Label
-                                            Text="{Binding DestinationText}"
-                                            FontFamily="OutfitLight"
-                                            FontSize="14"
-                                            TextColor="Gray"/>
-                                        <Label
-                                            Text="{Binding StatusText}"
-                                            FontFamily="OutfitRegular"
-                                            FontSize="14"
-                                            TextColor="#2D4A6E"/>
-                                    </VerticalStackLayout>
-                                </Grid>
-                            </DataTemplate>
-                        </CarouselView.ItemTemplate>
-                    </CarouselView>
+                                        <VerticalStackLayout Padding="15" Spacing="5">
+                                            <Label
+                                                    Text="{Binding ReceiverText}"
+                                                    FontFamily="OutfitBold"
+                                                    FontSize="18"
+                                                    FontAttributes="Bold"/>
+                                            <Label
+                                                    Text="{Binding VerificationText}"
+                                                    FontFamily="OutfitRegular"
+                                                    FontSize="16"/>
+                                            <Label
+                                                    Text="{Binding DestinationText}"
+                                                    FontFamily="OutfitLight"
+                                                    FontSize="14"
+                                                    TextColor="Gray"/>
+                                            <Label
+                                                    Text="{Binding StatusText}"
+                                                    FontFamily="OutfitRegular"
+                                                    FontSize="14"
+                                                    TextColor="#2D4A6E"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
 
-                    <!-- Indicator Dots -->
-                    <IndicatorView
-                        IndicatorColor="LightGray"
-                        SelectedIndicatorColor="#2D4A6E"
-                        HorizontalOptions="Center"
-                        IndicatorsShape="Circle"
-                        IndicatorSize="8"
-                        ItemsSource="{Binding OutgoingDeliveries}"/>
+                        <!-- Indicator Dots -->
+                        <IndicatorView
+                                IndicatorColor="LightGray"
+                                SelectedIndicatorColor="#2D4A6E"
+                                HorizontalOptions="Center"
+                                IndicatorsShape="Circle"
+                                IndicatorSize="8"
+                                ItemsSource="{Binding OutgoingDeliveries}"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Incoming Deliveries -->
+                <Label
+                        Text="Incoming"
+                        FontFamily="OutfitRegular"
+                        FontSize="16"
+                        TextColor="Gray"
+                        Margin="0, 10, 0, 0"
+                        IsVisible="{Binding HasIncomingDeliveries}"/>
+
+                <Grid IsVisible="{Binding HasIncomingDeliveries}">
+                    <VerticalStackLayout Spacing="10">
+                        <!-- Swipeable Carousel -->
+                        <CarouselView
+                                ItemsSource="{Binding IncomingDeliveries}"
+                                HeightRequest="140"
+                                PeekAreaInsets="40"
+                                CurrentItem="{Binding CurrentIncomingDelivery}">
+                            <CarouselView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Padding="5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer 
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CopyVerificationCodeCommand}"
+                                                    CommandParameter="{Binding .}"/>
+                                        </Grid.GestureRecognizers>
+
+                                        <RoundRectangle
+                                                Fill="{Binding StatusColor}"
+                                                CornerRadius="15"
+                                                Stroke="#2D4A6E"
+                                                StrokeThickness="2"/>
+
+                                        <VerticalStackLayout Padding="15" Spacing="5">
+                                            <Label
+                                                    Text="{Binding SenderText}"
+                                                    FontFamily="OutfitBold"
+                                                    FontSize="18"
+                                                    FontAttributes="Bold"/>
+                                            <Label
+                                                    Text="{Binding VerificationText}"
+                                                    FontFamily="OutfitRegular"
+                                                    FontSize="16"/>
+                                            <Label
+                                                    Text="{Binding DestinationText}"
+                                                    FontFamily="OutfitLight"
+                                                    FontSize="14"
+                                                    TextColor="Gray"/>
+                                            <Label
+                                                    Text="{Binding StatusText}"
+                                                    FontFamily="OutfitRegular"
+                                                    FontSize="14"
+                                                    TextColor="#2D4A6E"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CarouselView.ItemTemplate>
+                        </CarouselView>
+
+                        <!-- Indicator Dots -->
+                        <IndicatorView
+                                IndicatorColor="LightGray"
+                                SelectedIndicatorColor="#2D4A6E"
+                                HorizontalOptions="Center"
+                                IndicatorsShape="Circle"
+                                IndicatorSize="8"
+                                ItemsSource="{Binding IncomingDeliveries}"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Empty State -->
+                <VerticalStackLayout 
+                        IsVisible="{Binding HasNoDeliveries}"
+                        Spacing="10"
+                        VerticalOptions="Center"
+                        Margin="0, 40, 0, 0">
+                    <Label
+                            Text="📦"
+                            FontSize="60"
+                            HorizontalOptions="Center"/>
+                    <Label
+                            Text="No active deliveries"
+                            FontFamily="OutfitRegular"
+                            FontSize="18"
+                            TextColor="Gray"
+                            HorizontalOptions="Center"/>
+                    <Label
+                            Text="Create a delivery to get started!"
+                            FontFamily="OutfitLight"
+                            FontSize="14"
+                            TextColor="Gray"
+                            HorizontalOptions="Center"/>
                 </VerticalStackLayout>
-            </Grid>
 
-            <!-- Incoming Deliveries -->
-            <Label
-                Text="Incoming"
-                FontFamily="OutfitRegular"
-                FontSize="16"
-                TextColor="Gray"
-                Margin="0, 10, 0, 0"
-                IsVisible="{Binding HasIncomingDeliveries}"/>
-
-            <Grid IsVisible="{Binding HasIncomingDeliveries}">
-                <VerticalStackLayout Spacing="10">
-                    <!-- Swipeable Carousel -->
-                    <CarouselView
-                        ItemsSource="{Binding IncomingDeliveries}"
-                        HeightRequest="140"
-                        PeekAreaInsets="40"
-                        CurrentItem="{Binding CurrentIncomingDelivery}">
-                        <CarouselView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Padding="5">
-                                    <Grid.GestureRecognizers>
-                                        <TapGestureRecognizer 
-                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CopyVerificationCodeCommand}"
-                                            CommandParameter="{Binding .}"/>
-                                    </Grid.GestureRecognizers>
-
-                                    <RoundRectangle
-                                        Fill="{Binding StatusColor}"
-                                        CornerRadius="15"
-                                        Stroke="#2D4A6E"
-                                        StrokeThickness="2"/>
-
-                                    <VerticalStackLayout Padding="15" Spacing="5">
-                                        <Label
-                                            Text="{Binding SenderText}"
-                                            FontFamily="OutfitBold"
-                                            FontSize="18"
-                                            FontAttributes="Bold"/>
-                                        <Label
-                                            Text="{Binding VerificationText}"
-                                            FontFamily="OutfitRegular"
-                                            FontSize="16"/>
-                                        <Label
-                                            Text="{Binding DestinationText}"
-                                            FontFamily="OutfitLight"
-                                            FontSize="14"
-                                            TextColor="Gray"/>
-                                        <Label
-                                            Text="{Binding StatusText}"
-                                            FontFamily="OutfitRegular"
-                                            FontSize="14"
-                                            TextColor="#2D4A6E"/>
-                                    </VerticalStackLayout>
-                                </Grid>
-                            </DataTemplate>
-                        </CarouselView.ItemTemplate>
-                    </CarouselView>
-
-                    <!-- Indicator Dots -->
-                    <IndicatorView
-                        IndicatorColor="LightGray"
-                        SelectedIndicatorColor="#2D4A6E"
-                        HorizontalOptions="Center"
-                        IndicatorsShape="Circle"
-                        IndicatorSize="8"
-                        ItemsSource="{Binding IncomingDeliveries}"/>
-                </VerticalStackLayout>
-            </Grid>
-
-            <!-- Empty State -->
-            <VerticalStackLayout 
-                IsVisible="{Binding HasNoDeliveries}"
-                Spacing="10"
-                VerticalOptions="Center"
-                Margin="0, 40, 0, 0">
-                <Label
-                    Text="📦"
-                    FontSize="60"
-                    HorizontalOptions="Center"/>
-                <Label
-                    Text="No active deliveries"
-                    FontFamily="OutfitRegular"
-                    FontSize="18"
-                    TextColor="Gray"
-                    HorizontalOptions="Center"/>
-                <Label
-                    Text="Create a delivery to get started!"
-                    FontFamily="OutfitLight"
-                    FontSize="14"
-                    TextColor="Gray"
-                    HorizontalOptions="Center"/>
             </VerticalStackLayout>
-
-        </VerticalStackLayout>
-    </ScrollView>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>

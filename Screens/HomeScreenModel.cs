@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Database;
@@ -30,6 +30,9 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private DeliveryCardInfo _currentIncomingDelivery;
 
+        [ObservableProperty]
+        private bool _isRefreshing = false;
+
         public bool HasOutgoingDeliveries => OutgoingDeliveries?.Count > 0;
         public bool HasIncomingDeliveries => IncomingDeliveries?.Count > 0;
         public bool HasNoDeliveries => !HasOutgoingDeliveries && !HasIncomingDeliveries;
@@ -42,6 +45,18 @@ namespace LalabotApplication.Screens
             _ = LoadDeliveries();
             _ = ListenForNewDeliveries();
         }
+
+        [RelayCommand]
+        private async Task Refresh()
+        {
+            IsRefreshing = true;
+
+            await LoadUserInfo();
+            await LoadDeliveries();
+
+            IsRefreshing = false;
+        }
+
 
         private async Task LoadUserInfo()
         {
