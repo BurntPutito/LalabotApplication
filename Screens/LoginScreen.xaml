@@ -1,87 +1,88 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.Login"
              Title="LoginScreen"
 			 NavigationPage.HasNavigationBar="False">
 
-    <!-- Main Screen ratio -->
-    <Grid RowDefinitions=".3*, .7*">
-        <!-- background of logo -->
-        <Image Aspect="AspectFill" Source="lalabot_background.png"/>
-        <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
-        <Grid ColumnDefinitions="*,*">
-            
-            <!--main logo-->
-            <Image Margin="0,0,0,30"
+    <VerticalStackLayout>
+        <!-- Main Screen ratio -->
+        <Grid RowDefinitions=".3*, .7*">
+            <!-- background of logo -->
+            <Image Aspect="AspectFill" Source="lalabot_background.png"/>
+            <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
+            <Grid ColumnDefinitions="*,*">
+
+                <!--main logo-->
+                <Image Margin="0,0,0,30"
                    Aspect="Fill"
                    HeightRequest="200"
                    Source="lalabot_logo_wlogobackground.png"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    Grid.ColumnSpan="2"/>
-        </Grid>
-        
-        <!-- Login UI Background -->
-        <Grid Grid.Row="1">
-            <RoundRectangle Margin="-3, -30, -3, -2"
+            </Grid>
+
+            <!-- Login UI Background -->
+            <Grid Grid.Row="1">
+                <RoundRectangle Margin="-3, -30, -3, -2"
                             CornerRadius="35, 35, 0, 0"
                             Fill="White"/>
-            <VerticalStackLayout Margin="30, 0, 30, 0">
-                <Label FontAttributes="Bold"
+                <VerticalStackLayout Margin="30, 0, 30, 0">
+                    <Label FontAttributes="Bold"
                        FontFamily="OutfitRegular"
                        FontAutoScalingEnabled="True"
                        FontSize="26"
                        Text="Welcome!"
                        TextColor="#2D2D2D"/>
-                <Label FontFamily="OutfitLight"
+                    <Label FontFamily="OutfitLight"
                        FontSize="Medium"
                        Text="Log in to continue"
                        TextColor="#A3A3A4"/>
-                
-                <!-- username field -->
-                <Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
-                    <RoundRectangle BackgroundColor="AliceBlue"
+
+                    <!-- username field -->
+                    <Grid Margin="-10, 30, 0, 0" ColumnDefinitions=".2*, .8*">
+                        <RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
                                     WidthRequest="50"/>
-                    <Image HorizontalOptions="Center">
-                        <Image.Source>
-                            <FontImageSource
+                        <Image HorizontalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource
                                 FontFamily="LineIcons"
                                 Glyph="&#xec2e;"
                                 Size="40"
                                 Color="#2D4A6E"/>
-                        </Image.Source>
-                    </Image>
-                    <Entry Grid.Column="1"
+                            </Image.Source>
+                        </Image>
+                        <Entry Grid.Column="1"
                            Text="{Binding Email}"
                            FontFamily="OutfitLight"
                            FontSize="16"
                            Placeholder="EMAIL"
                            VerticalOptions="Center"/>
-                </Grid>
+                    </Grid>
 
-                <!-- password field -->
-                <Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-                    <RoundRectangle BackgroundColor="AliceBlue"
+                    <!-- password field -->
+                    <Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
+                        <RoundRectangle BackgroundColor="AliceBlue"
                                     CornerRadius="10"
                                     HeightRequest="50"
                                     HorizontalOptions="Center"
                                     VerticalOptions="Center"
                                     WidthRequest="50"/>
-                    <Image HorizontalOptions="Center">
-                        <Image.Source>
-                            <FontImageSource
+                        <Image HorizontalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource
                                 FontFamily="LineIcons"
                                 Glyph="&#xeb2f;"
                                 Size="40"
                                 Color="#2D4A6E"/>
-                        </Image.Source>
-                    </Image>
-                    <Entry x:Name="PasswordEntry"
+                            </Image.Source>
+                        </Image>
+                        <Entry x:Name="PasswordEntry"
                            FontFamily="OutfitLight"
                            FontSize="16"
                            Grid.Column="1"
@@ -90,21 +91,21 @@
                            IsPassword="True"
                            VerticalOptions="Center"/>
 
-                    <!-- Eye Icon Toggle -->
-                    <ImageButton Grid.Column="2"
+                        <!-- Eye Icon Toggle -->
+                        <ImageButton Grid.Column="2"
                                  VerticalOptions="Center"
                                  HorizontalOptions="End"
                                  BackgroundColor="Transparent"
                                  Padding="10"
                                  Clicked="TogglePasswordVisibility">
-                        <ImageButton.Source>
-                            <FileImageSource File="eye_big.png"/>
-                        </ImageButton.Source>
-                    </ImageButton>
-                </Grid>
-                
-                <!--forgot password-->
-                <Label
+                            <ImageButton.Source>
+                                <FileImageSource File="eye_big.png"/>
+                            </ImageButton.Source>
+                        </ImageButton>
+                    </Grid>
+
+                    <!--forgot password-->
+                    <Label
                     Margin="0, 0, 0, 5"
                     HorizontalOptions="End"
                     Text="Forgot your password?"
@@ -112,13 +113,13 @@
                     FontAttributes="Bold"
                     FontSize="14"
                     TextColor="Blue">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-                
-				<!-- login button -->
-                <Button
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+
+                    <!-- login button -->
+                    <Button
                     Margin="0, 20, 0, 0"
                     BackgroundColor="#2D4A6E"
                     HeightRequest="50"
@@ -129,28 +130,28 @@
                     Command="{Binding LoginCommand}"
                     TextColor="#FBF6FD"/>
 
-                <!--or-->
-                <Grid ColumnDefinitions="*,Auto,*" Margin="0, 15, 0, 15">
-                    <BoxView Grid.Column="0"
+                    <!--or-->
+                    <Grid ColumnDefinitions="*,Auto,*" Margin="0, 15, 0, 15">
+                        <BoxView Grid.Column="0"
                              HeightRequest="1"
                              Opacity="0.3"
                              BackgroundColor="Black"
                              VerticalOptions="Center"/>
 
-                    <Label Grid.Column="1"
+                        <Label Grid.Column="1"
                            Opacity="0.5"
                            Margin="5, 0, 5, 0"
                            Text="Or"/>
 
-                    <BoxView Grid.Column="2"
+                        <BoxView Grid.Column="2"
                              Opacity="0.3"
                              HeightRequest="1"
                              BackgroundColor="Black"
                              VerticalOptions="Center"/>
-                </Grid>
+                    </Grid>
 
-				<!-- create account button -->
-                <Button
+                    <!-- create account button -->
+                    <Button
                     BackgroundColor="AliceBlue"
                     Text="Create Account"
                     FontFamily="OutfitLight"
@@ -161,17 +162,17 @@
                     BorderWidth="1"
                     BorderColor="#2D4A6E"/>
 
-            </VerticalStackLayout>
+                </VerticalStackLayout>
 
 
-            <Grid Margin="-30, 85, -30, 0">
-                <Image Aspect="AspectFit"
+                <Grid Margin="-30, 85, -30, 0">
+                    <Image Aspect="AspectFit"
                     Source="lalabot_delivery_logo.png"
                     VerticalOptions="End"
                     HorizontalOptions="Fill"
-                    Margin="0, 0, 0, 0"/> 
+                    Margin="0, 0, 0, 0"/>
+                </Grid>
             </Grid>
         </Grid>
-    </Grid>
-    
+    </VerticalStackLayout>
 </ContentPage>
