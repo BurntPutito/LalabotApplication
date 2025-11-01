@@ -27,6 +27,7 @@ namespace LalabotApplication
                     fonts.AddFont("Outfit-ExtraLight.ttf", "OutfitExtraLight");
                     fonts.AddFont("Outfit-Regular.ttf", "OutfitRegular");
                     fonts.AddFont("Outfit-Light.ttf", "OutfitLight");
+                    fonts.AddFont("Outfit-Bold.ttf", "OutfitBold");
                 });
 
 #if DEBUG

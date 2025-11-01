@@ -170,8 +170,8 @@
                                         <VerticalStackLayout Padding="15" Spacing="5">
                                             <Label
                                                     Text="{Binding SenderText}"
-                                                    FontFamily="OutfitBold"
-                                                    FontSize="18"
+                                                    FontFamily="OutfitRegular"
+                                                    FontSize="20"
                                                     FontAttributes="Bold"/>
                                             <Label
                                                     Text="{Binding VerificationText}"
