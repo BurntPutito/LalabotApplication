@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
+using Plugin.Maui.Audio;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace LalabotApplication.Screens
     {
         private readonly FirebaseAuthClient _authClient;
         private readonly FirebaseClient _firebaseDb;
+        private readonly IAudioManager _audioManager;
 
         [ObservableProperty]
         private string _username = "User";
@@ -37,13 +39,47 @@ namespace LalabotApplication.Screens
         public bool HasIncomingDeliveries => IncomingDeliveries?.Count > 0;
         public bool HasNoDeliveries => !HasOutgoingDeliveries && !HasIncomingDeliveries;
 
-        public HomeScreenModel(FirebaseAuthClient authClient, FirebaseClient firebaseDb)
+        private HashSet<string> _processedNotifications = new HashSet<string>();
+
+        public HomeScreenModel(FirebaseAuthClient authClient, FirebaseClient firebaseDb, IAudioManager audioManager)
         {
             _authClient = authClient;
             _firebaseDb = firebaseDb;
+            _audioManager = audioManager;
+
             _ = LoadUserInfo();
             _ = LoadDeliveries();
             _ = ListenForNewDeliveries();
+        }
+
+        [RelayCommand]
+        private async Task TestNotification()
+        {
+            try
+            {
+                // Test sound
+                await PlayNotificationSound();
+
+                // Test vibration
+                Vibrate();
+
+                // Test popup
+                var testNotification = new NotificationData
+                {
+                    deliveryId = "test_123",
+                    from = "Test Sender",
+                    verificationCode = "9999",
+                    destination = 1,
+                    timestamp = DateTime.UtcNow.ToString("o"),
+                    read = false
+                };
+
+                await ShowNotificationPopup(testNotification);
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Test Failed", ex.Message, "OK");
+            }
         }
 
         [RelayCommand]
@@ -145,34 +181,89 @@ namespace LalabotApplication.Screens
                 var user = _authClient.User;
                 if (user == null) return;
 
-                // Listen for new notifications
-                _firebaseDb
-                    .Child("notifications")
-                    .Child(user.Uid)
-                    .AsObservable<NotificationData>()
-                    .Subscribe(async notification =>
+                // Check for notifications every 3 seconds
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        if (notification.Object != null && !notification.Object.read)
+                        try
                         {
-                            // Show notification popup
-                            await ShowNotificationPopup(notification.Object);
-
-                            // Mark as read
-                            await _firebaseDb
+                            var notifications = await _firebaseDb
                                 .Child("notifications")
                                 .Child(user.Uid)
-                                .Child(notification.Key)
-                                .Child("read")
-                                .PutAsync(true);
+                                .OnceAsync<NotificationData>();
 
-                            // Reload deliveries
-                            await LoadDeliveries();
+                            foreach (var notification in notifications)
+                            {
+                                // Check if notification is unread AND we haven't processed it yet
+                                if (notification.Object != null &&
+                                    !notification.Object.read &&
+                                    !_processedNotifications.Contains(notification.Key))
+                                {
+                                    // Mark as processed immediately to prevent duplicates
+                                    _processedNotifications.Add(notification.Key);
+
+                                    // Play notification sound & vibrate
+                                    await PlayNotificationSound();
+                                    Vibrate();
+
+                                    // Show notification popup
+                                    await ShowNotificationPopup(notification.Object);
+
+                                    // Mark as read in Firebase
+                                    await _firebaseDb
+                                        .Child("notifications")
+                                        .Child(user.Uid)
+                                        .Child(notification.Key)
+                                        .Child("read")
+                                        .PutAsync(true);
+
+                                    // Reload deliveries
+                                    await LoadDeliveries();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            // Ignore errors in timer
                         }
                     });
+
+                    return true; // Keep timer running
+                });
             }
             catch (Exception ex)
             {
                 // Handle error
+            }
+        }
+
+        private async Task PlayNotificationSound()
+        {
+            try
+            {
+                // put a notification.mp3 to Resources/Raw:
+                var audioStream = await FileSystem.OpenAppPackageFileAsync("notification.mp3");
+                var player = _audioManager.CreatePlayer(audioStream);
+                player.Play();
+            }
+            catch (Exception ex)
+            {
+                // Sound failed, continue anyway
+            }
+        }
+
+        private void Vibrate()
+        {
+            try
+            {
+                // Vibrate for 500ms
+                var duration = TimeSpan.FromMilliseconds(300);
+                Vibration.Default.Vibrate(duration);
+            }
+            catch (Exception ex)
+            {
+                // Vibration not supported or failed
             }
         }
 
@@ -185,7 +276,7 @@ namespace LalabotApplication.Screens
 
                 // Show popup
                 bool viewDetails = await Shell.Current.DisplayAlert(
-                    "?? New Delivery!",
+                    "🔔 New Delivery!",
                     $"From: {notification.from}\n" +
                     $"Verification Code: {notification.verificationCode}\n" +
                     $"Destination: Room {notification.destination}\n\n" +
@@ -244,10 +335,10 @@ namespace LalabotApplication.Screens
         public string DestinationText => $"Destination {Destination}";
         public string StatusText => Status switch
         {
-            "pending" => "Status: Pending",
-            "in_progress" => "Status: In Transit",
-            "arrived" => "Status: Arrived - Awaiting Verification",
-            "delivered" => "Status: Delivered",
+            "pending" => "📦 Pending",
+            "in_progress" => "🚚 In Transit",
+            "arrived" => "📍 Arrived - Awaiting Verification",
+            "delivered" => "✅ Delivered",
             _ => Status
         };
 

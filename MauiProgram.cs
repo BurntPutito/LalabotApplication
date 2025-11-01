@@ -1,9 +1,10 @@
 ﻿using Firebase.Auth;
 using Firebase.Auth.Providers;
+using Firebase.Database;
 using LalabotApplication.Screens;
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 using SkiaSharp.Views.Maui.Controls.Hosting;
-using Firebase.Database;
 
 namespace LalabotApplication
 {
@@ -30,8 +31,19 @@ namespace LalabotApplication
                     fonts.AddFont("Outfit-Bold.ttf", "OutfitBold");
                 });
 
+            // Remove Entry underline
+            Microsoft.Maui.Handlers.EntryHandler.Mapper.AppendToMapping("NoUnderline", (handler, view) =>
+            {
+#if ANDROID
+            handler.PlatformView.BackgroundTintList = Android.Content.Res.ColorStateList.ValueOf(Android.Graphics.Color.Transparent);
+#endif
+            });
+
+            // Add Audio Manager
+            builder.Services.AddSingleton(AudioManager.Current);
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             builder.Services.AddSingleton(new FirebaseAuthClient(new FirebaseAuthConfig()
@@ -70,6 +82,8 @@ namespace LalabotApplication
             builder.Services.AddSingleton<LoginScreenModel>();
             builder.Services.AddSingleton<CreateAccountScreen>();
             builder.Services.AddSingleton<CreateAccountScreenModel>();
+            // Audio Manager
+            builder.Services.AddSingleton(AudioManager.Current);
 
             builder.Services.AddTransient<HomeScreenModel>();
             builder.Services.AddTransient<HomeScreen>();
