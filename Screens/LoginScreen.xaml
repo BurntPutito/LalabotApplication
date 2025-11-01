@@ -5,7 +5,7 @@
              Title="LoginScreen"
 			 NavigationPage.HasNavigationBar="False">
 
-    <VerticalStackLayout>
+
         <!-- Main Screen ratio -->
         <Grid RowDefinitions=".3*, .7*">
             <!-- background of logo -->
@@ -174,5 +174,5 @@
                 </Grid>
             </Grid>
         </Grid>
-    </VerticalStackLayout>
+
 </ContentPage>

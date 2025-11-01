@@ -244,10 +244,10 @@ namespace LalabotApplication.Screens
         public string DestinationText => $"Destination {Destination}";
         public string StatusText => Status switch
         {
-            "pending" => "?? Pending",
-            "in_progress" => "?? In Transit",
-            "arrived" => "?? Arrived - Awaiting Verification",
-            "delivered" => "? Delivered",
+            "pending" => "Status: Pending",
+            "in_progress" => "Status: In Transit",
+            "arrived" => "Status: Arrived - Awaiting Verification",
+            "delivered" => "Status: Delivered",
             _ => Status
         };
 

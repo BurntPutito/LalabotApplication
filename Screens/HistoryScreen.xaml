@@ -1,57 +1,133 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:LalabotApplication.Screens"
              x:Class="LalabotApplication.Screens.HistoryScreen"
              Title="HistoryScreen">
 
-    <VerticalStackLayout
-            Margin="20"
-            Spacing="10">
+    <RefreshView
+        IsRefreshing="{Binding IsRefreshing}"
+        Command="{Binding RefreshCommand}">
+        <ScrollView>
+            <VerticalStackLayout
+                Margin="20"
+                Spacing="10">
 
-        <Label
-                Text="Your Delivery Histories"
-                FontFamily="OutfitRegular"
-                FontSize="30"
-                FontAttributes="Bold"
-                HorizontalOptions="Start"/>
+                <Label
+                    Text="Your Delivery Histories"
+                    FontFamily="OutfitRegular"
+                    FontSize="30"
+                    FontAttributes="Bold"
+                    HorizontalOptions="Start"/>
 
-        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" HorizontalOptions="Fill">
-            <Button
-                x:Name="DeliveredBtn"
-                Clicked="OnButtonClicked"
-                Grid.Column="0"
-                Text="Delivered"
-                TextColor="Black"
-                FontFamily="OutfitLight"
-                FontSize="16"
-                BackgroundColor="AliceBlue"
-                BorderColor="#2D4A6E"
-                BorderWidth="2"/>
-            <Button
-                x:Name="CancelledBtn"
-                Clicked="OnButtonClicked"
-                Grid.Column="1"
-                Text="Cancelled"
-                TextColor="Black"
-                FontFamily="OutfitLight"
-                FontSize="16"
-                BackgroundColor="AliceBlue"
-                BorderColor="#2D4A6E"
-                BorderWidth="2"/>
-            <Button
-                x:Name="PendingBtn"
-                Clicked="OnButtonClicked"
-                Grid.Column="2"
-                Text="Pending"
-                TextColor="Black"
-                FontFamily="OutfitLight"
-                FontSize="16"
-                BackgroundColor="AliceBlue"
-                BorderColor="#2D4A6E"
-                BorderWidth="2"/>
-        </Grid>
+                <!-- Filter Buttons -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" HorizontalOptions="Fill">
+                    <Button
+                        Grid.Column="0"
+                        Text="Delivered"
+                        TextColor="{Binding DeliveredTextColor}"
+                        FontFamily="OutfitLight"
+                        FontSize="16"
+                        BackgroundColor="{Binding DeliveredBackgroundColor}"
+                        BorderColor="#2D4A6E"
+                        BorderWidth="2"
+                        Command="{Binding FilterDeliveriesCommand}"
+                        CommandParameter="delivered"/>
+                    <Button
+                        Grid.Column="1"
+                        Text="Cancelled"
+                        TextColor="{Binding CancelledTextColor}"
+                        FontFamily="OutfitLight"
+                        FontSize="16"
+                        BackgroundColor="{Binding CancelledBackgroundColor}"
+                        BorderColor="#2D4A6E"
+                        BorderWidth="2"
+                        Command="{Binding FilterDeliveriesCommand}"
+                        CommandParameter="cancelled"/>
+                    <Button
+                        Grid.Column="2"
+                        Text="Pending"
+                        TextColor="{Binding PendingTextColor}"
+                        FontFamily="OutfitLight"
+                        FontSize="16"
+                        BackgroundColor="{Binding PendingBackgroundColor}"
+                        BorderColor="#2D4A6E"
+                        BorderWidth="2"
+                        Command="{Binding FilterDeliveriesCommand}"
+                        CommandParameter="pending"/>
+                </Grid>
 
+                <!-- Delivery History List -->
+                <CollectionView
+                    ItemsSource="{Binding FilteredDeliveries}"
+                    Margin="0, 20, 0, 0">
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            Spacing="10"
+                            VerticalOptions="Center"
+                            Margin="0, 60, 0, 0">
+                            <Label
+                                Text="📋"
+                                FontSize="60"
+                                HorizontalOptions="Center"/>
+                            <Label
+                                Text="{Binding EmptyStateMessage}"
+                                FontFamily="OutfitRegular"
+                                FontSize="18"
+                                TextColor="Gray"
+                                HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
 
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="0, 5">
+                                <RoundRectangle
+                                    Fill="{Binding StatusColor}"
+                                    CornerRadius="15"
+                                    Stroke="#2D4A6E"
+                                    StrokeThickness="2"/>
 
-    </VerticalStackLayout>
+                                <VerticalStackLayout Padding="15" Spacing="5">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <Label
+                                            Grid.Column="0"
+                                            Text="{Binding DirectionText}"
+                                            FontFamily="OutfitRegular"
+                                            FontSize="20"
+                                            FontAttributes="Bold"/>
+                                        <Label
+                                            Grid.Column="1"
+                                            Text="{Binding StatusBadge}"
+                                            FontFamily="OutfitRegular"
+                                            FontSize="14"
+                                            TextColor="#2D4A6E"/>
+                                    </Grid>
+                                    <Label
+                                        Text="{Binding DestinationText}"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label
+                                        Text="{Binding DateText}"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"/>
+                                    <Label
+                                        Text="{Binding MessagePreview}"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"
+                                        LineBreakMode="TailTruncation"
+                                        MaxLines="1"
+                                        IsVisible="{Binding HasMessage}"/>
+                                </VerticalStackLayout>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
 </ContentPage>
