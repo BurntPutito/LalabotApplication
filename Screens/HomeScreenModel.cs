@@ -342,6 +342,8 @@ namespace LalabotApplication.Screens
             _ => Status
         };
 
+        public bool HasMessage => !string.IsNullOrWhiteSpace(Message);
+
         public Color StatusColor => Status switch
         {
             "pending" => Color.FromArgb("#FFF9C4"),      // Light Yellow

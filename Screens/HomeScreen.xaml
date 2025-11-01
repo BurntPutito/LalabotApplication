@@ -77,48 +77,72 @@
                     <VerticalStackLayout Spacing="10">
                         <!-- Swipeable Carousel -->
                         <CarouselView
-                                ItemsSource="{Binding OutgoingDeliveries}"
-                                HeightRequest="140"
-                                PeekAreaInsets="40"
-                                CurrentItem="{Binding CurrentOutgoingDelivery}">
+                            ItemsSource="{Binding OutgoingDeliveries}"
+                            HeightRequest="140"
+                            PeekAreaInsets="40"
+                            CurrentItem="{Binding CurrentOutgoingDelivery}">
                             <CarouselView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Padding="5">
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer 
-                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CopyVerificationCodeCommand}"
-                                                    CommandParameter="{Binding .}"/>
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CopyVerificationCodeCommand}"
+                                                CommandParameter="{Binding .}"/>
                                         </Grid.GestureRecognizers>
 
                                         <RoundRectangle
-                                                Fill="{Binding StatusColor}"
-                                                CornerRadius="15"
-                                                Stroke="#2D4A6E"
-                                                StrokeThickness="2"/>
+                                            Fill="{Binding StatusColor}"
+                                            CornerRadius="15"
+                                            Stroke="#2D4A6E"
+                                            StrokeThickness="2"/>
 
-                                        
-                                        <VerticalStackLayout Padding="15" Spacing="5">
-                                            <Label
+                                        <!-- Changed to Grid with 2 columns -->
+                                        <Grid Padding="15" ColumnDefinitions="Auto, *" ColumnSpacing="10">
+                                            <!-- Left side: Main info -->
+                                            <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                                <Label
                                                     Text="{Binding ReceiverText}"
-                                                    FontFamily="OutfitRegular"
-                                                    FontSize="20"
+                                                    FontFamily="OutfitBold"
+                                                    FontSize="18"
                                                     FontAttributes="Bold"/>
-                                            <Label
+                                                <Label
                                                     Text="{Binding VerificationText}"
                                                     FontFamily="OutfitRegular"
                                                     FontSize="16"/>
-                                            <Label
+                                                <Label
                                                     Text="{Binding DestinationText}"
                                                     FontFamily="OutfitLight"
                                                     FontSize="14"
                                                     TextColor="Gray"/>
-                                            <Label
+                                                <Label
                                                     Text="{Binding StatusText}"
                                                     FontFamily="OutfitRegular"
                                                     FontSize="14"
                                                     TextColor="#2D4A6E"/>
-                                            
-                                        </VerticalStackLayout>
+                                            </VerticalStackLayout>
+
+                                            <!-- Right side: Message -->
+                                            <Border 
+                                                Grid.Column="1"
+                                                BackgroundColor="#FFFFFF"
+                                                Stroke="#2D4A6E"
+                                                StrokeThickness="1"
+                                                Padding="10"
+                                                VerticalOptions="Fill"
+                                                IsVisible="{Binding HasMessage}">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="10"/>
+                                                </Border.StrokeShape>
+                                                <ScrollView>
+                                                    <Label
+                                                        Text="{Binding Message}"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="12"
+                                                        TextColor="#2D4A6E"
+                                                        LineBreakMode="WordWrap"/>
+                                                </ScrollView>
+                                            </Border>
+                                        </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </CarouselView.ItemTemplate>
@@ -167,27 +191,52 @@
                                                 Stroke="#2D4A6E"
                                                 StrokeThickness="2"/>
 
-                                        <VerticalStackLayout Padding="15" Spacing="5">
-                                            <Label
+                                        <!-- Changed to Grid with 2 columns -->
+                                        <Grid Padding="15" ColumnDefinitions="Auto, *" ColumnSpacing="10">
+
+                                            <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                                <Label
                                                     Text="{Binding SenderText}"
                                                     FontFamily="OutfitRegular"
                                                     FontSize="20"
                                                     FontAttributes="Bold"/>
-                                            <Label
+                                                <Label
                                                     Text="{Binding VerificationText}"
                                                     FontFamily="OutfitRegular"
                                                     FontSize="16"/>
-                                            <Label
+                                                <Label
                                                     Text="{Binding DestinationText}"
                                                     FontFamily="OutfitLight"
                                                     FontSize="14"
                                                     TextColor="Gray"/>
-                                            <Label
+                                                <Label
                                                     Text="{Binding StatusText}"
                                                     FontFamily="OutfitRegular"
                                                     FontSize="14"
                                                     TextColor="#2D4A6E"/>
-                                        </VerticalStackLayout>
+                                            </VerticalStackLayout>
+                                            <!-- Right side: Message -->
+                                            <Border 
+                                                Grid.Column="1"
+                                                BackgroundColor="#FFFFFF"
+                                                Stroke="#2D4A6E"
+                                                StrokeThickness="1"
+                                                Padding="10"
+                                                VerticalOptions="Fill"
+                                                IsVisible="{Binding HasMessage}">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="10"/>
+                                                </Border.StrokeShape>
+                                                <ScrollView>
+                                                    <Label
+                                                        Text="{Binding Message}"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="12"
+                                                        TextColor="#2D4A6E"
+                                                        LineBreakMode="WordWrap"/>
+                                                </ScrollView>
+                                            </Border>
+                                        </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </CarouselView.ItemTemplate>
