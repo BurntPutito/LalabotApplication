@@ -89,6 +89,7 @@ namespace LalabotApplication.Screens
             FilteredUsers.Clear();
             OnPropertyChanged(nameof(HasFilteredUsers));
             OnPropertyChanged(nameof(HasSelectedReceiver));
+
         }
 
         private async Task LoadAvailableUsers()

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:LalabotApplication.Screens"
@@ -81,7 +81,7 @@
             <Grid
                 IsVisible="{Binding HasSelectedReceiver}"
                 RowDefinitions="Auto"
-                ColumnDefinitions=".1*, Auto, .6*"
+                ColumnDefinitions="Auto, *, Auto"
                 HeightRequest="70">
                 <!--background-->
                 <RoundRectangle
@@ -95,15 +95,18 @@
                 <Label
                     Grid.Column="0"
                     Text="✓"
+                    Margin="15, 0, 10, 0"
                     FontSize="24"
                     TextColor="#4CAF50"
                     VerticalOptions="Center"
-                    HorizontalOptions="Center"/>
+                    HorizontalOptions="Start"/>
                 <!--name and email-->
                 <VerticalStackLayout
                     Grid.Column="1"
                     Spacing="0"
-                    VerticalOptions="Center">
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start"
+                    Margin="0, 0, 20, 0">
                     <Label 
                         Text="{Binding SelectedReceiver.Username}"
                         FontFamily="OutfitRegular"
@@ -113,7 +116,6 @@
                         Text="{Binding SelectedReceiver.Email}"
                         FontFamily="OutfitLight"
                         FontSize="12"
-                        Margin="0,0,10,0"
                         TextColor="Gray"/>
                 </VerticalStackLayout>
                 <!--close button-->
@@ -124,7 +126,7 @@
                     TextColor="#F44336"
                     FontAttributes="Bold"
                     FontSize="22"
-                    HorizontalOptions="Start"
+                    HorizontalOptions="End"
                     VerticalOptions="Center"
                     Command="{Binding ClearReceiverCommand}"/>
             </Grid>
