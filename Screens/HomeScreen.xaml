@@ -105,9 +105,9 @@
                                                 Grid.Row="0"
                                                 Text="{Binding ReceiverText}"
                                                 FontFamily="OutfitBold"
-                                                FontSize="18"
-                                                FontAttributes="Bold"
-                                                LineBreakMode="TailTruncation"/>
+                                                FontSize="20"
+                                                LineBreakMode="TailTruncation"
+                                                Margin="0, -5, 0, 0"/>
 
                                             <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
                                                 <VerticalStackLayout Grid.Column="0" Spacing="3">
@@ -208,9 +208,9 @@
                                                 Grid.Row="0"
                                                 Text="{Binding SenderText}"
                                                 FontFamily="OutfitBold"
-                                                FontSize="18"
-                                                FontAttributes="Bold"
-                                                LineBreakMode="TailTruncation"/>
+                                                FontSize="20"
+                                                LineBreakMode="TailTruncation"
+                                                Margin="0, -5, 0, 0"/>
 
                                             <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
                                                 <VerticalStackLayout Grid.Column="0" Spacing="3">
@@ -221,12 +221,12 @@
                                                     <Label
                                                         Text="{Binding DestinationText}"
                                                         FontFamily="OutfitLight"
-                                                        FontSize="14"
+                                                        FontSize="15"
                                                         TextColor="Gray"/>
                                                     <Label
                                                         Text="{Binding StatusText}"
                                                         FontFamily="OutfitRegular"
-                                                        FontSize="14"
+                                                        FontSize="15"
                                                         TextColor="#2D4A6E"/>
                                                 </VerticalStackLayout>
 
