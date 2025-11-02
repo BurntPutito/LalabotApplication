@@ -79,10 +79,12 @@
                         <CarouselView
                             x:Name="OutgoingCarousel"
                             ItemsSource="{Binding OutgoingDeliveries}"
-                            HeightRequest="140"
-                            PeekAreaInsets="40"
+                            HeightRequest="160"
+                            PeekAreaInsets="20"
                             Loop="False"
-                            CurrentItem="{Binding CurrentOutgoingDelivery}">
+                            CurrentItem="{Binding CurrentOutgoingDelivery}"
+                            HorizontalScrollBarVisibility="Never"
+                            Margin="-20, 0">
                             <CarouselView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Padding="5">
@@ -112,16 +114,16 @@
                                                     <Label
                                                         Text="{Binding VerificationText}"
                                                         FontFamily="OutfitRegular"
-                                                        FontSize="14"/>
+                                                        FontSize="16"/>
                                                     <Label
                                                         Text="{Binding DestinationText}"
                                                         FontFamily="OutfitLight"
-                                                        FontSize="13"
+                                                        FontSize="15"
                                                         TextColor="Gray"/>
                                                     <Label
                                                         Text="{Binding StatusText}"
                                                         FontFamily="OutfitRegular"
-                                                        FontSize="13"
+                                                        FontSize="15"
                                                         TextColor="#2D4A6E"/>
                                                 </VerticalStackLayout>
 
@@ -139,8 +141,9 @@
                                                     <ScrollView>
                                                         <Label
                                                             Text="{Binding Message}"
+                                                            Margin="0, -5"
                                                             FontFamily="OutfitLight"
-                                                            FontSize="11"
+                                                            FontSize="13"
                                                             TextColor="#2D4A6E"
                                                             LineBreakMode="WordWrap"/>
                                                     </ScrollView>
@@ -179,10 +182,12 @@
                         <CarouselView
                             x:Name="IncomingCarousel"
                             ItemsSource="{Binding IncomingDeliveries}"
-                            HeightRequest="140"
-                            PeekAreaInsets="40"
+                            HeightRequest="160"
+                            PeekAreaInsets="20"
                             Loop="False"
-                            CurrentItem="{Binding CurrentIncomingDelivery}">
+                            CurrentItem="{Binding CurrentIncomingDelivery}"
+                            HorizontalScrollBarVisibility="Never"
+                            Margin="-20, 0">
                             <CarouselView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Padding="5">
@@ -212,16 +217,16 @@
                                                     <Label
                                                         Text="{Binding VerificationText}"
                                                         FontFamily="OutfitRegular"
-                                                        FontSize="14"/>
+                                                        FontSize="16"/>
                                                     <Label
                                                         Text="{Binding DestinationText}"
                                                         FontFamily="OutfitLight"
-                                                        FontSize="13"
+                                                        FontSize="14"
                                                         TextColor="Gray"/>
                                                     <Label
                                                         Text="{Binding StatusText}"
                                                         FontFamily="OutfitRegular"
-                                                        FontSize="13"
+                                                        FontSize="14"
                                                         TextColor="#2D4A6E"/>
                                                 </VerticalStackLayout>
 
@@ -239,8 +244,9 @@
                                                     <ScrollView>
                                                         <Label
                                                             Text="{Binding Message}"
+                                                            Margin="0, -5"
                                                             FontFamily="OutfitLight"
-                                                            FontSize="11"
+                                                            FontSize="13"
                                                             TextColor="#2D4A6E"
                                                             LineBreakMode="WordWrap"/>
                                                     </ScrollView>
