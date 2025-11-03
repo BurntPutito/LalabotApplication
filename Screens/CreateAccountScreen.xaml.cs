@@ -1,12 +1,28 @@
-namespace LalabotApplication.Screens;
+﻿namespace LalabotApplication.Screens;
 
 public partial class CreateAccountScreen : ContentPage
 {
-	public CreateAccountScreen(CreateAccountScreenModel screenModel)
-	{
-		InitializeComponent();
+    public CreateAccountScreen(CreateAccountScreenModel screenModel)
+    {
+        InitializeComponent();
 
-		BindingContext = screenModel;
+        // Add tap gesture recognizer to the root layout
+        var tapGesture = new TapGestureRecognizer();
+        tapGesture.Tapped += (s, e) =>
+        {
+            // Unfocus all entries when tapped outside
+            NameEntry?.Unfocus();
+            EmailEntry?.Unfocus();
+            PasswordEntry?.Unfocus();
+        };
+
+        // Attach gesture to the whole page
+        if (this.Content is Layout layout)
+        {
+            layout.GestureRecognizers.Add(tapGesture);
+        }
+
+        BindingContext = screenModel;
 
     }
 

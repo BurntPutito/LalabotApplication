@@ -3,14 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.CreateAccountScreen"
              Title="CreateAccountScreen"
-			 NavigationPage.HasNavigationBar="False">
-	
-	<!-- Main Screen ratio -->
-	<Grid RowDefinitions=".3*, .7*">
+             NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions=".3*, .7*">
         <Image Aspect="AspectFill" Source="lalabot_background.png"/>
         <Grid BackgroundColor="#2D4A6E" Opacity=".5"/>
-		<Grid ColumnDefinitions="*,*">
-            <!--main logo-->
+
+        <Grid ColumnDefinitions="*,*">
             <Image Margin="0,0,0,30"
                    Aspect="AspectFit"
                    HeightRequest="200"
@@ -18,208 +17,189 @@
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    Grid.ColumnSpan="2"/>
-		</Grid>
+        </Grid>
 
-		<!-- Login UI Background -->
-		<Grid Grid.Row="1">
-			<RoundRectangle Margin="-3, -30, -3, -2"
+        <!-- Login UI Background -->
+        <Grid Grid.Row="1">
+            <RoundRectangle Margin="-3, -30, -3, -2"
                             CornerRadius="35, 35, 0, 0"
                             Fill="White"/>
-			<VerticalStackLayout Margin="30, 0, 30, 0">
-				<Label FontAttributes="Bold"
-                       FontFamily="OutfitRegular"
-                       FontSize="Large"
-                       Text="Create your account!"
-                       TextColor="#2D2D2D"/>
-        
-				<!-- enter name field -->
-				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-					<RoundRectangle BackgroundColor="AliceBlue"
-                                    CornerRadius="10"
-                                    HeightRequest="50"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="50"/>
-					<Image HorizontalOptions="Center">
-						<Image.Source>
-							<FontImageSource
-                                FontFamily="LineIcons"
-                                Glyph="&#xec2e;"
-                                Size="40"
-                                Color="#2D4A6E"/> 
-                        </Image.Source>
-					</Image>
-					<Entry Grid.Column="1"
-                           Text="{Binding Username}"
-                           FontFamily="OutfitLight"
-                           FontSize="16"
-                           Placeholder="Name"
-                           VerticalOptions="Center"/>
-				</Grid>
-				
-				<!-- email field -->
-				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-					<RoundRectangle BackgroundColor="AliceBlue"
-                                    CornerRadius="10"
-                                    HeightRequest="50"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="50"/>
-                    <Image HorizontalOptions="Center">
-						<Image.Source>
-							<FontImageSource
-                                FontFamily="LineIcons"
-                                Glyph="&#xeacd;"
-                                Size="40"
-                                Color="#2D4A6E"/>
-						</Image.Source>
-					</Image>
-					<Entry Grid.Column="1"
-                           Text="{Binding Email}"
-                           FontFamily="OutfitLight"
-                           FontSize="16"
-                           Placeholder="Email"
-                           VerticalOptions="Center"/>
-				</Grid>
 
-				<!-- password field -->
-				<Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
-					<RoundRectangle BackgroundColor="AliceBlue"
-                                    CornerRadius="10"
-                                    HeightRequest="50"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="50"/>
-					<Image HorizontalOptions="Center">
-						<Image.Source>
-							<FontImageSource
-                                FontFamily="LineIcons"
-                                Glyph="&#xeb2f;"
-                                Size="40"
-                                Color="#2D4A6E"/>
-						</Image.Source>
-					</Image>
-					<Entry x:Name="PasswordEntry"
-                           Grid.Column="1"
-                           Text="{Binding Password}"
+            <VerticalStackLayout Margin="30, 0, 30, 0" Spacing="8">
+                <Label FontAttributes="Bold"
+                       FontFamily="OutfitRegular"
+                       FontSize="26"
+                       Text="Create your account!"
+                       TextColor="#2D2D2D"
+                       Margin="0,0,0,10"/>
+
+                <!-- =================== NAME FIELD =================== -->
+                <VerticalStackLayout Spacing="2">
+                    <Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
+                        <RoundRectangle BackgroundColor="AliceBlue"
+                                        CornerRadius="10"
+                                        HeightRequest="50"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        WidthRequest="50"/>
+                        <Image HorizontalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource
+                                    FontFamily="LineIcons"
+                                    Glyph="&#xec2e;"
+                                    Size="40"
+                                    Color="#2D4A6E"/>
+                            </Image.Source>
+                        </Image>
+                        <Entry x:Name="NameEntry"
+                               Grid.Column="1"
+                               Text="{Binding Username}"
+                               FontFamily="OutfitLight"
+                               FontSize="16"
+                               Placeholder="Name"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <!-- Dynamic Hint -->
+                    <Label Text="Avoid using vulgar or offensive words as your name."
                            FontFamily="OutfitLight"
-                           FontSize="16"
-                           Placeholder="Password"
-                           IsPassword="True"
-                           VerticalOptions="Center"/>
-                    
-                    <!-- Eye Icon Toggle -->
-                    <ImageButton Grid.Column="2"
-                                 VerticalOptions="Center"
-                                 HorizontalOptions="End"
-                                 BackgroundColor="Transparent"
-                                 Padding="10"
-                                 Clicked="TogglePasswordVisibility">
-                        <ImageButton.Source>
-                            <FileImageSource File="eye_big.png"/>
-                        </ImageButton.Source>
-                    </ImageButton>
-                </Grid>
+                           FontSize="12"
+                           TextColor="#6B7280"
+                           Margin="35,2,0,0"
+                           IsVisible="False">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Source={x:Reference NameEntry}, Path=IsFocused}"
+                                         Value="True">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </VerticalStackLayout>
+
+
+                <!-- =================== EMAIL FIELD =================== -->
+                <VerticalStackLayout Spacing="2">
+                    <Grid Margin="-10, 5, 0, 0" ColumnDefinitions=".2*, .8*">
+                        <RoundRectangle BackgroundColor="AliceBlue"
+                                        CornerRadius="10"
+                                        HeightRequest="50"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        WidthRequest="50"/>
+                        <Image HorizontalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource
+                                    FontFamily="LineIcons"
+                                    Glyph="&#xeacd;"
+                                    Size="40"
+                                    Color="#2D4A6E"/>
+                            </Image.Source>
+                        </Image>
+                        <Entry x:Name="EmailEntry"
+                               Grid.Column="1"
+                               Text="{Binding Email}"
+                               FontFamily="OutfitLight"
+                               FontSize="16"
+                               Placeholder="Email"
+                               VerticalOptions="Center"/>
+                    </Grid>
+
+                    <!-- Dynamic Hint -->
+                    <Label Text="We recommend using your official Gmail address."
+                           FontFamily="OutfitLight"
+                           FontSize="12"
+                           TextColor="#6B7280"
+                           Margin="35,2,0,0"
+                           IsVisible="False">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Source={x:Reference EmailEntry}, Path=IsFocused}"
+                                         Value="True">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </VerticalStackLayout>
+
+
+                <!-- =================== PASSWORD FIELD =================== -->
+                <VerticalStackLayout Spacing="2" Margin="5, 0, 0, 0">
+                    <Grid Margin="-10, 5, 0, 0" ColumnDefinitions=".2*, .8*, auto">
+                        <RoundRectangle BackgroundColor="AliceBlue"
+                                        CornerRadius="10"
+                                        HeightRequest="50"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        WidthRequest="50"/>
+                        <Image HorizontalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource
+                                    FontFamily="LineIcons"
+                                    Glyph="&#xeb2f;"
+                                    Size="40"
+                                    Color="#2D4A6E"/>
+                            </Image.Source>
+                        </Image>
+
+                        <Entry x:Name="PasswordEntry"
+                               Margin="5, 0, 0, 0"
+                               Grid.Column="1"
+                               Text="{Binding Password}"
+                               FontFamily="OutfitLight"
+                               FontSize="16"
+                               Placeholder="Password"
+                               IsPassword="True"
+                               VerticalOptions="Center"/>
+
+                        <ImageButton Grid.Column="2"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="End"
+                                     BackgroundColor="Transparent"
+                                     Padding="10"
+                                     Clicked="TogglePasswordVisibility">
+                            <ImageButton.Source>
+                                <FileImageSource File="eye_big.png"/>
+                            </ImageButton.Source>
+                        </ImageButton>
+                    </Grid>
+
+                    <!-- Dynamic Hint -->
+                    <Label Text="Use at least 12 characters with a mix of letters and numbers."
+                           FontFamily="OutfitLight"
+                           FontSize="12"
+                           TextColor="#6B7280"
+                           Margin="35,2,0,0"
+                           IsVisible="False">
+                        <Label.Triggers>
+                            <DataTrigger TargetType="Label"
+                                         Binding="{Binding Source={x:Reference PasswordEntry}, Path=IsFocused}"
+                                         Value="True">
+                                <Setter Property="IsVisible" Value="True"/>
+                            </DataTrigger>
+                        </Label.Triggers>
+                    </Label>
+                </VerticalStackLayout>
+
 
                 <!-- Create account button -->
-				<Button
-                    Margin="0, 25, 0, 0"
-                    BackgroundColor="#2D4A6E"
-                    HeightRequest="50"
-                    Command="{Binding CreateAccountCommand}"
-                    Text="Create Account"
-                    FontFamily="OutfitRegular"
-                    FontAttributes="Bold"
-                    FontSize="16"
-                    TextColor="#FBF6FD"/>
-                
-                <!--entry suggestions-->
-                <Grid Margin="0, 15, 0, 0">
-                    <RoundRectangle
-                        Background="LightGray"
-                        BackgroundColor="Aqua"
-                        CornerRadius="20"
-                        Opacity="0.5"/>
-                    <Label
-                        Margin="10, 10, 10, 10"
-                        FontFamily="OutfitExtraLight"
-                        FontAttributes="Bold,Italic"
-                        FontSize="14"     
-                        LineHeight="1.1"
-                        TextColor="IndianRed"
-                        Text="*We recommend to use your official Gmail to recover forgotten password.
-                        &#10;*Minimum 12 characters and should have numbers and special characters.
-                        &#10;*Avoid common passwords or related to your personal information.">
-                    </Label>
-                </Grid>
-                
-                
-                <!-- Sign in with 
+                <Button Margin="0, 20, 0, 0"
+                        BackgroundColor="#2D4A6E"
+                        HeightRequest="50"
+                        Command="{Binding CreateAccountCommand}"
+                        Text="Create Account"
+                        FontFamily="OutfitRegular"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        TextColor="#FBF6FD"/>
 
-                <Grid ColumnDefinitions="*,Auto,*" Margin="0, 15, 0, 15">
-                    <BoxView Grid.Column="0"
-                             HeightRequest="1"
-                             Opacity="0.3"
-                             BackgroundColor="Black"
-                             VerticalOptions="Center"/>
-
-                    <Label Grid.Column="1"
-                           Opacity="0.5"
-                           Margin="5, 0, 5, 0"
-                           Text="Or continue with"/>
-
-                    <BoxView Grid.Column="2"
-                             Opacity="0.3"
-                             HeightRequest="1"
-                             BackgroundColor="Black"
-                             VerticalOptions="Center"/>
-                </Grid>
-
-                
-                facebook and google option
-                <Grid>
-                    <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="20">
-                        google
-                        <Grid HeightRequest="50" WidthRequest="50">
-                            <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
-                            <Image
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                Source="google_logo.png"
-                                WidthRequest="40"
-                                HeightRequest="40">
-                                <Image.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding SignInWithGoogleCommand}"/>
-                                </Image.GestureRecognizers>
-                            </Image>
-                        </Grid>
-
-                        facebook
-                        <Grid HeightRequest="50" WidthRequest="50">
-                            <RoundRectangle BackgroundColor="#EDEBF6" CornerRadius="10"/>
-                            <Image
-                                HorizontalOptions="Center"
-                                VerticalOptions="Center"
-                                Source="facebook_logo.png"
-                                WidthRequest="40"
-                                HeightRequest="40">
-                                <Image.GestureRecognizers>
-                                    <TapGestureRecognizer Command="{Binding SignInWithFacebookCommand}"/>
-                                </Image.GestureRecognizers>
-                            </Image>
-                        </Grid>
-                    </HorizontalStackLayout>
-                </Grid>
-                -->
-                
             </VerticalStackLayout>
 
-            <!-- Delivery Logo positioned at the bottom -->
             <Image Aspect="AspectFit"
                    Source="lalabot_delivery_logo.png"
                    VerticalOptions="End"
                    HorizontalOptions="Fill"
                    Margin="0, 0, 0, 0"/>
-		</Grid>
-	</Grid>
+        </Grid>
+    </Grid>
 </ContentPage>
