@@ -61,7 +61,7 @@
                            Text="{Binding Email}"
                            FontFamily="OutfitLight"
                            FontSize="16"
-                           Placeholder="EMAIL"
+                           Placeholder="Email"
                            VerticalOptions="Center"/>
                     </Grid>
 
@@ -87,7 +87,7 @@
                            FontSize="16"
                            Grid.Column="1"
                            Text="{Binding Password}"
-                           Placeholder="PASSWORD"
+                           Placeholder="Password"
                            IsPassword="True"
                            VerticalOptions="Center"/>
 

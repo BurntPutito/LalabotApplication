@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.CreateAccountScreen"
@@ -53,7 +53,7 @@
                            Text="{Binding Username}"
                            FontFamily="OutfitLight"
                            FontSize="16"
-                           Placeholder="NAME"
+                           Placeholder="Name"
                            VerticalOptions="Center"/>
 				</Grid>
 				
@@ -78,7 +78,7 @@
                            Text="{Binding Email}"
                            FontFamily="OutfitLight"
                            FontSize="16"
-                           Placeholder="EMAIL"
+                           Placeholder="Email"
                            VerticalOptions="Center"/>
 				</Grid>
 
@@ -104,7 +104,7 @@
                            Text="{Binding Password}"
                            FontFamily="OutfitLight"
                            FontSize="16"
-                           Placeholder="PASSWORD"
+                           Placeholder="Password"
                            IsPassword="True"
                            VerticalOptions="Center"/>
                     
