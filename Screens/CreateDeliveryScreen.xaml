@@ -131,6 +131,38 @@
                     Command="{Binding ClearReceiverCommand}"/>
             </Grid>
 
+            <!--File Category Entry-->
+            <Label
+                Text="File Category"
+                FontFamily="OutfitLight"
+                FontSize="Medium"/>
+            <Grid Margin="0, 0, 0, 20">
+                <RoundRectangle
+                    BackgroundColor="AliceBlue"
+                    HeightRequest="50"
+                    CornerRadius="15"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="2"/>
+                <Picker
+                    Title="Select file type"
+                    SelectedIndex="{Binding SelectedCategoryIndex}"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    BackgroundColor="Transparent"
+                    Margin="15, 0">
+                    <Picker.Items>
+                        <x:String>Documents</x:String>
+                        <x:String>Forms</x:String>
+                        <x:String>Reports</x:String>
+                        <x:String>Confidential</x:String>
+                        <x:String>Exam Questionnaire</x:String>
+                        <x:String>Answer Sheet</x:String>
+                        <x:String>Files</x:String>
+                        <x:String>Other</x:String>
+                    </Picker.Items>
+                </Picker>
+            </Grid>
+
             <!--Destination Picker-->
             <Label
                 Text="Destination"

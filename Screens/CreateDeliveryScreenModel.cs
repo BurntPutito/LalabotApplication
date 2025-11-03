@@ -3,10 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LalabotApplication.Screens
 {
@@ -28,6 +25,9 @@ namespace LalabotApplication.Screens
 
         [ObservableProperty]
         private int _selectedDestinationIndex = -1;
+
+        [ObservableProperty]
+        private int _selectedCategoryIndex = -1;
 
         [ObservableProperty]
         private string _message = string.Empty;
@@ -142,6 +142,12 @@ namespace LalabotApplication.Screens
                 return;
             }
 
+            if (SelectedCategoryIndex == -1)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please select a file category.", "OK");
+                return;
+            }
+
             try
             {
                 var user = _authClient.User;
@@ -174,6 +180,10 @@ namespace LalabotApplication.Screens
                 string verificationCode = GenerateVerificationCode();
                 int destination = SelectedDestinationIndex + 1;
 
+                // Define category
+                string[] categories = { "Documents", "Forms", "Reports", "Confidentials", "Exam Questionnaire", "Answer Sheet", "Files", "Other" };
+                string category = categories[SelectedCategoryIndex];
+
                 // Create delivery object
                 var delivery = new
                 {
@@ -184,6 +194,7 @@ namespace LalabotApplication.Screens
                     receiverUid = SelectedReceiver.Uid,
                     destination = destination,
                     compartment = compartment,
+                    category = category,
                     message = Message,
                     verificationCode = verificationCode,
                     status = "pending",

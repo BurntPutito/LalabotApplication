@@ -101,6 +101,7 @@
                                             StrokeThickness="2"/>
 
                                         <Grid Padding="15" RowDefinitions="Auto, *" RowSpacing="5">
+                                            <!--Username-->
                                             <Label
                                                 Grid.Row="0"
                                                 Text="{Binding ReceiverText}"
@@ -109,8 +110,16 @@
                                                 LineBreakMode="TailTruncation"
                                                 Margin="0, -5, 0, 0"/>
 
+
                                             <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
                                                 <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                                    <!-- Category -->
+                                                    <Label
+                                                        Grid.Row="1"
+                                                        Text="{Binding CategoryText}"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="16"
+                                                        TextColor="#2D4A6E"/>
                                                     <Label
                                                         Text="{Binding VerificationText}"
                                                         FontFamily="OutfitRegular"
@@ -204,6 +213,7 @@
                                             StrokeThickness="2"/>
 
                                         <Grid Padding="15" RowDefinitions="Auto, *" RowSpacing="5">
+                                            <!--Username-->
                                             <Label
                                                 Grid.Row="0"
                                                 Text="{Binding SenderText}"
@@ -212,8 +222,16 @@
                                                 LineBreakMode="TailTruncation"
                                                 Margin="0, -5, 0, 0"/>
 
-                                            <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
+
+                                            <Grid Grid.Row="2" ColumnDefinitions="Auto, *" ColumnSpacing="10">
                                                 <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                                    <!-- Category -->
+                                                    <Label
+                                                        Grid.Row="1"
+                                                        Text="{Binding CategoryText}"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="16"
+                                                        TextColor="#2D4A6E"/>
                                                     <Label
                                                         Text="{Binding VerificationText}"
                                                         FontFamily="OutfitRegular"
@@ -230,6 +248,7 @@
                                                         TextColor="#2D4A6E"/>
                                                 </VerticalStackLayout>
 
+                                                <!--message-->
                                                 <Border 
                                                     Grid.Column="1"
                                                     BackgroundColor="#FFFFFF"

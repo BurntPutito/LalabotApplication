@@ -4,10 +4,7 @@ using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
 using Plugin.Maui.Audio;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LalabotApplication.Screens
 {
@@ -148,6 +145,7 @@ namespace LalabotApplication.Screens
                         Sender = data.sender,
                         Receiver = data.receiver,
                         Destination = data.destination,
+                        Category = data.category ?? "Files",
                         VerificationCode = data.verificationCode,
                         Status = data.status,
                         Message = data.message
@@ -328,11 +326,12 @@ namespace LalabotApplication.Screens
         public string VerificationCode { get; set; }
         public string Status { get; set; }
         public string Message { get; set; }
-
+        public string Category { get; set; }
+        public string CategoryText => $"📁 {Category}";
         public string SenderText => $"From: {Sender}";
         public string ReceiverText => $"To: {Receiver}";
-        public string VerificationText => $"Code: {VerificationCode}";
-        public string DestinationText => $"Destination {Destination}";
+        public string VerificationText => $"🔐 {VerificationCode}";
+        public string DestinationText => $"📍 {Destination}";
         public string StatusText => Status switch
         {
             "pending" => "📦 Pending",
@@ -356,6 +355,7 @@ namespace LalabotApplication.Screens
 
     public class DeliveryData
     {
+        public string category { get; set; }
         public string id { get; set; }
         public string sender { get; set; }
         public string senderUid { get; set; }

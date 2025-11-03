@@ -57,13 +57,13 @@
                                 Color="#2D4A6E"/>
                             </Image.Source>
                         </Image>
-                        <Entry Grid.Column="1"
+                    <Entry Grid.Column="1"
                            Text="{Binding Email}"
                            FontFamily="OutfitLight"
                            FontSize="16"
                            Placeholder="Email"
                            VerticalOptions="Center"/>
-                    </Grid>
+                </Grid>
 
                     <!-- password field -->
                     <Grid Margin="-10, 15, 0, 0" ColumnDefinitions=".2*, .8*">
