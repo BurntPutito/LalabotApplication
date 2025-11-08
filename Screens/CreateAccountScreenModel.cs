@@ -1,14 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
-using Firebase.Auth.Providers;
 using Firebase.Database; // Add this
 using Firebase.Database.Query; // Add this
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LalabotApplication.Screens
 {
@@ -51,7 +45,7 @@ namespace LalabotApplication.Screens
                 _ => "Failed to create account. Please try again."
             };
         }
-        
+
         /*
         // Placeholder for Google Sign-In implementation
         [RelayCommand]
@@ -134,7 +128,12 @@ namespace LalabotApplication.Screens
                     await _firebaseDb
                         .Child("users")
                         .Child(result.User.Uid)
-                        .PutAsync(new { Username = Username, Email = Email });
+                        .PutAsync(new
+                        {
+                            Username = Username,
+                            Email = Email,
+                            ProfileAvatarIndex = 0
+                        });
 
                     await Shell.Current.GoToAsync("///SuccessfulCreateAccountScreen");
                 }

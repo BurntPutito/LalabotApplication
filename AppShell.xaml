@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Shell
     x:Class="LalabotApplication.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -11,8 +11,26 @@
     Shell.TabBarUnselectedColor="#A3A3A4"
     Title="LalabotApplication">
     <!-- FlyoutBehavior="Flyout" -->
-    
 
+    <!-- Profile Screens -->
+    <ShellContent
+        Title="Profile"
+        ContentTemplate="{DataTemplate screens:ProfileScreen}"
+        Route="ProfileScreen"
+        Shell.NavBarIsVisible="True"/>
+
+    <ShellContent
+        Title="Edit Profile"
+        ContentTemplate="{DataTemplate screens:EditProfileScreen}"
+        Route="EditProfileScreen"
+        Shell.NavBarIsVisible="True"/>
+
+    <ShellContent
+        Title="Choose Avatar"
+        ContentTemplate="{DataTemplate screens:AvatarPickerScreen}"
+        Route="AvatarPickerScreen"
+        Shell.NavBarIsVisible="True"/>
+    
     <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate screens:Login}"

@@ -82,6 +82,7 @@ namespace LalabotApplication
             builder.Services.AddSingleton<LoginScreenModel>();
             builder.Services.AddSingleton<CreateAccountScreen>();
             builder.Services.AddSingleton<CreateAccountScreenModel>();
+
             // Audio Manager
             builder.Services.AddSingleton(AudioManager.Current);
 
@@ -93,6 +94,14 @@ namespace LalabotApplication
             builder.Services.AddTransient<CreateDeliveryScreen>();
             builder.Services.AddTransient<HistoryScreenModel>();
             builder.Services.AddTransient<HistoryScreen>();
+
+            // Profile screens
+            builder.Services.AddTransient<ProfileScreen>();
+            builder.Services.AddTransient<ProfileScreenModel>();
+            builder.Services.AddTransient<EditProfileScreen>();
+            builder.Services.AddTransient<EditProfileScreenModel>();
+            builder.Services.AddTransient<AvatarPickerScreen>();
+            builder.Services.AddTransient<AvatarPickerScreenModel>();
 
             return builder.Build();
         }

@@ -1,12 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LalabotApplication.Services
+﻿namespace LalabotApplication.Services
 {
-    internal class AvatarHelper
+    public static class AvatarHelper
     {
+        //Total number of available avatars to choose
+        public const int TotalAvatars = 6;
+
+        // get avatar image from index
+        public static string GetAvatarSource(int avatarIndex)
+        {
+            // ensuring index is within the valid range
+            if (avatarIndex < 0 || avatarIndex >= TotalAvatars)
+            {
+                avatarIndex = 0; //defaults to first avatar if invalid
+            }
+            return $"avatar_{avatarIndex}.png";
+        }
+
+        // get all avatar sources as a list (for the picker screen)
+        public static List<AvatarOption> GetAllAvatars()
+        {
+            var avatars = new List<AvatarOption>();
+
+            for (int i = 0; i < TotalAvatars; i++)
+            {
+                avatars.Add(new AvatarOption
+                {
+                    Index = 1,
+                    ImageSource = GetAvatarSource(i)
+                });
+            }
+            return avatars;
+        }
+    }
+
+    public class AvatarOption
+    {
+        public int Index { get; set; }
+        public string ImageSource { get; set; } = string.Empty;
+        public bool IsSelected { get; set; } = false;
     }
 }
