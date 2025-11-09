@@ -21,22 +21,23 @@
                 <TapGestureRecognizer Command="{Binding NavigateToProfileCommand}"/>
             </Grid.GestureRecognizers>
 
+            <!-- Background -->
             <RoundRectangle 
                 Fill="AliceBlue"
                 Stroke="#2D4A6E"
                 StrokeThickness="3"
                 CornerRadius="15"/>
 
-            <HorizontalStackLayout 
-                Spacing="15" 
-                HorizontalOptions="Start"
-                VerticalOptions="Center"
-                Padding="15">
+            <!-- Layout Content -->
+            <Grid Padding="15" ColumnDefinitions="Auto, *, Auto" VerticalOptions="Center">
 
                 <!-- Profile Avatar -->
                 <Grid
+                    Grid.Column="0"
                     HeightRequest="60"
-                    WidthRequest="60">
+                    WidthRequest="60"
+                    Margin="0, 0, 10, 0"
+                    HorizontalOptions="Start">
                     <Ellipse
                         Fill="White"
                         Stroke="#2D4A6E"
@@ -51,16 +52,14 @@
                         HorizontalOptions="Center"
                         VerticalOptions="Center">
                         <Image.Clip>
-                            <EllipseGeometry
-                                Center="28,28"
-                                RadiusX="28"
-                                RadiusY="28"/>
+                            <EllipseGeometry Center="28,28" RadiusX="28" RadiusY="28"/>
                         </Image.Clip>
                     </Image>
                 </Grid>
 
-                <!-- Username and View Profile -->
+                <!-- Username and Subtext -->
                 <VerticalStackLayout
+                    Grid.Column="1"
                     VerticalOptions="Center"
                     Spacing="2">
                     <Label 
@@ -68,7 +67,7 @@
                         TextColor="Black"
                         FontFamily="OutfitRegular"
                         FontAttributes="Bold"
-                        FontSize="18"/>
+                        FontSize="22"/>
                     <Label 
                         Text="View Profile"
                         TextColor="#2D4A6E"
@@ -78,8 +77,9 @@
 
                 <!-- Arrow Icon -->
                 <Image
-                    HorizontalOptions="EndAndExpand"
+                    Grid.Column="2"
                     VerticalOptions="Center"
+                    HorizontalOptions="End"
                     Margin="0,0,10,0">
                     <Image.Source>
                         <FontImageSource
@@ -89,8 +89,9 @@
                             Color="#2D4A6E"/>
                     </Image.Source>
                 </Image>
-            </HorizontalStackLayout>
+            </Grid>
         </Grid>
+
 
         <!-- Divider -->
         <BoxView
