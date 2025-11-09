@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.SettingsScreen"
@@ -14,6 +14,89 @@
                 FontSize="30"
                 FontAttributes="Bold"
                 HorizontalOptions="Start"/>
+
+        <!-- Profile Button -->
+        <Grid Margin="0,10,0,10">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NavigateToProfileCommand}"/>
+            </Grid.GestureRecognizers>
+
+            <RoundRectangle 
+                Fill="AliceBlue"
+                Stroke="#2D4A6E"
+                StrokeThickness="3"
+                CornerRadius="15"/>
+
+            <HorizontalStackLayout 
+                Spacing="15" 
+                HorizontalOptions="Start"
+                VerticalOptions="Center"
+                Padding="15">
+
+                <!-- Profile Avatar -->
+                <Grid
+                    HeightRequest="60"
+                    WidthRequest="60">
+                    <Ellipse
+                        Fill="White"
+                        Stroke="#2D4A6E"
+                        StrokeThickness="2"
+                        HeightRequest="60"
+                        WidthRequest="60"/>
+                    <Image
+                        Source="{Binding AvatarSource}"
+                        Aspect="AspectFill"
+                        HeightRequest="56"
+                        WidthRequest="56"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Image.Clip>
+                            <EllipseGeometry
+                                Center="28,28"
+                                RadiusX="28"
+                                RadiusY="28"/>
+                        </Image.Clip>
+                    </Image>
+                </Grid>
+
+                <!-- Username and View Profile -->
+                <VerticalStackLayout
+                    VerticalOptions="Center"
+                    Spacing="2">
+                    <Label 
+                        Text="{Binding Username}"
+                        TextColor="Black"
+                        FontFamily="OutfitRegular"
+                        FontAttributes="Bold"
+                        FontSize="18"/>
+                    <Label 
+                        Text="View Profile"
+                        TextColor="#2D4A6E"
+                        FontFamily="OutfitLight"
+                        FontSize="14"/>
+                </VerticalStackLayout>
+
+                <!-- Arrow Icon -->
+                <Image
+                    HorizontalOptions="EndAndExpand"
+                    VerticalOptions="Center"
+                    Margin="0,0,10,0">
+                    <Image.Source>
+                        <FontImageSource
+                            FontFamily="LineIcons"
+                            Glyph="&#xea4c;"
+                            Size="30"
+                            Color="#2D4A6E"/>
+                    </Image.Source>
+                </Image>
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- Divider -->
+        <BoxView
+            HeightRequest="2"
+            BackgroundColor="#E0E0E0"
+            Margin="0,10,0,20"/>
 
         <!--about-->
         <Grid>
