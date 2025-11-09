@@ -1,12 +1,148 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.AvatarPickerScreen"
-             Title="AvatarPickerScreen">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Choose Avatar"
+             NavigationPage.HasNavigationBar="True">
+
+    <Grid RowDefinitions="Auto,*,Auto" Margin="20">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,10,0,20">
+            <Label
+                Text="Choose Your Avatar"
+                FontFamily="OutfitRegular"
+                FontSize="26"
+                FontAttributes="Bold"
+                HorizontalOptions="Center"
+                TextColor="#2D2D2D"/>
+            <Label
+                Text="Select an avatar to personalize your profile"
+                FontFamily="OutfitLight"
+                FontSize="14"
+                HorizontalOptions="Center"
+                TextColor="#A3A3A4"/>
+        </VerticalStackLayout>
+
+        <!-- Avatar Grid -->
+        <ScrollView Grid.Row="1">
+            <CollectionView
+                ItemsSource="{Binding Avatars}"
+                SelectionMode="Single"
+                SelectedItem="{Binding SelectedAvatar}"
+                HorizontalOptions="Center"
+                VerticalOptions="Start">
+
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout
+                        Orientation="Vertical"
+                        Span="3"
+                        HorizontalItemSpacing="15"
+                        VerticalItemSpacing="15"/>
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            HeightRequest="110"
+                            WidthRequest="110"
+                            Padding="5">
+
+                            <!-- Selection Border (visible when selected) -->
+                            <RoundRectangle
+                                Fill="Transparent"
+                                Stroke="#2D4A6E"
+                                StrokeThickness="4"
+                                CornerRadius="20"
+                                IsVisible="{Binding IsSelected}"/>
+
+                            <!-- Default Border -->
+                            <RoundRectangle
+                                Fill="AliceBlue"
+                                Stroke="#E0E0E0"
+                                StrokeThickness="2"
+                                CornerRadius="20"
+                                IsVisible="{Binding IsSelected, Converter={StaticResource InvertedBoolConverter}}"/>
+
+                            <!-- Avatar Image -->
+                            <Grid Margin="10">
+                                <Ellipse
+                                    Fill="White"
+                                    Stroke="#2D4A6E"
+                                    StrokeThickness="2"
+                                    HeightRequest="90"
+                                    WidthRequest="90"/>
+                                <Image
+                                    Source="{Binding ImageSource}"
+                                    Aspect="AspectFill"
+                                    HeightRequest="86"
+                                    WidthRequest="86"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                    <Image.Clip>
+                                        <EllipseGeometry
+                                            Center="43,43"
+                                            RadiusX="43"
+                                            RadiusY="43"/>
+                                    </Image.Clip>
+                                </Image>
+                            </Grid>
+
+                            <!-- Selection Checkmark -->
+                            <Grid
+                                HeightRequest="30"
+                                WidthRequest="30"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                Margin="5"
+                                IsVisible="{Binding IsSelected}">
+                                <Ellipse
+                                    Fill="#2D4A6E"
+                                    HeightRequest="30"
+                                    WidthRequest="30"/>
+                                <Image
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            FontFamily="LineIcons"
+                                            Glyph="&#xea4e;"
+                                            Size="20"
+                                            Color="White"/>
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+
+        <!-- Buttons -->
+        <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,20,0,10">
+            <!-- Select Button -->
+            <Button
+                Text="Select Avatar"
+                BackgroundColor="#2D4A6E"
+                TextColor="White"
+                FontFamily="OutfitRegular"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="15"
+                Command="{Binding ConfirmSelectionCommand}"/>
+
+            <!-- Cancel Button -->
+            <Button
+                Text="Cancel"
+                BackgroundColor="Transparent"
+                TextColor="#2D4A6E"
+                FontFamily="OutfitLight"
+                FontSize="16"
+                BorderColor="#2D4A6E"
+                BorderWidth="2"
+                HeightRequest="50"
+                CornerRadius="15"
+                Command="{Binding CancelCommand}"/>
+        </VerticalStackLayout>
+    </Grid>
 </ContentPage>
