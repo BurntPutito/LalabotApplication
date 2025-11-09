@@ -1,9 +1,10 @@
-namespace LalabotApplication.Screens;
+﻿namespace LalabotApplication.Screens;
 
 public partial class AvatarPickerScreen : ContentPage
 {
-	public AvatarPickerScreen()
-	{
-		InitializeComponent();
-	}
+    public AvatarPickerScreen(AvatarPickerScreenModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 }

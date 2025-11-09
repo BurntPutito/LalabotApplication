@@ -1,4 +1,6 @@
-﻿namespace LalabotApplication.Services
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace LalabotApplication.Services
 {
     public static class AvatarHelper
     {
@@ -33,10 +35,13 @@
         }
     }
 
-    public class AvatarOption
+    // Helper class for avatar picker
+    public partial class AvatarOption : ObservableObject
     {
         public int Index { get; set; }
         public string ImageSource { get; set; } = string.Empty;
-        public bool IsSelected { get; set; } = false;
+
+        [ObservableProperty]
+        private bool _isSelected = false;
     }
 }

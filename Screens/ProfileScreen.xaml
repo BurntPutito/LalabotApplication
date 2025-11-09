@@ -88,6 +88,10 @@
                 TextColor="#A3A3A4"
                 Margin="0,20,0,0"/>
 
+            <Button
+                Text="Test Avatar Picker"
+                Command="{Binding TestAvatarPickerCommand}"/>
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

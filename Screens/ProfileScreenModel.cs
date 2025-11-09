@@ -68,5 +68,11 @@ namespace LalabotApplication.Screens
         {
             await Shell.Current.GoToAsync("///EditProfileScreen");
         }
+
+        [RelayCommand]
+        private async Task TestAvatarPicker()
+        {
+            await Shell.Current.GoToAsync("///AvatarPickerScreen");
+        }
     }
 }
