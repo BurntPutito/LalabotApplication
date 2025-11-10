@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using SkiaSharp;
+using System.Text.Json;
 
 namespace LalabotApplication.Services
 {
@@ -46,48 +47,48 @@ namespace LalabotApplication.Services
             }
         }
 
-        // Resize and compress image to meet size limit (500KB)
-        public async Task<byte[]> ResizeAndCompressImage(Stream imageStream, int maxWidth = 512, int maxHeight = 512)
+        // Resize and compress image using SkiaSharp
+        public byte[] ResizeAndCompressImage(Stream imageStream, int targetSize = 512, int quality = 85)
         {
-            try
+            using var inputStream = new SKManagedStream(imageStream);
+            using var original = SKBitmap.Decode(inputStream);
+
+            if (original == null)
+                throw new Exception("Failed to decode image");
+
+            // Calculate new dimensions (square crop from center)
+            int cropSize = Math.Min(original.Width, original.Height);
+            int offsetX = (original.Width - cropSize) / 2;
+            int offsetY = (original.Height - cropSize) / 2;
+
+            // Crop to square
+            using var cropped = new SKBitmap(cropSize, cropSize);
+            using var canvas = new SKCanvas(cropped);
+            var sourceRect = new SKRect(offsetX, offsetY, offsetX + cropSize, offsetY + cropSize);
+            var destRect = new SKRect(0, 0, cropSize, cropSize);
+            canvas.DrawBitmap(original, sourceRect, destRect);
+
+            // Resize to target size
+            using var resized = cropped.Resize(new SKImageInfo(targetSize, targetSize), SKFilterQuality.High);
+
+            // Compress to JPEG with quality setting
+            using var image = SKImage.FromBitmap(resized);
+            using var data = image.Encode(SKEncodedImageFormat.Jpeg, quality);
+
+            var result = data.ToArray();
+
+            // If still over 500KB, reduce quality and try again
+            if (result.Length > 500 * 1024 && quality > 50)
             {
-                // Load the image
-                using var memoryStream = new MemoryStream();
-                await imageStream.CopyToAsync(memoryStream);
-                var imageData = memoryStream.ToArray();
-
-                // Use MAUI's built-in image loading
-                var imageSource = ImageSource.FromStream(() => new MemoryStream(imageData));
-
-                // For now, return original if under 500KB
-                if (imageData.Length <= 500 * 1024) // 500KB
-                {
-                    return imageData;
-                }
-
-                // If over 500KB, we'll compress it
-                // MAUI doesn't have built-in compression, so we'll reduce quality
-                // by re-encoding with lower quality
-
-                return await CompressImageData(imageData, maxWidth, maxHeight);
+                using var imageRetry = SKImage.FromBitmap(resized);
+                using var dataRetry = imageRetry.Encode(SKEncodedImageFormat.Jpeg, quality - 20);
+                return dataRetry.ToArray();
             }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Resize error: {ex.Message}");
-                throw;
-            }
-        }
 
-        private async Task<byte[]> CompressImageData(byte[] imageData, int maxWidth, int maxHeight)
-        {
-            // This is a simplified version
-            // In production, you'd use SkiaSharp or ImageSharp for better compression
-
-            // For now, if image is too large, we'll just return it
-            // and let ImgBB handle the compression
-            return imageData;
+            return result;
         }
     }
+
 
     // ImgBB API response models
     public class ImgBBResponse
