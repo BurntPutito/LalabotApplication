@@ -126,7 +126,8 @@
                 <!-- =================== PASSWORD FIELD =================== -->
                 <VerticalStackLayout Spacing="2" Margin="5, 0, 0, 0">
                     <Grid Margin="-10, 5, 0, 0" ColumnDefinitions=".2*, .8*, auto">
-                        <RoundRectangle BackgroundColor="AliceBlue"
+                        <RoundRectangle x:Name="PasswordIconBackground"
+                                        BackgroundColor="AliceBlue"
                                         CornerRadius="10"
                                         HeightRequest="50"
                                         HorizontalOptions="Center"
@@ -150,8 +151,12 @@
                                FontSize="16"
                                Placeholder="Password"
                                IsPassword="True"
-                               VerticalOptions="Center"/>
+                               VerticalOptions="Center"
+                               Focused="PasswordEntry_Focused"
+                               Unfocused="PasswordEntry_Unfocused"
+                               TextChanged="OnPasswordTextChanged"/>        
 
+                        <!-- Eye Icon Toggle -->
                         <ImageButton Grid.Column="2"
                                      VerticalOptions="Center"
                                      HorizontalOptions="End"
@@ -179,6 +184,7 @@
                             </DataTrigger>
                         </Label.Triggers>
                     </Label>
+
                 </VerticalStackLayout>
 
 
