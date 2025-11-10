@@ -29,6 +29,7 @@ public partial class CreateAccountScreen : ContentPage
     }
 
     bool _isPasswordFieldFocused = false;
+    Color _lastColor = Colors.AliceBlue;
 
     private void PasswordEntry_Focused(object sender, FocusEventArgs e)
     {
@@ -39,7 +40,7 @@ public partial class CreateAccountScreen : ContentPage
     {
         _isPasswordFieldFocused = false;
 
-        // Fade back to normal when not focused
+        // Fade back to neutral color
         await PasswordIconBackground.ColorTo(
             (PasswordIconBackground.Fill as SolidColorBrush)?.Color ?? Colors.AliceBlue,
             Colors.AliceBlue,
@@ -51,7 +52,7 @@ public partial class CreateAccountScreen : ContentPage
     private async void OnPasswordTextChanged(object sender, TextChangedEventArgs e)
     {
         if (!_isPasswordFieldFocused)
-            return; // Don't animate colors if not focused
+            return; // Only animate while focused
 
         string password = e.NewTextValue ?? string.Empty;
         int score = 0;
@@ -62,20 +63,37 @@ public partial class CreateAccountScreen : ContentPage
         if (Regex.IsMatch(password, @"[A-Z]")) score++;
         if (Regex.IsMatch(password, @"[!@#$%^&*(),.?{}|<>]")) score++;
 
-        Color targetColor = Color.FromArgb("#FF8A80"); // weak
+        // Define color based on strength
+        Color targetColor = Color.FromArgb("#FF8A80"); // weak - soft red
 
         if (score >= 4)
-            targetColor = Color.FromArgb("#81C784"); // strong
+            targetColor = Color.FromArgb("#81C784"); // strong - soft green
         else if (score >= 2)
-            targetColor = Color.FromArgb("#FFD54F"); // medium
+            targetColor = Color.FromArgb("#FFD54F"); // medium - soft yellow
 
+        // Only animate when color actually changes
+        if (targetColor != _lastColor)
+        {
+            await AnimateColorAndPulse(targetColor);
+            _lastColor = targetColor;
+        }
+    }
+
+    private async Task AnimateColorAndPulse(Color targetColor)
+    {
+        // Smoothly animate color transition
         await PasswordIconBackground.ColorTo(
             (PasswordIconBackground.Fill as SolidColorBrush)?.Color ?? Colors.AliceBlue,
             targetColor,
             c => PasswordIconBackground.Fill = new SolidColorBrush(c),
             300,
             Easing.CubicInOut);
+
+        // Pulse animation effect (gentle scale up and down)
+        await PasswordIconBackground.ScaleTo(1.1, 100, Easing.CubicOut);
+        await PasswordIconBackground.ScaleTo(1.0, 150, Easing.CubicIn);
     }
+
 
     private bool _isPasswordVisible = false;
     private void TogglePasswordVisibility(object sender, EventArgs e)
