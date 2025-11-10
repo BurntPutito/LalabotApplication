@@ -3,7 +3,7 @@
                  xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                  xmlns:local="clr-namespace:LalabotApplication.Screens"
                  x:Class="LalabotApplication.Screens.HomeScreen"
-                 Title="Home">
+                 Title="Dashboard">
 
     <RefreshView
             IsRefreshing="{Binding IsRefreshing}"
@@ -24,7 +24,7 @@
                             StrokeThickness="2"
                             HeightRequest="60"
                             WidthRequest="60"/>
-                                        <Image
+                            <Image
                             Source="{Binding AvatarSource}"
                             Aspect="AspectFill"
                             HeightRequest="56"
