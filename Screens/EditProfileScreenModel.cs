@@ -9,6 +9,7 @@ using LalabotApplication.Services;
 namespace LalabotApplication.Screens
 {
     [QueryProperty(nameof(SelectedAvatarIndex), "SelectedAvatarIndex")]
+    [QueryProperty(nameof(SelectedAvatarUrl), "SelectedAvatarUrl")]
     public partial class EditProfileScreenModel : ObservableObject
     {
         private readonly FirebaseAuthClient _authClient;
@@ -26,18 +27,44 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private int _profileAvatarIndex = 0;
 
+        [ObservableProperty]
+        private string _customAvatarUrl = string.Empty;
+
         private string _originalUsername = string.Empty;
         private int _originalAvatarIndex = 0;
+        private string _originalCustomAvatarUrl = string.Empty;
         private bool _hasLoadedData = false;
 
         public int SelectedAvatarIndex
         {
             set
             {
-
                 // This is called when returning from AvatarPickerScreen
                 ProfileAvatarIndex = value;
+
+                // If -1, it means custom photo was selected
+                if (value == -1)
+                {
+                    // CustomAvatarUrl will be set separately via SelectedAvatarUrl property
+                    return;
+                }
+
+                // Clear custom URL when selecting default avatar
+                CustomAvatarUrl = string.Empty;
                 AvatarSource = AvatarHelper.GetAvatarSource(value);
+            }
+        }
+
+        public string SelectedAvatarUrl
+        {
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    CustomAvatarUrl = value;
+                    AvatarSource = value;
+                    ProfileAvatarIndex = -1; // Custom photo indicator
+                }
             }
         }
 
@@ -70,11 +97,15 @@ namespace LalabotApplication.Screens
                         Username = userProfile.Username ?? "User";
                         Email = userProfile.Email ?? user.Info.Email ?? "No email";
                         ProfileAvatarIndex = userProfile.ProfileAvatarIndex;
-                        AvatarSource = AvatarHelper.GetAvatarSource(ProfileAvatarIndex);
+                        CustomAvatarUrl = userProfile.CustomAvatarUrl ?? string.Empty;
+
+                        // Set avatar source (custom URL takes priority)
+                        AvatarSource = AvatarHelper.GetAvatarSource(ProfileAvatarIndex, CustomAvatarUrl);
 
                         // Store original values
                         _originalUsername = Username;
                         _originalAvatarIndex = ProfileAvatarIndex;
+                        _originalCustomAvatarUrl = CustomAvatarUrl;
 
                         _hasLoadedData = true;
                     }
@@ -89,10 +120,11 @@ namespace LalabotApplication.Screens
         [RelayCommand]
         private async Task ChangeAvatar()
         {
-            // Pass current avatar index to the picker
+            // Pass current avatar info to the picker
             var navigationParameter = new Dictionary<string, object>
             {
-                { "CurrentAvatarIndex", ProfileAvatarIndex }
+                { "CurrentAvatarIndex", ProfileAvatarIndex },
+                { "CurrentAvatarUrl", CustomAvatarUrl ?? string.Empty }
             };
 
             // Use relative navigation
@@ -117,7 +149,8 @@ namespace LalabotApplication.Screens
 
             // Check if anything changed
             bool usernameChanged = Username != _originalUsername;
-            bool avatarChanged = ProfileAvatarIndex != _originalAvatarIndex;
+            bool avatarChanged = (ProfileAvatarIndex != _originalAvatarIndex) ||
+                                (CustomAvatarUrl != _originalCustomAvatarUrl);
 
             if (!usernameChanged && !avatarChanged)
             {
@@ -139,7 +172,8 @@ namespace LalabotApplication.Screens
                         {
                             Username = Username,
                             Email = Email,
-                            ProfileAvatarIndex = ProfileAvatarIndex
+                            ProfileAvatarIndex = ProfileAvatarIndex,
+                            CustomAvatarUrl = CustomAvatarUrl ?? string.Empty
                         });
 
                     await Shell.Current.DisplayAlert("Success", "Profile updated successfully!", "OK");
@@ -161,7 +195,9 @@ namespace LalabotApplication.Screens
         private async Task Cancel()
         {
             // Check if there are unsaved changes
-            bool hasChanges = (Username != _originalUsername) || (ProfileAvatarIndex != _originalAvatarIndex);
+            bool hasChanges = (Username != _originalUsername) ||
+                             (ProfileAvatarIndex != _originalAvatarIndex) ||
+                             (CustomAvatarUrl != _originalCustomAvatarUrl);
 
             if (hasChanges)
             {

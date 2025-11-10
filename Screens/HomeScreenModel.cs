@@ -95,7 +95,6 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private string _avatarSource = "avatar_0.png";
 
-        // Update LoadUserInfo method to also load avatar
         private async Task LoadUserInfo()
         {
             try
@@ -113,7 +112,11 @@ namespace LalabotApplication.Screens
                     if (userData != null)
                     {
                         Username = userData.Username ?? "User";
-                        AvatarSource = AvatarHelper.GetAvatarSource(userData.ProfileAvatarIndex);
+
+                        // Handle custom avatar URL
+                        AvatarSource = AvatarHelper.GetAvatarSource(
+                            userData.ProfileAvatarIndex,
+                            userData.CustomAvatarUrl ?? string.Empty);
                     }
                 }
             }

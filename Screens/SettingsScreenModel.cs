@@ -11,7 +11,6 @@ namespace LalabotApplication.Screens
     public partial class SettingsScreenModel : ObservableObject
     {
         private readonly FirebaseAuthClient _authClient;
-
         private readonly FirebaseClient _firebaseDb;
 
         [ObservableProperty]
@@ -69,7 +68,11 @@ namespace LalabotApplication.Screens
                     if (userProfile != null)
                     {
                         Username = userProfile.Username ?? "User";
-                        AvatarSource = AvatarHelper.GetAvatarSource(userProfile.ProfileAvatarIndex);
+
+                        // Handle custom avatar URL
+                        AvatarSource = AvatarHelper.GetAvatarSource(
+                            userProfile.ProfileAvatarIndex,
+                            userProfile.CustomAvatarUrl ?? string.Empty);
                     }
                 }
             }

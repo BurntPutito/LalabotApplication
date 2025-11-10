@@ -7,18 +7,25 @@ namespace LalabotApplication.Services
         //Total number of available avatars to choose
         public const int TotalAvatars = 6;
 
-        // get avatar image from index
-        public static string GetAvatarSource(int avatarIndex)
+        // Get avatar image from index OR custom URL
+        public static string GetAvatarSource(int avatarIndex, string customAvatarUrl = "")
         {
-            // ensuring index is within the valid range
+            // If custom URL exists, use it
+            if (!string.IsNullOrEmpty(customAvatarUrl))
+            {
+                return customAvatarUrl;
+            }
+
+            // Otherwise use default avatar
+            // Ensuring index is within the valid range
             if (avatarIndex < 0 || avatarIndex >= TotalAvatars)
             {
-                avatarIndex = 0; //defaults to first avatar if invalid
+                avatarIndex = 0; // Defaults to first avatar if invalid
             }
             return $"avatar_{avatarIndex}.png";
         }
 
-        // get all avatar sources as a list (for the picker screen)
+        // Get all avatar sources as a list (for the picker screen)
         public static List<AvatarOption> GetAllAvatars()
         {
             var avatars = new List<AvatarOption>();
@@ -27,7 +34,7 @@ namespace LalabotApplication.Services
             {
                 avatars.Add(new AvatarOption
                 {
-                    Index = 1,
+                    Index = i,
                     ImageSource = GetAvatarSource(i)
                 });
             }

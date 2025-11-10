@@ -25,6 +25,9 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private int _profileAvatarIndex = 0;
 
+        [ObservableProperty]
+        private string _customAvatarUrl = string.Empty;
+
         public ProfileScreenModel(FirebaseAuthClient authClient, FirebaseClient firebaseDb)
         {
             _authClient = authClient;
@@ -50,9 +53,10 @@ namespace LalabotApplication.Screens
                         Username = userProfile.Username ?? "User";
                         Email = userProfile.Email ?? user.Info.Email ?? "No email";
                         ProfileAvatarIndex = userProfile.ProfileAvatarIndex;
+                        CustomAvatarUrl = userProfile.CustomAvatarUrl ?? string.Empty;
 
-                        // Update avatar source
-                        AvatarSource = AvatarHelper.GetAvatarSource(ProfileAvatarIndex);
+                        // Update avatar source (custom URL takes priority)
+                        AvatarSource = AvatarHelper.GetAvatarSource(ProfileAvatarIndex, CustomAvatarUrl);
                     }
                 }
             }

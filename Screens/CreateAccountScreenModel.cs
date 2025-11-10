@@ -126,14 +126,15 @@ namespace LalabotApplication.Screens
                 {
                     // Save username to Firebase Database
                     await _firebaseDb
-                        .Child("users")
-                        .Child(result.User.Uid)
-                        .PutAsync(new
-                        {
-                            Username = Username,
-                            Email = Email,
-                            ProfileAvatarIndex = 0
-                        });
+                     .Child("users")
+                     .Child(result.User.Uid)
+                     .PutAsync(new
+                     {
+                         Username = Username,
+                         Email = Email,
+                         ProfileAvatarIndex = 0,
+                         CustomAvatarUrl = string.Empty // NEW: Initialize empty custom URL
+                     });
 
                     await Shell.Current.GoToAsync("///SuccessfulCreateAccountScreen");
                 }
