@@ -1,12 +1,168 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LalabotApplication.Screens.EditProfileScreen"
-             Title="EditProfileScreen">
-    <VerticalStackLayout>
-        <Label 
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+             Title="Edit Profile"
+             NavigationPage.HasNavigationBar="True">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Margin="20"
+            Spacing="20"
+            VerticalOptions="Start">
+
+            <!-- Current Profile Picture with Edit Button -->
+            <Grid
+                HeightRequest="150"
+                WidthRequest="150"
+                HorizontalOptions="Center"
+                Margin="0,20,0,0">
+
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ChangeAvatarCommand}"/>
+                </Grid.GestureRecognizers>
+
+                <!-- Circle background -->
+                <Ellipse
+                    Fill="AliceBlue"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="4"
+                    HeightRequest="150"
+                    WidthRequest="150"/>
+
+                <!-- Avatar Image -->
+                <Image
+                    Source="{Binding AvatarSource}"
+                    Aspect="AspectFill"
+                    HeightRequest="140"
+                    WidthRequest="140"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image.Clip>
+                        <EllipseGeometry
+                            Center="70,70"
+                            RadiusX="70"
+                            RadiusY="70"/>
+                    </Image.Clip>
+                </Image>
+
+                <!-- Edit Icon Overlay -->
+                <Grid
+                    HeightRequest="40"
+                    WidthRequest="40"
+                    HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Margin="5">
+                    <Ellipse
+                        Fill="#2D4A6E"
+                        HeightRequest="40"
+                        WidthRequest="40"/>
+                    <Image
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Image.Source>
+                            <FontImageSource
+                                FontFamily="LineIcons"
+                                Glyph="&#xeaa4;"
+                                Size="24"
+                                Color="White"/>
+                        </Image.Source>
+                    </Image>
+                </Grid>
+            </Grid>
+
+            <!-- Tap to change avatar hint -->
+            <Label
+                Text="Tap avatar to change"
+                FontFamily="OutfitLight"
+                FontSize="14"
+                HorizontalOptions="Center"
+                TextColor="#2D4A6E"
+                Margin="0,-10,0,10"/>
+
+            <!-- Divider -->
+            <BoxView
+                HeightRequest="2"
+                BackgroundColor="#E0E0E0"
+                Margin="0,0,0,10"/>
+
+            <!-- Username Field -->
+            <Label
+                Text="Username"
+                FontFamily="OutfitLight"
+                FontSize="Medium"
+                TextColor="#2D2D2D"/>
+            <Grid Margin="0,0,0,20">
+                <RoundRectangle
+                    BackgroundColor="AliceBlue"
+                    HeightRequest="50"
+                    CornerRadius="15"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="2"/>
+                <Entry
+                    Text="{Binding Username}"
+                    Placeholder="Enter username"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    BackgroundColor="Transparent"
+                    Margin="15,0"/>
+            </Grid>
+
+            <!-- Email (Read-only) -->
+            <Label
+                Text="Email"
+                FontFamily="OutfitLight"
+                FontSize="Medium"
+                TextColor="#2D2D2D"/>
+            <Grid Margin="0,0,0,20">
+                <RoundRectangle
+                    BackgroundColor="#F5F5F5"
+                    HeightRequest="50"
+                    CornerRadius="15"
+                    Stroke="#E0E0E0"
+                    StrokeThickness="2"/>
+                <Label
+                    Text="{Binding Email}"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    TextColor="#A3A3A4"
+                    VerticalOptions="Center"
+                    Margin="15,0"/>
+            </Grid>
+
+            <Label
+                Text="Email cannot be changed"
+                FontFamily="OutfitLight"
+                FontSize="12"
+                TextColor="#A3A3A4"
+                HorizontalOptions="Center"
+                Margin="0,-15,0,20"/>
+
+            <!-- Save Button -->
+            <Button
+                Text="Save Changes"
+                BackgroundColor="#2D4A6E"
+                TextColor="White"
+                FontFamily="OutfitRegular"
+                FontSize="18"
+                HeightRequest="55"
+                CornerRadius="15"
+                Command="{Binding SaveChangesCommand}"
+                Margin="0,10,0,0"/>
+
+            <!-- Cancel Button -->
+            <Button
+                Text="Cancel"
+                BackgroundColor="Transparent"
+                TextColor="#2D4A6E"
+                FontFamily="OutfitLight"
+                FontSize="16"
+                BorderColor="#2D4A6E"
+                BorderWidth="2"
+                HeightRequest="50"
+                CornerRadius="15"
+                Command="{Binding CancelCommand}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

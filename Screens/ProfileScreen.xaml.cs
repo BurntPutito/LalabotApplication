@@ -12,7 +12,7 @@ public partial class ProfileScreen : ContentPage
     {
         base.OnAppearing();
 
-        // Reload profile data when screen appears
+        // Always reload profile data when screen appears
         if (BindingContext is ProfileScreenModel viewModel)
         {
             _ = viewModel.LoadProfileData();

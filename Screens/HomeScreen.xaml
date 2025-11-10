@@ -11,15 +11,38 @@
         <ScrollView>
             <VerticalStackLayout Padding="20" Spacing="20">
 
-                <!-- Welcome Header -->
-                <Label>
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Welcome! " FontSize="30" FontFamily="OutfitRegular"/>
-                            <Span Text="{Binding Username}" FontSize="30" FontFamily="OutfitRegular" FontAttributes="Bold"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
+                <!-- Welcome Header with Avatar -->
+                <HorizontalStackLayout Spacing="15" VerticalOptions="Center" HorizontalOptions="Start">
+                    <!-- Avatar -->
+                    <Grid HeightRequest="60" WidthRequest="60">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavigateToProfileCommand}"/>
+                        </Grid.GestureRecognizers>
+                        <Ellipse
+                            Fill="White"
+                            Stroke="#2D4A6E"
+                            StrokeThickness="2"
+                            HeightRequest="60"
+                            WidthRequest="60"/>
+                                        <Image
+                            Source="{Binding AvatarSource}"
+                            Aspect="AspectFill"
+                            HeightRequest="56"
+                            WidthRequest="56"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="28,28" RadiusX="28" RadiusY="28"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+
+                    <!-- Welcome Text -->
+                    <VerticalStackLayout VerticalOptions="Center" Spacing="2">
+                        <Label Text="Welcome!" FontSize="18" FontFamily="OutfitLight" TextColor="#A3A3A4"/>
+                        <Label Text="{Binding Username}" FontSize="26" FontFamily="OutfitRegular" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
 
                 <!-- New Delivery Button -->
                 <Grid>

@@ -5,6 +5,9 @@
         public AppShell()
         {
             InitializeComponent();
+
+            // Register routes for modal navigation
+            Routing.RegisterRoute(nameof(Screens.AvatarPickerScreen), typeof(Screens.AvatarPickerScreen));
         }
     }
 }

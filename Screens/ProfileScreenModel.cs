@@ -58,7 +58,6 @@ namespace LalabotApplication.Screens
             }
             catch (Exception ex)
             {
-                // Handle error silently or show alert
                 await Shell.Current.DisplayAlert("Error", "Failed to load profile data.", "OK");
             }
         }

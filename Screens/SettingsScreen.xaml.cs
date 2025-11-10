@@ -1,10 +1,10 @@
-namespace LalabotApplication.Screens;
+﻿namespace LalabotApplication.Screens;
 
 public partial class SettingsScreen : ContentPage
 {
-	public SettingsScreen(SettingsScreenModel viewModel)
-	{
-		InitializeComponent();
-		BindingContext = viewModel;
-	}
+    public SettingsScreen(SettingsScreenModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel;
+    }
 }

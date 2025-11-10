@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Database;
 using Firebase.Database.Query;
+using LalabotApplication.Models;
+using LalabotApplication.Services;
 using Plugin.Maui.Audio;
 using System.Collections.ObjectModel;
 
@@ -90,7 +92,10 @@ namespace LalabotApplication.Screens
             IsRefreshing = false;
         }
 
+        [ObservableProperty]
+        private string _avatarSource = "avatar_0.png";
 
+        // Update LoadUserInfo method to also load avatar
         private async Task LoadUserInfo()
         {
             try
@@ -99,22 +104,31 @@ namespace LalabotApplication.Screens
 
                 if (user != null)
                 {
+                    // Get username from Firebase Database
                     var userData = await _firebaseDb
                         .Child("users")
                         .Child(user.Uid)
-                        .Child("Username")
-                        .OnceSingleAsync<string>();
+                        .OnceSingleAsync<UserProfile>();
 
-                    if (!string.IsNullOrEmpty(userData))
+                    if (userData != null)
                     {
-                        Username = userData;
+                        Username = userData.Username ?? "User";
+                        AvatarSource = AvatarHelper.GetAvatarSource(userData.ProfileAvatarIndex);
                     }
                 }
             }
             catch (Exception ex)
             {
+                // If error, keep defaults
                 Username = "User";
+                AvatarSource = "avatar_0.png";
             }
+        }
+
+        [RelayCommand]
+        private async Task NavigateToProfile()
+        {
+            await Shell.Current.GoToAsync("///ProfileScreen");
         }
 
         private async Task LoadDeliveries()

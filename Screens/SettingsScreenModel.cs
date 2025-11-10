@@ -53,7 +53,7 @@ namespace LalabotApplication.Screens
             }
         }
 
-        private async Task LoadUserProfile()
+        public async Task LoadUserProfile()
         {
             try
             {

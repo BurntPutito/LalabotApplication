@@ -1,71 +1,41 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LalabotApplication.Services;
-using System.Collections.ObjectModel;
 
 namespace LalabotApplication.Screens
 {
+    [QueryProperty(nameof(CurrentAvatarIndex), "CurrentAvatarIndex")]
     public partial class AvatarPickerScreenModel : ObservableObject
     {
         [ObservableProperty]
-        private ObservableCollection<AvatarOption> _avatars;
+        private int _selectedAvatarIndex = 0;
 
-        [ObservableProperty]
-        private AvatarOption _selectedAvatar;
+        private int _initialAvatarIndex = 0;
 
-        private int _initialAvatarIndex;
-
-        public AvatarPickerScreenModel()
+        public int CurrentAvatarIndex
         {
-            // Load all available avatars
-            var avatarList = AvatarHelper.GetAllAvatars();
-            Avatars = new ObservableCollection<AvatarOption>(avatarList);
+            set
+            {
+                _initialAvatarIndex = value;
+                SelectedAvatarIndex = value;
+            }
         }
 
-        // This will be called from EditProfileScreen to set current avatar
-        public void SetCurrentAvatar(int avatarIndex)
+        public int GetCurrentAvatarIndex() => _initialAvatarIndex;
+
+        public void SetSelectedIndex(int index)
         {
-            _initialAvatarIndex = avatarIndex;
-
-            // Mark the current avatar as selected
-            foreach (var avatar in Avatars)
-            {
-                avatar.IsSelected = (avatar.Index == avatarIndex);
-            }
-
-            // Set the selected avatar
-            SelectedAvatar = Avatars.FirstOrDefault(a => a.Index == avatarIndex);
-        }
-
-        partial void OnSelectedAvatarChanged(AvatarOption value)
-        {
-            // Update IsSelected for all avatars
-            if (value != null)
-            {
-                foreach (var avatar in Avatars)
-                {
-                    avatar.IsSelected = (avatar.Index == value.Index);
-                }
-            }
+            SelectedAvatarIndex = index;
         }
 
         [RelayCommand]
         private async Task ConfirmSelection()
         {
-            if (SelectedAvatar != null)
+            var navigationParameter = new Dictionary<string, object>
             {
-                // Pass the selected avatar index back to EditProfileScreen
-                var navigationParameter = new Dictionary<string, object>
-                {
-                    { "SelectedAvatarIndex", SelectedAvatar.Index }
-                };
+                { "SelectedAvatarIndex", SelectedAvatarIndex }
+            };
 
-                await Shell.Current.GoToAsync("..", navigationParameter);
-            }
-            else
-            {
-                await Shell.Current.DisplayAlert("No Selection", "Please select an avatar.", "OK");
-            }
+            await Shell.Current.GoToAsync("..", navigationParameter);
         }
 
         [RelayCommand]

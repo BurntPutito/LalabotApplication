@@ -24,103 +24,167 @@
                 TextColor="#A3A3A4"/>
         </VerticalStackLayout>
 
-        <!-- Avatar Grid -->
+        <!-- Simple Grid Layout - Manual -->
         <ScrollView Grid.Row="1">
-            <CollectionView
-                ItemsSource="{Binding Avatars}"
-                SelectionMode="Single"
-                SelectedItem="{Binding SelectedAvatar}"
-                HorizontalOptions="Center"
-                VerticalOptions="Start">
+            <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*,*" RowSpacing="15" ColumnSpacing="15" HorizontalOptions="Center">
 
-                <CollectionView.ItemsLayout>
-                    <GridItemsLayout
-                        Orientation="Vertical"
-                        Span="3"
-                        HorizontalItemSpacing="15"
-                        VerticalItemSpacing="15"/>
-                </CollectionView.ItemsLayout>
+                <!-- Row 1 -->
+                <!-- Avatar 0 -->
+                <Grid Grid.Row="0" Grid.Column="0" HeightRequest="110" WidthRequest="110">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarTapped" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle x:Name="Border0" Fill="AliceBlue" Stroke="#E0E0E0" StrokeThickness="2" CornerRadius="20"/>
+                    <RoundRectangle x:Name="SelectedBorder0" Fill="Transparent" Stroke="#2D4A6E" StrokeThickness="4" CornerRadius="20" IsVisible="False"/>
+                    <Grid Margin="10">
+                        <Ellipse Fill="White" Stroke="#2D4A6E" StrokeThickness="2" HeightRequest="90" WidthRequest="90"/>
+                        <Image Source="avatar_0.png" Aspect="AspectFill" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="43,43" RadiusX="43" RadiusY="43"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid x:Name="Check0" HeightRequest="30" WidthRequest="30" HorizontalOptions="End" VerticalOptions="Start" Margin="5" IsVisible="False">
+                        <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                        <Image HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                </Grid>
 
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid
-                            HeightRequest="110"
-                            WidthRequest="110"
-                            Padding="5">
+                <!-- Avatar 1 -->
+                <Grid Grid.Row="0" Grid.Column="1" HeightRequest="110" WidthRequest="110">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarTapped" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle x:Name="Border1" Fill="AliceBlue" Stroke="#E0E0E0" StrokeThickness="2" CornerRadius="20"/>
+                    <RoundRectangle x:Name="SelectedBorder1" Fill="Transparent" Stroke="#2D4A6E" StrokeThickness="4" CornerRadius="20" IsVisible="False"/>
+                    <Grid Margin="10">
+                        <Ellipse Fill="White" Stroke="#2D4A6E" StrokeThickness="2" HeightRequest="90" WidthRequest="90"/>
+                        <Image Source="avatar_1.png" Aspect="AspectFill" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="43,43" RadiusX="43" RadiusY="43"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid x:Name="Check1" HeightRequest="30" WidthRequest="30" HorizontalOptions="End" VerticalOptions="Start" Margin="5" IsVisible="False">
+                        <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                        <Image HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                </Grid>
 
-                            <!-- Selection Border (visible when selected) -->
-                            <RoundRectangle
-                                Fill="Transparent"
-                                Stroke="#2D4A6E"
-                                StrokeThickness="4"
-                                CornerRadius="20"
-                                IsVisible="{Binding IsSelected}"/>
+                <!-- Avatar 2 -->
+                <Grid Grid.Row="0" Grid.Column="2" HeightRequest="110" WidthRequest="110">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarTapped" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle x:Name="Border2" Fill="AliceBlue" Stroke="#E0E0E0" StrokeThickness="2" CornerRadius="20"/>
+                    <RoundRectangle x:Name="SelectedBorder2" Fill="Transparent" Stroke="#2D4A6E" StrokeThickness="4" CornerRadius="20" IsVisible="False"/>
+                    <Grid Margin="10">
+                        <Ellipse Fill="White" Stroke="#2D4A6E" StrokeThickness="2" HeightRequest="90" WidthRequest="90"/>
+                        <Image Source="avatar_2.png" Aspect="AspectFill" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="43,43" RadiusX="43" RadiusY="43"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid x:Name="Check2" HeightRequest="30" WidthRequest="30" HorizontalOptions="End" VerticalOptions="Start" Margin="5" IsVisible="False">
+                        <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                        <Image HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                </Grid>
 
-                            <!-- Default Border -->
-                            <RoundRectangle
-                                Fill="AliceBlue"
-                                Stroke="#E0E0E0"
-                                StrokeThickness="2"
-                                CornerRadius="20"
-                                IsVisible="{Binding IsSelected, Converter={StaticResource InvertedBoolConverter}}"/>
+                <!-- Row 2 -->
+                <!-- Avatar 3 -->
+                <Grid Grid.Row="1" Grid.Column="0" HeightRequest="110" WidthRequest="110">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarTapped" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle x:Name="Border3" Fill="AliceBlue" Stroke="#E0E0E0" StrokeThickness="2" CornerRadius="20"/>
+                    <RoundRectangle x:Name="SelectedBorder3" Fill="Transparent" Stroke="#2D4A6E" StrokeThickness="4" CornerRadius="20" IsVisible="False"/>
+                    <Grid Margin="10">
+                        <Ellipse Fill="White" Stroke="#2D4A6E" StrokeThickness="2" HeightRequest="90" WidthRequest="90"/>
+                        <Image Source="avatar_3.png" Aspect="AspectFill" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="43,43" RadiusX="43" RadiusY="43"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid x:Name="Check3" HeightRequest="30" WidthRequest="30" HorizontalOptions="End" VerticalOptions="Start" Margin="5" IsVisible="False">
+                        <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                        <Image HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                </Grid>
 
-                            <!-- Avatar Image -->
-                            <Grid Margin="10">
-                                <Ellipse
-                                    Fill="White"
-                                    Stroke="#2D4A6E"
-                                    StrokeThickness="2"
-                                    HeightRequest="90"
-                                    WidthRequest="90"/>
-                                <Image
-                                    Source="{Binding ImageSource}"
-                                    Aspect="AspectFill"
-                                    HeightRequest="86"
-                                    WidthRequest="86"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center">
-                                    <Image.Clip>
-                                        <EllipseGeometry
-                                            Center="43,43"
-                                            RadiusX="43"
-                                            RadiusY="43"/>
-                                    </Image.Clip>
-                                </Image>
-                            </Grid>
+                <!-- Avatar 4 -->
+                <Grid Grid.Row="1" Grid.Column="1" HeightRequest="110" WidthRequest="110">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarTapped" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle x:Name="Border4" Fill="AliceBlue" Stroke="#E0E0E0" StrokeThickness="2" CornerRadius="20"/>
+                    <RoundRectangle x:Name="SelectedBorder4" Fill="Transparent" Stroke="#2D4A6E" StrokeThickness="4" CornerRadius="20" IsVisible="False"/>
+                    <Grid Margin="10">
+                        <Ellipse Fill="White" Stroke="#2D4A6E" StrokeThickness="2" HeightRequest="90" WidthRequest="90"/>
+                        <Image Source="avatar_4.png" Aspect="AspectFill" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="43,43" RadiusX="43" RadiusY="43"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid x:Name="Check4" HeightRequest="30" WidthRequest="30" HorizontalOptions="End" VerticalOptions="Start" Margin="5" IsVisible="False">
+                        <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                        <Image HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                </Grid>
 
-                            <!-- Selection Checkmark -->
-                            <Grid
-                                HeightRequest="30"
-                                WidthRequest="30"
-                                HorizontalOptions="End"
-                                VerticalOptions="Start"
-                                Margin="5"
-                                IsVisible="{Binding IsSelected}">
-                                <Ellipse
-                                    Fill="#2D4A6E"
-                                    HeightRequest="30"
-                                    WidthRequest="30"/>
-                                <Image
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center">
-                                    <Image.Source>
-                                        <FontImageSource
-                                            FontFamily="LineIcons"
-                                            Glyph="&#xea4e;"
-                                            Size="20"
-                                            Color="White"/>
-                                    </Image.Source>
-                                </Image>
-                            </Grid>
-                        </Grid>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                <!-- Avatar 5 -->
+                <Grid Grid.Row="1" Grid.Column="2" HeightRequest="110" WidthRequest="110">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAvatarTapped" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle x:Name="Border5" Fill="AliceBlue" Stroke="#E0E0E0" StrokeThickness="2" CornerRadius="20"/>
+                    <RoundRectangle x:Name="SelectedBorder5" Fill="Transparent" Stroke="#2D4A6E" StrokeThickness="4" CornerRadius="20" IsVisible="False"/>
+                    <Grid Margin="10">
+                        <Ellipse Fill="White" Stroke="#2D4A6E" StrokeThickness="2" HeightRequest="90" WidthRequest="90"/>
+                        <Image Source="avatar_5.png" Aspect="AspectFill" HeightRequest="86" WidthRequest="86" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Clip>
+                                <EllipseGeometry Center="43,43" RadiusX="43" RadiusY="43"/>
+                            </Image.Clip>
+                        </Image>
+                    </Grid>
+                    <Grid x:Name="Check5" HeightRequest="30" WidthRequest="30" HorizontalOptions="End" VerticalOptions="Start" Margin="5" IsVisible="False">
+                        <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                        <Image HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image.Source>
+                                <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                </Grid>
+
+            </Grid>
         </ScrollView>
 
-        <!-- Buttons -->
+        <!--bottons-->
         <VerticalStackLayout Grid.Row="2" Spacing="10" Margin="0,20,0,10">
-            <!-- Select Button -->
             <Button
                 Text="Select Avatar"
                 BackgroundColor="#2D4A6E"
@@ -131,7 +195,6 @@
                 CornerRadius="15"
                 Command="{Binding ConfirmSelectionCommand}"/>
 
-            <!-- Cancel Button -->
             <Button
                 Text="Cancel"
                 BackgroundColor="Transparent"

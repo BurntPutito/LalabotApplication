@@ -26,12 +26,6 @@
         Shell.NavBarIsVisible="True"/>
 
     <ShellContent
-        Title="Choose Avatar"
-        ContentTemplate="{DataTemplate screens:AvatarPickerScreen}"
-        Route="AvatarPickerScreen"
-        Shell.NavBarIsVisible="True"/>
-    
-    <ShellContent
         Title="Login"
         ContentTemplate="{DataTemplate screens:Login}"
         Route="Login"
