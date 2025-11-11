@@ -123,6 +123,101 @@
                                             Stroke="#2D4A6E"
                                             StrokeThickness="2"/>
 
+                                        <!-- NEW: Progress Tracker -->
+                                        <Grid 
+                                            Padding="15,10,15,0" 
+                                            RowDefinitions="Auto, Auto, *" 
+                                            RowSpacing="8"
+                                            IsVisible="{Binding ShowProgressTracker}">
+        
+                                            <!-- Progress Dots -->
+                                            <HorizontalStackLayout 
+                                                Grid.Row="0" 
+                                                Spacing="8" 
+                                                HorizontalOptions="Center">
+            
+                                                <!-- Stage 0: Processing -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage0Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage0Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+            
+                                                <!-- Connector Line -->
+                                                <BoxView 
+                                                    BackgroundColor="#2D4A6E" 
+                                                    HeightRequest="2" 
+                                                    WidthRequest="20" 
+                                                    VerticalOptions="Center"/>
+            
+                                                <!-- Stage 1: On the Way -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage1Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage1Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+            
+                                                <BoxView 
+                                                    BackgroundColor="#2D4A6E" 
+                                                    HeightRequest="2" 
+                                                    WidthRequest="20" 
+                                                    VerticalOptions="Center"/>
+            
+                                                <!-- Stage 2: Near Destination -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage2Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage2Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+            
+                                                <BoxView 
+                                                    BackgroundColor="#2D4A6E" 
+                                                    HeightRequest="2" 
+                                                    WidthRequest="20" 
+                                                    VerticalOptions="Center"/>
+            
+                                                <!-- Stage 3: Arrived -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage3Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage3Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+                                            </HorizontalStackLayout>
+        
+                                            <!-- Progress Label -->
+                                            <Label 
+                                                Grid.Row="1" 
+                                                Text="{Binding ProgressText}" 
+                                                FontFamily="OutfitLight" 
+                                                FontSize="12" 
+                                                HorizontalOptions="Center"
+                                                TextColor="#2D4A6E"/>
+                                        </Grid>
+
                                         <Grid Padding="15" RowDefinitions="Auto, *" RowSpacing="5">
                                             <!--Username-->
                                             <Label
@@ -234,6 +329,102 @@
                                             CornerRadius="15"
                                             Stroke="#2D4A6E"
                                             StrokeThickness="2"/>
+
+                                        <!-- NEW: Progress Tracker -->
+                                        <Grid 
+                                            Padding="15,10,15,0" 
+                                            RowDefinitions="Auto, Auto, *" 
+                                            RowSpacing="8"
+                                            IsVisible="{Binding ShowProgressTracker}">
+        
+                                            <!-- Progress Dots -->
+                                            <HorizontalStackLayout 
+                                                Grid.Row="0" 
+                                                Spacing="8" 
+                                                HorizontalOptions="Center">
+            
+                                                <!-- Stage 0: Processing -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage0Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage0Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+            
+                                                <!-- Connector Line -->
+                                                <BoxView 
+                                                    BackgroundColor="#2D4A6E" 
+                                                    HeightRequest="2" 
+                                                    WidthRequest="20" 
+                                                    VerticalOptions="Center"/>
+            
+                                                <!-- Stage 1: On the Way -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage1Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage1Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+            
+                                                <BoxView 
+                                                    BackgroundColor="#2D4A6E" 
+                                                    HeightRequest="2" 
+                                                    WidthRequest="20" 
+                                                    VerticalOptions="Center"/>
+            
+                                                <!-- Stage 2: Near Destination -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage2Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage2Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+            
+                                                <BoxView 
+                                                    BackgroundColor="#2D4A6E" 
+                                                    HeightRequest="2" 
+                                                    WidthRequest="20" 
+                                                    VerticalOptions="Center"/>
+            
+                                                <!-- Stage 3: Arrived -->
+                                                <Grid HeightRequest="30" WidthRequest="30">
+                                                    <Ellipse 
+                                                        Fill="{Binding Stage3Color}" 
+                                                        Stroke="#2D4A6E" 
+                                                        StrokeThickness="2"/>
+                                                    <Label 
+                                                        Text="{Binding Stage3Icon}" 
+                                                        HorizontalOptions="Center" 
+                                                        VerticalOptions="Center"
+                                                        FontSize="16"/>
+                                                </Grid>
+                                            </HorizontalStackLayout>
+        
+                                            <!-- Progress Label -->
+                                            <Label 
+                                                Grid.Row="1" 
+                                                Text="{Binding ProgressText}" 
+                                                FontFamily="OutfitLight" 
+                                                FontSize="12" 
+                                                HorizontalOptions="Center"
+                                                TextColor="#2D4A6E"/>
+                                        </Grid>
+
 
                                         <Grid Padding="15" RowDefinitions="Auto, *" RowSpacing="5">
                                             <!--Username-->

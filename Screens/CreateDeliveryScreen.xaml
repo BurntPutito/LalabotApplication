@@ -184,9 +184,10 @@
                     BackgroundColor="Transparent"
                     Margin="10, 0">
                     <Picker.Items>
-                        <x:String>Destination 1 - Room A</x:String>
-                        <x:String>Destination 2 - Room B</x:String>
-                        <x:String>Destination 3 - Room C</x:String>
+                        <x:String>Room 1</x:String>
+                        <x:String>Room 2</x:String>
+                        <x:String>Room 3</x:String>
+                        <x:String>Room 4</x:String>
                     </Picker.Items>
                 </Picker>
             </Grid>

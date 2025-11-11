@@ -165,7 +165,9 @@ namespace LalabotApplication.Screens
                         Category = data.category ?? "Files",
                         VerificationCode = data.verificationCode,
                         Status = data.status,
-                        Message = data.message
+                        Message = data.message,
+                        CurrentLocation = data.currentLocation,      // NEW
+                        ProgressStage = data.progressStage           // NEW
                     };
 
                     // Categorize as outgoing or incoming
@@ -344,6 +346,9 @@ namespace LalabotApplication.Screens
         public string Status { get; set; }
         public string Message { get; set; }
         public string Category { get; set; }
+        public int CurrentLocation { get; set; }    // NEW
+        public int ProgressStage { get; set; }      // NEW
+
         public string CategoryText => $"📁 {Category}";
         public string SenderText => $"From: {Sender}";
         public string ReceiverText => $"To: {Receiver}";
@@ -368,6 +373,28 @@ namespace LalabotApplication.Screens
             "delivered" => Color.FromArgb("#F5F5F5"),    // Light Gray
             _ => Color.FromArgb("#FFFFFF")
         };
+
+        // NEW: Progress Tracker Properties
+        public bool ShowProgressTracker => Status != "pending" && Status != "completed" && Status != "cancelled";
+
+        public string ProgressText => ProgressStage switch
+        {
+            0 => "📦 Processing your delivery...",
+            1 => "🚚 Robot is on the way",
+            2 => $"📍 Approaching Room {Destination}",
+            3 => "✅ Arrived! Ready for pickup",
+            _ => ""
+        };
+
+        public Color Stage0Color => ProgressStage >= 0 ? Color.FromArgb("#4CAF50") : Color.FromArgb("#E0E0E0");
+        public Color Stage1Color => ProgressStage >= 1 ? Color.FromArgb("#4CAF50") : Color.FromArgb("#E0E0E0");
+        public Color Stage2Color => ProgressStage >= 2 ? Color.FromArgb("#4CAF50") : Color.FromArgb("#E0E0E0");
+        public Color Stage3Color => ProgressStage >= 3 ? Color.FromArgb("#4CAF50") : Color.FromArgb("#E0E0E0");
+
+        public string Stage0Icon => ProgressStage >= 0 ? "✓" : "";
+        public string Stage1Icon => ProgressStage >= 1 ? "✓" : "";
+        public string Stage2Icon => ProgressStage >= 2 ? "✓" : "";
+        public string Stage3Icon => ProgressStage >= 3 ? "✓" : "";
     }
 
     public class DeliveryData
@@ -383,6 +410,8 @@ namespace LalabotApplication.Screens
         public string message { get; set; }
         public string verificationCode { get; set; }
         public string status { get; set; }
+        public int currentLocation { get; set; }    // NEW
+        public int progressStage { get; set; }      // NEW
         public string createdAt { get; set; }
         public string arrivedAt { get; set; }
         public string completedAt { get; set; }

@@ -198,6 +198,8 @@ namespace LalabotApplication.Screens
                     message = Message,
                     verificationCode = verificationCode,
                     status = "pending",
+                    currentLocation = 0,        // NEW: 0 = Base, 1-4 = Rooms
+                    progressStage = 0,          // NEW: 0-4 for progress dots
                     createdAt = DateTime.UtcNow.ToString("o"),
                     arrivedAt = (string)null,
                     completedAt = (string)null
