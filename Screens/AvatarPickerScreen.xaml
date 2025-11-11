@@ -27,57 +27,95 @@
         <!-- Avatar Grid + Upload Button -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="20">
-
-                <!-- Upload Photo Button -->
+                
+                <!-- Upload Photo Button with Preview -->
                 <Grid>
                     <RoundRectangle
                         Fill="AliceBlue"
-                        Stroke="#2D4A6E"
-                        StrokeThickness="2"
+                        Stroke="{Binding CustomPhotoStrokeColor}"
+                        StrokeThickness="{Binding CustomPhotoStrokeThickness}"
                         CornerRadius="15"/>
-
-                    <Grid Padding="15" ColumnDefinitions="Auto,*">
+                    
+                    <Grid Padding="15" ColumnDefinitions="Auto,*,Auto">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding UploadPhotoCommand}"/>
                         </Grid.GestureRecognizers>
-
-                        <!-- Camera Icon -->
+                        
+                        <!-- Camera Icon OR Preview Image -->
                         <Grid Grid.Column="0" 
-                              HeightRequest="50" 
-                              WidthRequest="50"
+                              HeightRequest="60" 
+                              WidthRequest="60"
                               Margin="0,0,15,0">
-                            <Ellipse Fill="#2D4A6E" 
-                                     HeightRequest="50" 
-                                     WidthRequest="50"/>
-                            <Image HorizontalOptions="Center" VerticalOptions="Center">
-                                <Image.Source>
-                                    <FontImageSource
-                                        FontFamily="LineIcons"
-                                        Glyph="&#xea2f;"
-                                        Size="30"
-                                        Color="White"/>
-                                </Image.Source>
-                            </Image>
+                            
+                            <!-- Default Camera Icon (when no custom photo) -->
+                            <Grid IsVisible="{Binding HasNoCustomPhoto}">
+                                <Ellipse Fill="#2D4A6E" 
+                                         HeightRequest="60" 
+                                         WidthRequest="60"/>
+                                <Image HorizontalOptions="Center" VerticalOptions="Center">
+                                    <Image.Source>
+                                        <FontImageSource
+                                            FontFamily="LineIcons"
+                                            Glyph="&#xea2f;"
+                                            Size="30"
+                                            Color="White"/>
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
+                            
+                            <!-- Custom Photo Preview (when uploaded) -->
+                            <Grid IsVisible="{Binding HasCustomPhoto}">
+                                <Ellipse 
+                                    Fill="White" 
+                                    Stroke="#2D4A6E" 
+                                    StrokeThickness="2" 
+                                    HeightRequest="60" 
+                                    WidthRequest="60"/>
+                                <Image
+                                    Source="{Binding SelectedAvatarUrl}"
+                                    Aspect="AspectFill"
+                                    HeightRequest="56"
+                                    WidthRequest="56"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center">
+                                    <Image.Clip>
+                                        <EllipseGeometry Center="28,28" RadiusX="28" RadiusY="28"/>
+                                    </Image.Clip>
+                                </Image>
+                            </Grid>
                         </Grid>
-
+                        
                         <!-- Text -->
                         <VerticalStackLayout Grid.Column="1" 
                                              VerticalOptions="Center" 
                                              Spacing="2">
                             <Label 
-                                Text="Upload Custom Photo"
+                                Text="{Binding UploadButtonTitle}"
                                 FontFamily="OutfitRegular"
                                 FontSize="18"
                                 FontAttributes="Bold"
                                 TextColor="#2D4A6E"/>
                             <Label 
-                                Text="Take a photo or choose from gallery"
+                                Text="{Binding UploadButtonSubtitle}"
                                 FontFamily="OutfitLight"
                                 FontSize="12"
                                 TextColor="Gray"/>
                         </VerticalStackLayout>
+                        
+                        <!-- Check Icon (when custom photo selected) -->
+                        <Grid Grid.Column="2" 
+                              HeightRequest="30" 
+                              WidthRequest="30" 
+                              IsVisible="{Binding HasCustomPhoto}">
+                            <Ellipse Fill="#2D4A6E" HeightRequest="30" WidthRequest="30"/>
+                            <Image HorizontalOptions="Center" VerticalOptions="Center">
+                                <Image.Source>
+                                    <FontImageSource FontFamily="LineIcons" Glyph="&#xea4e;" Size="20" Color="White"/>
+                                </Image.Source>
+                            </Image>
+                        </Grid>
                     </Grid>
-
+                    
                     <!-- Loading Indicator -->
                     <ActivityIndicator 
                         IsRunning="{Binding IsUploading}"

@@ -12,15 +12,40 @@ public partial class AvatarPickerScreen : ContentPage
         InitializeComponent();
         _viewModel = viewModel;
         BindingContext = viewModel;
+
+        // Subscribe to property changes
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+    }
+
+    private void OnViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        // When custom photo is uploaded, clear preset selections
+        if (e.PropertyName == nameof(_viewModel.SelectedAvatarUrl))
+        {
+            if (!string.IsNullOrEmpty(_viewModel.SelectedAvatarUrl))
+            {
+                // Custom photo selected, hide all preset selections
+                ClearAllSelections();
+            }
+        }
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
 
-        // Set initial selection based on current avatar
-        _currentSelectedIndex = _viewModel.GetCurrentAvatarIndex();
-        UpdateSelection(_currentSelectedIndex);
+        // Check if custom photo is selected
+        if (!string.IsNullOrEmpty(_viewModel.GetCurrentAvatarUrl()))
+        {
+            // Custom photo is active, don't select any preset
+            ClearAllSelections();
+        }
+        else
+        {
+            // Set initial selection based on current avatar
+            _currentSelectedIndex = _viewModel.GetCurrentAvatarIndex();
+            UpdateSelection(_currentSelectedIndex);
+        }
     }
 
     private void OnAvatarTapped(object sender, TappedEventArgs e)
@@ -40,7 +65,20 @@ public partial class AvatarPickerScreen : ContentPage
 
     private void UpdateSelection(int selectedIndex)
     {
-        // Hide all selections
+        // Hide all selections first
+        ClearAllSelections();
+
+        // Show selected one
+        var selectedBorderToShow = this.FindByName<RoundRectangle>($"SelectedBorder{selectedIndex}");
+        var checkToShow = this.FindByName<Grid>($"Check{selectedIndex}");
+
+        if (selectedBorderToShow != null) selectedBorderToShow.IsVisible = true;
+        if (checkToShow != null) checkToShow.IsVisible = true;
+    }
+
+    private void ClearAllSelections()
+    {
+        // Hide all preset avatar selections
         for (int i = 0; i < 6; i++)
         {
             var selectedBorder = this.FindByName<RoundRectangle>($"SelectedBorder{i}");
@@ -49,12 +87,11 @@ public partial class AvatarPickerScreen : ContentPage
             if (selectedBorder != null) selectedBorder.IsVisible = false;
             if (check != null) check.IsVisible = false;
         }
+    }
 
-        // Show selected one
-        var selectedBorderToShow = this.FindByName<RoundRectangle>($"SelectedBorder{selectedIndex}");
-        var checkToShow = this.FindByName<Grid>($"Check{selectedIndex}");
-
-        if (selectedBorderToShow != null) selectedBorderToShow.IsVisible = true;
-        if (checkToShow != null) checkToShow.IsVisible = true;
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
     }
 }

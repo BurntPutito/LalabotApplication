@@ -22,6 +22,16 @@ namespace LalabotApplication.Screens
         private int _initialAvatarIndex = 0;
         private string _initialAvatarUrl = string.Empty;
 
+        // Visual feedback properties
+        public bool HasCustomPhoto => !string.IsNullOrEmpty(SelectedAvatarUrl);
+        public bool HasNoCustomPhoto => !HasCustomPhoto;
+
+        public string UploadButtonTitle => HasCustomPhoto ? "Custom Photo Selected" : "Upload Custom Photo";
+        public string UploadButtonSubtitle => HasCustomPhoto ? "Tap to change photo" : "Take a photo or choose from gallery";
+
+        public Color CustomPhotoStrokeColor => HasCustomPhoto ? Color.FromArgb("#2D4A6E") : Color.FromArgb("#E0E0E0");
+        public int CustomPhotoStrokeThickness => HasCustomPhoto ? 4 : 2;
+
         public AvatarPickerScreenModel()
         {
             _imageUploadService = new ImageUploadService();
@@ -42,6 +52,7 @@ namespace LalabotApplication.Screens
             {
                 _initialAvatarUrl = value;
                 SelectedAvatarUrl = value;
+                UpdateVisualFeedback();
             }
         }
 
@@ -52,6 +63,22 @@ namespace LalabotApplication.Screens
         {
             SelectedAvatarIndex = index;
             SelectedAvatarUrl = string.Empty; // Clear custom URL when selecting default
+            UpdateVisualFeedback();
+        }
+
+        partial void OnSelectedAvatarUrlChanged(string value)
+        {
+            UpdateVisualFeedback();
+        }
+
+        private void UpdateVisualFeedback()
+        {
+            OnPropertyChanged(nameof(HasCustomPhoto));
+            OnPropertyChanged(nameof(HasNoCustomPhoto));
+            OnPropertyChanged(nameof(UploadButtonTitle));
+            OnPropertyChanged(nameof(UploadButtonSubtitle));
+            OnPropertyChanged(nameof(CustomPhotoStrokeColor));
+            OnPropertyChanged(nameof(CustomPhotoStrokeThickness));
         }
 
         [RelayCommand]
@@ -135,7 +162,9 @@ namespace LalabotApplication.Screens
                 SelectedAvatarUrl = imageUrl;
                 SelectedAvatarIndex = -1; // -1 indicates custom photo
 
-                await Shell.Current.DisplayAlert("Success!", "Your photo has been uploaded successfully!", "OK");
+                UpdateVisualFeedback();
+
+                await Shell.Current.DisplayAlert("Success!", "Your photo has been uploaded! Tap 'Select Avatar' to confirm.", "OK");
             }
             catch (PermissionException)
             {
