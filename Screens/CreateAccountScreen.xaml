@@ -61,7 +61,7 @@
                     </Grid>
 
                     <!-- Dynamic Hint -->
-                    <Label Text="Avoid using vulgar or offensive words as your name."
+                    <Label Text="Use your full name and avoid using vulgar or offensive words as your name."
                            FontFamily="OutfitLight"
                            FontSize="12"
                            TextColor="#6B7280"
