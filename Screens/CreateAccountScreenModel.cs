@@ -117,6 +117,18 @@ namespace LalabotApplication.Screens
                 return;
             }
 
+            // validation of only using .com , .ph, .com.ph email domains
+            if (!(Email.EndsWith(".com", StringComparison.OrdinalIgnoreCase) ||
+                  Email.EndsWith(".ph", StringComparison.OrdinalIgnoreCase) ||
+                  Email.EndsWith(".com.ph", StringComparison.OrdinalIgnoreCase)))
+            {
+                await Shell.Current.DisplayAlert(
+                    "Invalid Email",
+                    "Only emails ending with .com, .ph, or .com.ph are allowed.",
+                    "OK");
+                return;
+            }
+
             try
             {
                 // Create account with email and password only

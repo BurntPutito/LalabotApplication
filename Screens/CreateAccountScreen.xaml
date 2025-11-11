@@ -106,7 +106,7 @@
                     </Grid>
 
                     <!-- Dynamic Hint -->
-                    <Label Text="We recommend using your official Gmail address."
+                    <Label Text="We recommend using your official Gmail address and email should end with .com or .ph or both."
                            FontFamily="OutfitLight"
                            FontSize="12"
                            TextColor="#6B7280"
