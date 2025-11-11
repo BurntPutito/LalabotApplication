@@ -164,7 +164,7 @@ namespace LalabotApplication.Screens
                         Destination = data.destination,
                         Category = data.category ?? "Files",
                         VerificationCode = data.verificationCode,
-                        Status = data.status,
+                        Status = data.status ?? "pending",
                         Message = data.message,
                         CurrentLocation = data.currentLocation,      // NEW
                         ProgressStage = data.progressStage           // NEW
@@ -349,6 +349,12 @@ namespace LalabotApplication.Screens
         public int CurrentLocation { get; set; }    // NEW
         public int ProgressStage { get; set; }      // NEW
 
+        public bool ShowProgressTracker =>
+        Status == "pending" ||
+        Status == "in_progress" ||
+        Status == "arrived" ||
+        ProgressStage > 0;
+
         public string CategoryText => $"📁 {Category}";
         public string SenderText => $"From: {Sender}";
         public string ReceiverText => $"To: {Receiver}";
@@ -373,9 +379,6 @@ namespace LalabotApplication.Screens
             "delivered" => Color.FromArgb("#F5F5F5"),    // Light Gray
             _ => Color.FromArgb("#FFFFFF")
         };
-
-        // NEW: Progress Tracker Properties
-        public bool ShowProgressTracker => Status != "pending" && Status != "completed" && Status != "cancelled";
 
         public string ProgressText => ProgressStage switch
         {
