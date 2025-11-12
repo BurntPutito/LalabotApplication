@@ -360,13 +360,18 @@ namespace LalabotApplication.Screens
         public string ReceiverText => $"To: {Receiver}";
         public string VerificationText => $"🔐 {VerificationCode}";
         public string DestinationText => $"📍 {Destination}";
-        public string StatusText => Status switch
+        public string StatusText => ProgressStage switch
         {
-            "pending" => "📦 Pending",
-            "in_progress" => "🚚 In Transit",
-            "arrived" => "📍 Arrived - Awaiting Verification",
-            "delivered" => "✅ Delivered",
-            _ => Status
+            0 => "📦 Processing",
+            1 => "🚚 In Transit",
+            2 => $"📍 Approaching Room {Destination}",
+            3 => "✅ Arrived - Awaiting Verification",
+            _ => Status switch
+            {
+                "completed" => "✅ Delivered",
+                "cancelled" => "❌ Cancelled",
+                _ => "📦 Pending"
+            }
         };
 
         public bool HasMessage => !string.IsNullOrWhiteSpace(Message);
