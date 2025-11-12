@@ -133,7 +133,8 @@ namespace LalabotApplication.Screens
                 Status = data.status ?? "pending",
                 Message = data.message,
                 CreatedAt = DateTime.TryParse(data.createdAt, out var date) ? date : DateTime.Now,
-                IsOutgoing = isOutgoing
+                IsOutgoing = isOutgoing,
+                ProgressStage = data.progressStage
             };
         }
 
@@ -145,9 +146,9 @@ namespace LalabotApplication.Screens
             {
                 return CurrentFilter switch
                 {
-                    "delivered" => d.Status == "completed" || d.Status == "delivered",
+                    "delivered" => d.Status == "completed" || d.Status == "delivered" || d.ProgressStage == 3,
                     "cancelled" => d.Status == "cancelled",
-                    "pending" => d.Status == "pending" || d.Status == "in_progress" || d.Status == "arrived",
+                    "pending" => (d.Status == "pending" || d.Status == "in_progress" || d.Status == "arrived") && d.ProgressStage < 3,
                     _ => false
                 };
             }).ToList();
@@ -178,6 +179,7 @@ namespace LalabotApplication.Screens
         public string Message { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsOutgoing { get; set; }
+        public int ProgressStage { get; set; }
 
         public string DirectionText => IsOutgoing ? $"To: {Receiver}" : $"From: {Sender}";
         public string DestinationText => $"Destination {Destination}";
@@ -185,26 +187,34 @@ namespace LalabotApplication.Screens
         public string MessagePreview => !string.IsNullOrEmpty(Message) ? $"Message: {Message}" : "";
         public bool HasMessage => !string.IsNullOrEmpty(Message);
 
-        public string StatusBadge => Status switch
+        public string StatusBadge => ProgressStage switch
         {
-            "pending" => "⏳ Pending",
-            "in_progress" => "🚚 In Transit",
-            "arrived" => "📍 Arrived",
-            "completed" => "✅ Delivered",
-            "delivered" => "✅ Delivered",
-            "cancelled" => "❌ Cancelled",
-            _ => Status
+            0 => "⏳ Processing",
+            1 => "🚚 In Transit",
+            2 => "📍 Approaching",
+            3 => "✅ Arrived",
+            _ => Status switch
+            {
+                "completed" => "✅ Delivered",
+                "delivered" => "✅ Delivered",
+                "cancelled" => "❌ Cancelled",
+                _ => "⏳ Pending"
+            }
         };
 
-        public Color StatusColor => Status switch
+        public Color StatusColor => ProgressStage switch
         {
-            "pending" => Color.FromArgb("#FFF9C4"),
-            "in_progress" => Color.FromArgb("#BBDEFB"),
-            "arrived" => Color.FromArgb("#C8E6C9"),
-            "completed" => Color.FromArgb("#E8F5E9"),
-            "delivered" => Color.FromArgb("#E8F5E9"),
-            "cancelled" => Color.FromArgb("#FFCDD2"),
-            _ => Color.FromArgb("#FFFFFF")
+            0 => Color.FromArgb("#FFF9C4"),      // Processing - Light Yellow
+            1 => Color.FromArgb("#BBDEFB"),      // In Transit - Light Blue
+            2 => Color.FromArgb("#C8E6C9"),      // Approaching - Light Green
+            3 => Color.FromArgb("#E8F5E9"),      // Arrived - Lighter Green
+            _ => Status switch
+            {
+                "completed" => Color.FromArgb("#E8F5E9"),    // Delivered - Light Green
+                "delivered" => Color.FromArgb("#E8F5E9"),    // Delivered - Light Green
+                "cancelled" => Color.FromArgb("#FFCDD2"),    // Cancelled - Light Red
+                _ => Color.FromArgb("#FFFFFF")
+            }
         };
     }
 }
