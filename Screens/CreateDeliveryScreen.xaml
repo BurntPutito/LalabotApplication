@@ -131,6 +131,35 @@
                     Command="{Binding ClearReceiverCommand}"/>
             </Grid>
 
+            <!--Pickup Location Picker-->
+            <Label
+                Text="Pickup Location"
+                FontFamily="OutfitLight"
+                FontSize="Medium"/>
+            <Grid Margin="0, 0, 0, 20">
+                <RoundRectangle
+                    BackgroundColor="AliceBlue"
+                    HeightRequest="50"
+                    CornerRadius="15"
+                    Stroke="#2D4A6E"
+                    StrokeThickness="2"/>
+                <Picker
+                    x:Name="PickupPicker"
+                    Title="Select pickup location"
+                    SelectedIndex="{Binding SelectedPickupIndex}"
+                    FontFamily="OutfitLight"
+                    FontSize="16"
+                    BackgroundColor="Transparent"
+                    Margin="10, 0">
+                    <Picker.Items>
+                        <x:String>Room 1</x:String>
+                        <x:String>Room 2</x:String>
+                        <x:String>Room 3</x:String>
+                        <x:String>Room 4</x:String>
+                    </Picker.Items>
+                </Picker>
+            </Grid>
+
             <!--File Category Entry-->
             <Label
                 Text="File Category"

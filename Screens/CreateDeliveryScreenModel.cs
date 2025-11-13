@@ -27,6 +27,9 @@ namespace LalabotApplication.Screens
         private int _selectedDestinationIndex = -1;
 
         [ObservableProperty]
+        private int _selectedPickupIndex = -1;
+
+        [ObservableProperty]
         private int _selectedCategoryIndex = -1;
 
         [ObservableProperty]
@@ -148,6 +151,12 @@ namespace LalabotApplication.Screens
                 return;
             }
 
+            if (SelectedPickupIndex == -1)
+            {
+                await Shell.Current.DisplayAlert("Validation Error", "Please select a pickup location.", "OK");
+                return;
+            }
+
             try
             {
                 var user = _authClient.User;
@@ -192,6 +201,7 @@ namespace LalabotApplication.Screens
                     senderUid = user.Uid,
                     receiver = SelectedReceiver.Username,
                     receiverUid = SelectedReceiver.Uid,
+                    pickup = SelectedPickupIndex + 1,
                     destination = destination,
                     compartment = compartment,
                     category = category,

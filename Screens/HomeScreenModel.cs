@@ -161,6 +161,7 @@ namespace LalabotApplication.Screens
                         Id = data.id,
                         Sender = data.sender,
                         Receiver = data.receiver,
+                        Pickup = data.pickup,
                         Destination = data.destination,
                         Category = data.category ?? "Files",
                         VerificationCode = data.verificationCode,
@@ -346,8 +347,9 @@ namespace LalabotApplication.Screens
         public string Status { get; set; }
         public string Message { get; set; }
         public string Category { get; set; }
-        public int CurrentLocation { get; set; }    // NEW
-        public int ProgressStage { get; set; }      // NEW
+        public int CurrentLocation { get; set; }
+        public int ProgressStage { get; set; }
+        public int Pickup { get; set; }
 
         public bool ShowProgressTracker =>
         Status == "pending" ||
@@ -360,6 +362,7 @@ namespace LalabotApplication.Screens
         public string ReceiverText => $"To: {Receiver}";
         public string VerificationText => $"🔐 {VerificationCode}";
         public string DestinationText => $"📍 {Destination}";
+        public string PickupText => $"📦 Pickup: Room {Pickup}";
         public string StatusText => ProgressStage switch
         {
             0 => "📦 Processing",
@@ -407,6 +410,7 @@ namespace LalabotApplication.Screens
 
     public class DeliveryData
     {
+        public int pickup { get; set; }
         public string category { get; set; }
         public string id { get; set; }
         public string sender { get; set; }

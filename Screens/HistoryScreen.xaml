@@ -109,6 +109,11 @@
                                         FontSize="14"
                                         TextColor="Gray"/>
                                     <Label
+                                        Text="{Binding PickupText}"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"/>
+                                    <Label
                                         Text="{Binding DateText}"
                                         FontFamily="OutfitLight"
                                         FontSize="12"

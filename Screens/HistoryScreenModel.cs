@@ -129,6 +129,7 @@ namespace LalabotApplication.Screens
                 Id = data.id,
                 Sender = data.sender,
                 Receiver = data.receiver,
+                Pickup = data.pickup,
                 Destination = data.destination,
                 Status = data.status ?? "pending",
                 Message = data.message,
@@ -171,6 +172,7 @@ namespace LalabotApplication.Screens
 
     public class HistoryDeliveryInfo
     {
+        public int Pickup { get; set; }
         public string Id { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }
@@ -180,6 +182,8 @@ namespace LalabotApplication.Screens
         public DateTime CreatedAt { get; set; }
         public bool IsOutgoing { get; set; }
         public int ProgressStage { get; set; }
+
+        public string PickupText => $"Pickup: Room {Pickup}";
 
         public string DirectionText => IsOutgoing ? $"To: {Receiver}" : $"From: {Sender}";
         public string DestinationText => $"Destination {Destination}";

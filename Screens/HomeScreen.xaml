@@ -142,6 +142,11 @@
                                                         FontSize="16"
                                                         TextColor="#2D4A6E"/>
                                                     <Label
+                                                        Text="{Binding PickupText}"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="15"
+                                                        TextColor="Gray"/>
+                                                    <Label
                                                         Text="{Binding VerificationText}"
                                                         FontFamily="OutfitRegular"
                                                         FontSize="16"/>
@@ -184,8 +189,7 @@
                                             <Grid 
                                                 Grid.Row="2"
                                                 RowDefinitions="Auto, Auto" 
-                                                RowSpacing="5"
-                                                Margin="0,5,0,0"
+                                                RowSpacing="1"
                                                 IsVisible="{Binding ShowProgressTracker}">
 
                                                 <HorizontalStackLayout 
@@ -273,13 +277,12 @@
                                                 </HorizontalStackLayout>
 
                                                 <Label 
-                                                    Grid.Row="1" 
+                                                    Grid.Row="1"
                                                     Text="{Binding ProgressText}" 
                                                     FontFamily="OutfitLight" 
                                                     FontSize="11" 
                                                     HorizontalOptions="Center"
-                                                    TextColor="#2D4A6E"
-                                                    Margin="0,2,0,0"/>
+                                                    TextColor="#2D4A6E"/>
                                             </Grid>
 
                                         </Grid>
@@ -354,6 +357,11 @@
                                                         FontSize="16"
                                                         TextColor="#2D4A6E"/>
                                                     <Label
+                                                        Text="{Binding PickupText}"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="15"
+                                                        TextColor="Gray"/>
+                                                    <Label
                                                         Text="{Binding VerificationText}"
                                                         FontFamily="OutfitRegular"
                                                         FontSize="16"/>
@@ -396,8 +404,7 @@
                                             <Grid 
                                                 Grid.Row="2"
                                                 RowDefinitions="Auto, Auto" 
-                                                RowSpacing="5"
-                                                Margin="0,5,0,0"
+                                                RowSpacing="1"
                                                 IsVisible="{Binding ShowProgressTracker}">
 
                                                 <HorizontalStackLayout 
@@ -490,8 +497,7 @@
                                                     FontFamily="OutfitLight" 
                                                     FontSize="11" 
                                                     HorizontalOptions="Center"
-                                                    TextColor="#2D4A6E"
-                                                    Margin="0,2,0,0"/>
+                                                    TextColor="#2D4A6E"/>
                                             </Grid>
 
                                         </Grid>
