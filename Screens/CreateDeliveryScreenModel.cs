@@ -189,6 +189,13 @@ namespace LalabotApplication.Screens
                 string verificationCode = GenerateVerificationCode();
                 int destination = SelectedDestinationIndex + 1;
 
+                // Adjust destination number if it's >= pickup room
+                int pickupRoom = SelectedPickupIndex + 1;
+                if (destination >= pickupRoom)
+                {
+                    destination++; // Skip the pickup room number
+                }
+
                 // Define category
                 string[] categories = { "Documents", "Forms", "Reports", "Confidentials", "Exam Questionnaire", "Answer Sheet", "Files", "Other" };
                 string category = categories[SelectedCategoryIndex];
@@ -316,6 +323,30 @@ namespace LalabotApplication.Screens
             Random random = new Random();
             return random.Next(1000, 9999).ToString();
         }
+
+        public List<string> AvailableDestinations
+        {
+            get
+            {
+                var allRooms = new List<string> { "Room 1", "Room 2", "Room 3", "Room 4" };
+
+                if (SelectedPickupIndex == -1)
+                {
+                    return allRooms; // Show all if no pickup selected yet
+                }
+
+                // Remove the selected pickup room from destinations
+                allRooms.RemoveAt(SelectedPickupIndex);
+                return allRooms;
+            }
+        }
+
+        partial void OnSelectedPickupIndexChanged(int value)
+        {
+            // Reset destination when pickup changes
+            SelectedDestinationIndex = -1;
+            OnPropertyChanged(nameof(AvailableDestinations));
+        }
     }
 
     // Helper classes
@@ -338,4 +369,5 @@ namespace LalabotApplication.Screens
         public string compartment2 { get; set; }
         public string compartment3 { get; set; }
     }
+
 }

@@ -197,7 +197,7 @@
                 Text="Destination"
                 FontFamily="OutfitLight"
                 FontSize="Medium"/>
-            <Grid Margin="0, 0, 0, 20">
+            <Grid>
                 <RoundRectangle
                     BackgroundColor="AliceBlue"
                     HeightRequest="50"
@@ -208,18 +208,22 @@
                     x:Name="DestinationPicker"
                     Title="Select destination"
                     SelectedIndex="{Binding SelectedDestinationIndex}"
+                    ItemsSource="{Binding AvailableDestinations}"
                     FontFamily="OutfitLight"
                     FontSize="16"
                     BackgroundColor="Transparent"
-                    Margin="10, 0">
-                    <Picker.Items>
-                        <x:String>Room 1</x:String>
-                        <x:String>Room 2</x:String>
-                        <x:String>Room 3</x:String>
-                        <x:String>Room 4</x:String>
-                    </Picker.Items>
-                </Picker>
+                    IsEnabled="{Binding SelectedPickupIndex, Converter={StaticResource IsNotMinusOne}}"
+                    Margin="10, 0"/>
             </Grid>
+
+            <!-- Optional: Add a hint when no pickup is selected -->
+            <Label
+                Text="Please select a pickup location first"
+                FontFamily="OutfitLight"
+                FontSize="12"
+                TextColor="#FF6B6B"
+                Margin="10,0,0,20"
+                IsVisible="{Binding SelectedPickupIndex, Converter={StaticResource IsMinusOne}}"/>
 
             <!--Message Entry-->
             <Label
