@@ -227,7 +227,7 @@
 
             <!--Message Entry-->
             <Label
-                Text="Message"
+                Text="Message (Optional)"
                 FontFamily="OutfitLight"
                 FontSize="Medium"/>
             <Grid Margin="0, 0, 0, 30">
