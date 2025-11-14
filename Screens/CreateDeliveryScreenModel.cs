@@ -200,6 +200,11 @@ namespace LalabotApplication.Screens
                 string[] categories = { "Documents", "Forms", "Reports", "Confidentials", "Exam Questionnaire", "Answer Sheet", "Files", "Other" };
                 string category = categories[SelectedCategoryIndex];
 
+                // ph timezone date variable settings
+                var philippineTime = TimeZoneInfo.ConvertTimeFromUtc(
+                DateTime.UtcNow,
+                TimeZoneInfo.FindSystemTimeZoneById("Singapore Standard Time") // Philippines uses this timezone ID
+                );
                 // Create delivery object
                 var delivery = new
                 {
@@ -215,9 +220,9 @@ namespace LalabotApplication.Screens
                     message = Message,
                     verificationCode = verificationCode,
                     status = "pending",
-                    currentLocation = 0,        // NEW: 0 = Base, 1-4 = Rooms
-                    progressStage = 0,          // NEW: 0-4 for progress dots
-                    createdAt = DateTime.UtcNow.ToString("o"),
+                    currentLocation = 0,
+                    progressStage = 0,
+                    createdAt = philippineTime.ToString("o"),
                     arrivedAt = (string)null,
                     completedAt = (string)null
                 };
