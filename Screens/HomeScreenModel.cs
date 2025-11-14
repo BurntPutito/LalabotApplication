@@ -360,15 +360,15 @@ namespace LalabotApplication.Screens
         public string CategoryText => $"📁 {Category}";
         public string SenderText => $"From: {Sender}";
         public string ReceiverText => $"To: {Receiver}";
-        public string VerificationText => $"🔐 {VerificationCode}";
-        public string DestinationText => $"📍 {Destination}";
+        public string VerificationText => $"🔐 Code: {VerificationCode}";
+        public string DestinationText => $"📍Destination: {Destination}";
         public string PickupText => $"📦 Pickup: Room {Pickup}";
         public string StatusText => ProgressStage switch
         {
             0 => "📦 Processing",
             1 => "🚚 In Transit",
             2 => $"📍 Approaching Room {Destination}",
-            3 => "✅ Arrived - Awaiting Verification",
+            3 => "✅ Arrived",
             _ => Status switch
             {
                 "completed" => "✅ Delivered",

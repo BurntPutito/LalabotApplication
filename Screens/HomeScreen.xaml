@@ -142,14 +142,14 @@
                                                         FontSize="16"
                                                         TextColor="#2D4A6E"/>
                                                     <Label
+                                                        Text="{Binding VerificationText}"
+                                                        FontFamily="OutfitRegular"
+                                                        FontSize="16"/>
+                                                    <Label
                                                         Text="{Binding PickupText}"
                                                         FontFamily="OutfitLight"
                                                         FontSize="15"
                                                         TextColor="Gray"/>
-                                                    <Label
-                                                        Text="{Binding VerificationText}"
-                                                        FontFamily="OutfitRegular"
-                                                        FontSize="16"/>
                                                     <Label
                                                         Text="{Binding DestinationText}"
                                                         FontFamily="OutfitLight"
@@ -357,14 +357,14 @@
                                                         FontSize="16"
                                                         TextColor="#2D4A6E"/>
                                                     <Label
+                                                        Text="{Binding VerificationText}"
+                                                        FontFamily="OutfitRegular"
+                                                        FontSize="16"/>
+                                                    <Label
                                                         Text="{Binding PickupText}"
                                                         FontFamily="OutfitLight"
                                                         FontSize="15"
                                                         TextColor="Gray"/>
-                                                    <Label
-                                                        Text="{Binding VerificationText}"
-                                                        FontFamily="OutfitRegular"
-                                                        FontSize="16"/>
                                                     <Label
                                                         Text="{Binding DestinationText}"
                                                         FontFamily="OutfitLight"
