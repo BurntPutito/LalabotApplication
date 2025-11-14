@@ -167,18 +167,20 @@ namespace LalabotApplication.Screens
                         VerificationCode = data.verificationCode,
                         Status = data.status ?? "pending",
                         Message = data.message,
-                        CurrentLocation = data.currentLocation,      // NEW
-                        ProgressStage = data.progressStage           // NEW
+                        CurrentLocation = data.currentLocation,
+                        ProgressStage = data.progressStage
                     };
 
                     // Categorize as outgoing or incoming
                     if (data.senderUid == user.Uid)
                     {
                         OutgoingDeliveries.Add(cardInfo);
+                        cardInfo.IsOutgoing = true;
                     }
                     else if (data.receiverUid == user.Uid)
                     {
                         IncomingDeliveries.Add(cardInfo);
+                        cardInfo.IsOutgoing = false;
                     }
                 }
 
@@ -189,6 +191,191 @@ namespace LalabotApplication.Screens
             catch (Exception ex)
             {
                 // Handle error silently or show message
+            }
+        }
+
+        [RelayCommand]
+        private async Task CancelDelivery(DeliveryCardInfo delivery)
+        {
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Cancel Delivery?",
+                $"Are you sure you want to cancel this delivery to {delivery.Receiver}?\n\n" +
+                $"The delivery will be marked as cancelled and the compartment will be freed.",
+                "Yes, Cancel",
+                "No");
+
+            if (!confirm) return;
+
+            try
+            {
+                var user = _authClient.User;
+                if (user == null) return;
+
+                // Update delivery status to cancelled
+                await _firebaseDb
+                    .Child("delivery_requests")
+                    .Child(delivery.Id)
+                    .PutAsync(new
+                    {
+                        id = delivery.Id,
+                        sender = delivery.Sender,
+                        senderUid = user.Uid,
+                        receiver = delivery.Receiver,
+                        receiverUid = await GetReceiverUid(delivery.Receiver),
+                        pickup = delivery.Pickup,
+                        destination = delivery.Destination,
+                        compartment = await GetDeliveryCompartment(delivery.Id),
+                        category = delivery.Category,
+                        message = delivery.Message,
+                        verificationCode = delivery.VerificationCode,
+                        status = "cancelled",
+                        currentLocation = 0,
+                        progressStage = 0,
+                        createdAt = DateTime.Now.ToString("o"),
+                        cancelledAt = DateTime.Now.ToString("o"),
+                        arrivedAt = (string)null,
+                        completedAt = (string)null
+                    });
+
+                // Free up the compartment
+                await FreeCompartment(delivery.Id);
+
+                // Move to history
+                await MoveToHistory(delivery.Id);
+
+                // Notify receiver about cancellation
+                var receiverUid = await GetReceiverUid(delivery.Receiver);
+                if (!string.IsNullOrEmpty(receiverUid))
+                {
+                    await _firebaseDb
+                        .Child("notifications")
+                        .Child(receiverUid)
+                        .Child($"{delivery.Id}_cancelled")
+                        .PutAsync(new
+                        {
+                            deliveryId = delivery.Id,
+                            from = delivery.Sender,
+                            message = $"Delivery from {delivery.Sender} has been cancelled",
+                            verificationCode = delivery.VerificationCode,
+                            destination = delivery.Destination,
+                            timestamp = DateTime.Now.ToString("o"),
+                            read = false
+                        });
+                }
+
+                await Shell.Current.DisplayAlert(
+                    "Delivery Cancelled",
+                    "The delivery has been cancelled successfully.",
+                    "OK");
+
+                // Reload deliveries
+                await LoadDeliveries();
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert(
+                    "Error",
+                    $"Failed to cancel delivery: {ex.Message}",
+                    "OK");
+            }
+        }
+
+        // Helper methods
+        private async Task<string> GetReceiverUid(string receiverName)
+        {
+            try
+            {
+                var users = await _firebaseDb
+                    .Child("users")
+                    .OnceAsync<UserProfile>();
+
+                var receiver = users.FirstOrDefault(u => u.Object.Username == receiverName);
+                return receiver?.Key ?? string.Empty;
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private async Task<int> GetDeliveryCompartment(string deliveryId)
+        {
+            try
+            {
+                var compartments = await _firebaseDb
+                    .Child("robot_status")
+                    .Child("currentDeliveries")
+                    .OnceSingleAsync<CompartmentStatus>();
+
+                if (compartments == null) return 0;
+
+                if (compartments.compartment1 == deliveryId) return 1;
+                if (compartments.compartment2 == deliveryId) return 2;
+                if (compartments.compartment3 == deliveryId) return 3;
+
+                return 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private async Task FreeCompartment(string deliveryId)
+        {
+            try
+            {
+                var compartments = await _firebaseDb
+                    .Child("robot_status")
+                    .Child("currentDeliveries")
+                    .OnceSingleAsync<CompartmentStatus>();
+
+                if (compartments == null) return;
+
+                await _firebaseDb
+                    .Child("robot_status")
+                    .Child("currentDeliveries")
+                    .PutAsync(new
+                    {
+                        compartment1 = compartments.compartment1 == deliveryId ? "" : compartments.compartment1,
+                        compartment2 = compartments.compartment2 == deliveryId ? "" : compartments.compartment2,
+                        compartment3 = compartments.compartment3 == deliveryId ? "" : compartments.compartment3
+                    });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error freeing compartment: {ex.Message}");
+            }
+        }
+
+        private async Task MoveToHistory(string deliveryId)
+        {
+            try
+            {
+                // Get the delivery data
+                var delivery = await _firebaseDb
+                    .Child("delivery_requests")
+                    .Child(deliveryId)
+                    .OnceSingleAsync<DeliveryData>();
+
+                if (delivery != null)
+                {
+                    // Copy to history
+                    await _firebaseDb
+                        .Child("delivery_history")
+                        .Child(deliveryId)
+                        .PutAsync(delivery);
+
+                    // Remove from active requests
+                    await _firebaseDb
+                        .Child("delivery_requests")
+                        .Child(deliveryId)
+                        .DeleteAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error moving to history: {ex.Message}");
             }
         }
 
@@ -350,6 +537,9 @@ namespace LalabotApplication.Screens
         public int CurrentLocation { get; set; }
         public int ProgressStage { get; set; }
         public int Pickup { get; set; }
+        public bool CanBeCancelled =>
+            Status == "pending" && ProgressStage == 0;
+        public bool IsOutgoing { get; set; }
 
         public bool ShowProgressTracker =>
         Status == "pending" ||

@@ -182,6 +182,7 @@ namespace LalabotApplication.Screens
         public DateTime CreatedAt { get; set; }
         public bool IsOutgoing { get; set; }
         public int ProgressStage { get; set; }
+        public string cancelledAt { get; set; }
 
         public string PickupText => $"Pickup: Room {Pickup}";
 
@@ -191,7 +192,7 @@ namespace LalabotApplication.Screens
         public string MessagePreview => !string.IsNullOrEmpty(Message) ? $"Message: {Message}" : "";
         public bool HasMessage => !string.IsNullOrEmpty(Message);
 
-        public string StatusBadge => ProgressStage switch
+        public string StatusBadge => Status == "cancelled" ? "❌ Cancelled" : ProgressStage switch
         {
             0 => "⏳ Processing",
             1 => "🚚 In Transit",
@@ -201,12 +202,12 @@ namespace LalabotApplication.Screens
             {
                 "completed" => "✅ Delivered",
                 "delivered" => "✅ Delivered",
-                "cancelled" => "❌ Cancelled",
                 _ => "⏳ Pending"
             }
         };
 
-        public Color StatusColor => ProgressStage switch
+        public Color StatusColor => Status == "cancelled" ? Color.FromArgb("#FFCDD2") :
+        ProgressStage switch
         {
             0 => Color.FromArgb("#FFF9C4"),      // Processing - Light Yellow
             1 => Color.FromArgb("#BBDEFB"),      // In Transit - Light Blue
@@ -216,7 +217,6 @@ namespace LalabotApplication.Screens
             {
                 "completed" => Color.FromArgb("#E8F5E9"),    // Delivered - Light Green
                 "delivered" => Color.FromArgb("#E8F5E9"),    // Delivered - Light Green
-                "cancelled" => Color.FromArgb("#FFCDD2"),    // Cancelled - Light Red
                 _ => Color.FromArgb("#FFFFFF")
             }
         };

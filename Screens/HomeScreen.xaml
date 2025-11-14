@@ -124,14 +124,47 @@
 
                                         <Grid Padding="15" RowDefinitions="Auto, *, Auto" RowSpacing="8">
 
-                                            <!-- Row 0: Username Header -->
-                                            <Label
-                                                Grid.Row="0"
-                                                Text="{Binding ReceiverText}"
-                                                FontFamily="OutfitBold"
-                                                FontSize="20"
-                                                LineBreakMode="TailTruncation"
-                                                Margin="0, -5, 0, 0"/>
+                                            <!-- Row 0: Header with Username and Cancel Button -->
+                                            <Grid Grid.Row="0" ColumnDefinitions="*, Auto">
+                                                <Label
+                                                    Grid.Column="0"
+                                                    Text="{Binding ReceiverText}"
+                                                    FontFamily="OutfitBold"
+                                                    FontSize="20"
+                                                    LineBreakMode="TailTruncation"
+                                                    Margin="0, -5, 0, 0"/>
+
+                                                <!-- Cancel Button (only visible for outgoing deliveries that can be cancelled) -->
+                                                <Grid
+                                                    Grid.Column="1"
+                                                    HeightRequest="24"
+                                                    WidthRequest="24"
+                                                    Margin="0,-5,0,0"
+                                                    VerticalOptions="Start"
+                                                    HorizontalOptions="End"
+                                                    IsVisible="{Binding CanBeCancelled}">
+                                                    <Grid.GestureRecognizers>
+                                                        <TapGestureRecognizer 
+                                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=CancelDeliveryCommand}"
+                                                            CommandParameter="{Binding .}"/>
+                                                    </Grid.GestureRecognizers>
+
+                                                    <!-- Small circular background -->
+                                                    <Ellipse
+                                                        Fill="#FFCDD2"
+                                                        HeightRequest="24"
+                                                        WidthRequest="24"/>
+
+                                                    <!-- X icon -->
+                                                    <Label
+                                                        Text="✕"
+                                                        TextColor="#D32F2F"
+                                                        FontFamily="OutfitBold"
+                                                        FontSize="14"
+                                                        HorizontalOptions="Center"
+                                                        VerticalOptions="Center"/>
+                                                </Grid>
+                                            </Grid>
 
                                             <!-- Row 1: Delivery Info -->
                                             <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
