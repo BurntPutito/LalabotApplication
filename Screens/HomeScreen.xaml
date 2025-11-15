@@ -80,13 +80,141 @@
                     </Grid>
                 </Grid>
 
+                <!-- Analytics Card -->
+                <Grid IsVisible="{Binding ShowAnalytics}" Margin="0, 0, 0, 0">
+                    <RoundRectangle
+                        Fill="AliceBlue"
+                        CornerRadius="15"
+                        Stroke="#2D4A6E"
+                        StrokeThickness="2"/>
+
+                    <VerticalStackLayout Padding="15" Spacing="10">
+                        <!-- Header -->
+                        <Label
+                            Text="Your Stats"
+                            FontFamily="OutfitRegular"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#2D4A6E"/>
+
+                        <!-- Stats Grid -->
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto" ColumnSpacing="10" RowSpacing="10">
+
+                            <!-- Total Sent -->
+                            <Border Grid.Row="0" Grid.Column="0" 
+                                    BackgroundColor="White" 
+                                    Stroke="#2D4A6E" 
+                                    StrokeThickness="1"
+                                    Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label 
+                                        Text="📤 Sent"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding TotalSent}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="24"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Total Received -->
+                            <Border Grid.Row="0" Grid.Column="1" 
+                                    BackgroundColor="White" 
+                                    Stroke="#2D4A6E" 
+                                    StrokeThickness="1"
+                                    Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label 
+                                        Text="📥 Received"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding TotalReceived}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="24"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- This Week -->
+                            <Border Grid.Row="1" Grid.Column="0" 
+                                    BackgroundColor="White" 
+                                    Stroke="#2D4A6E" 
+                                    StrokeThickness="1"
+                                    Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label 
+                                        Text="📅 This Week"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding ThisWeekTotal}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="24"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Success Rate -->
+                            <Border Grid.Row="1" Grid.Column="1" 
+                                    BackgroundColor="White" 
+                                    Stroke="#2D4A6E" 
+                                    StrokeThickness="1"
+                                    Padding="10">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="2">
+                                    <Label 
+                                        Text="✅ Success"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        TextColor="Gray"/>
+                                    <HorizontalStackLayout Spacing="2">
+                                        <Label 
+                                            Text="{Binding SuccessRate}"
+                                            FontFamily="OutfitBold"
+                                            FontSize="24"
+                                            TextColor="#4CAF50"/>
+                                        <Label 
+                                            Text="%"
+                                            FontFamily="OutfitBold"
+                                            FontSize="16"
+                                            TextColor="#4CAF50"
+                                            VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+
+                        </Grid>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <BoxView
+                    HeightRequest="1"
+                    Color="Gray"/>
+
                 <!-- Active Deliveries Section -->
                 <Label
                     Text="Active Deliveries"
                     FontFamily="OutfitRegular"
-                    FontSize="22"
+                    FontSize="24"
                     FontAttributes="Bold"
-                    Margin="0, 10, 0, 0"/>
+                    Margin="0, -5, 0, 0"/>
 
                 <!-- Outgoing Deliveries -->
                 <Label
@@ -94,6 +222,7 @@
                     FontFamily="OutfitRegular"
                     FontSize="16"
                     TextColor="Gray"
+                    Margin="0, -10"
                     IsVisible="{Binding HasOutgoingDeliveries}"/>
 
                 <Grid IsVisible="{Binding HasOutgoingDeliveries}">

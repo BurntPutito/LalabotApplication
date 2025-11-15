@@ -36,6 +36,22 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private bool _isRefreshing = false;
 
+        //Analytics properties
+        [ObservableProperty]
+        private int _totalSent = 0;
+
+        [ObservableProperty]
+        private int _totalReceived = 0;
+
+        [ObservableProperty]
+        private int _thisWeekTotal = 0;
+
+        [ObservableProperty]
+        private double _successRate = 0;
+
+        [ObservableProperty]
+        private bool _showAnalytics = false;
+
         public bool HasOutgoingDeliveries => OutgoingDeliveries?.Count > 0;
         public bool HasIncomingDeliveries => IncomingDeliveries?.Count > 0;
         public bool HasNoDeliveries => !HasOutgoingDeliveries && !HasIncomingDeliveries;
@@ -50,6 +66,7 @@ namespace LalabotApplication.Screens
 
             _ = LoadUserInfo();
             _ = LoadDeliveries();
+            _ = LoadAnalytics();
             StartDeliveryListener();
             _ = ListenForNewDeliveries();
         }
@@ -91,6 +108,7 @@ namespace LalabotApplication.Screens
 
             await LoadUserInfo();
             await LoadDeliveries();
+            await LoadAnalytics();
 
             IsRefreshing = false;
         }
@@ -194,6 +212,72 @@ namespace LalabotApplication.Screens
             catch (Exception ex)
             {
                 // Handle error silently or show message
+            }
+        }
+
+        private async Task LoadAnalytics()
+        {
+            try
+            {
+                var user = _authClient.User;
+                if (user == null) return;
+
+                // Get all deliveries from both delivery_requests and delivery_history
+                var requestsData = await _firebaseDb
+                    .Child("delivery_requests")
+                    .OnceAsync<DeliveryData>();
+
+                var historyData = await _firebaseDb
+                    .Child("delivery_history")
+                    .OnceAsync<DeliveryData>();
+
+                // Combine all deliveries
+                var allDeliveries = new List<DeliveryData>();
+
+                foreach (var delivery in requestsData)
+                {
+                    allDeliveries.Add(delivery.Object);
+                }
+
+                foreach (var delivery in historyData)
+                {
+                    allDeliveries.Add(delivery.Object);
+                }
+
+                // Filter user's deliveries
+                var userDeliveries = allDeliveries.Where(d =>
+                    d.senderUid == user.Uid || d.receiverUid == user.Uid).ToList();
+
+                // Calculate stats
+                TotalSent = userDeliveries.Count(d => d.senderUid == user.Uid);
+                TotalReceived = userDeliveries.Count(d => d.receiverUid == user.Uid);
+
+                // This week's deliveries
+                var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
+                ThisWeekTotal = userDeliveries.Count(d =>
+                {
+                    if (DateTime.TryParse(d.createdAt, out var date))
+                    {
+                        return date >= oneWeekAgo;
+                    }
+                    return false;
+                });
+
+                // Success rate calculation
+                var totalDeliveries = userDeliveries.Count;
+                var completedDeliveries = userDeliveries.Count(d =>
+                    d.status == "completed" || d.progressStage == 3);
+
+                SuccessRate = totalDeliveries > 0
+                    ? Math.Round((double)completedDeliveries / totalDeliveries * 100, 1)
+                    : 0;
+
+                ShowAnalytics = totalDeliveries > 0; // Only show if user has deliveries
+            }
+            catch (Exception ex)
+            {
+                // Silent fail - analytics is not critical
+                ShowAnalytics = false;
             }
         }
 
