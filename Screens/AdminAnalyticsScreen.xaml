@@ -79,12 +79,12 @@
                                         Text="📦 Deliveries"
                                         FontFamily="OutfitLight"
                                         FontSize="14"
-                                        TextColor="Gray"/>
+                                        TextColor="SaddleBrown"/>
                                     <Label 
                                         Text="{Binding TotalDeliveries}"
                                         FontFamily="OutfitBold"
                                         FontSize="28"
-                                        TextColor="#2D4A6E"/>
+                                        TextColor="SaddleBrown"/>
                                 </VerticalStackLayout>
                             </Border>
 
