@@ -209,7 +209,7 @@
                                                     <ScrollView>
                                                         <Label
                                                             Text="{Binding Message}"
-                                                            Margin="0, -5"
+                                                            Margin="0, -4"
                                                             FontFamily="OutfitLight"
                                                             FontSize="13"
                                                             TextColor="#2D4A6E"
