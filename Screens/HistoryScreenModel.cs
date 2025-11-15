@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Firebase.Auth;
 using Firebase.Database;
+using LalabotApplication.Models;
 using System.Collections.ObjectModel;
 
 namespace LalabotApplication.Screens

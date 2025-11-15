@@ -94,6 +94,8 @@ namespace LalabotApplication
             builder.Services.AddTransient<CreateDeliveryScreen>();
             builder.Services.AddTransient<HistoryScreenModel>();
             builder.Services.AddTransient<HistoryScreen>();
+            builder.Services.AddTransient<AdminAnalyticsScreen>();
+            builder.Services.AddTransient<AdminAnalyticsScreenModel>();
 
             // Profile screens
             builder.Services.AddTransient<ProfileScreen>();

@@ -20,6 +20,12 @@
         Shell.NavBarIsVisible="True"/>
 
     <ShellContent
+        Title="Admin Dashboard"
+        ContentTemplate="{DataTemplate screens:AdminAnalyticsScreen}"
+        Route="AdminAnalyticsScreen"
+        Shell.NavBarIsVisible="True"/>
+
+    <ShellContent
         Title="Edit Profile"
         ContentTemplate="{DataTemplate screens:EditProfileScreen}"
         Route="EditProfileScreen"

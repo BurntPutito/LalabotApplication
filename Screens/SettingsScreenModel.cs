@@ -19,11 +19,30 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private string _avatarSource = "avatar_0.png";
 
+        [ObservableProperty]
+        private bool _isAdmin = false;
+
         public SettingsScreenModel(FirebaseAuthClient authClient, FirebaseClient firebaseDb)
         {
             _authClient = authClient;
             _firebaseDb = firebaseDb;
-            _ = LoadUserProfile(); // Load profile when screen loads
+            _ = LoadUserProfile();
+            CheckAdminStatus();
+        }
+
+        private void CheckAdminStatus()
+        {
+            var user = _authClient.User;
+            if (user != null && user.Info?.Email != null)
+            {
+                IsAdmin = Services.AdminService.IsAdmin(user.Info.Email);
+            }
+        }
+
+        [RelayCommand]
+        private async Task NavigateToAdminDashboard()
+        {
+            await Shell.Current.GoToAsync("///AdminAnalyticsScreen");
         }
 
         [RelayCommand]

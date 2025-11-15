@@ -85,6 +85,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Screens\AdminAnalyticsScreen.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Screens\AvatarPickerScreen.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LalabotApplication.Screens.AdminAnalyticsScreen"
+             Title="Admin Dashboard"
+             NavigationPage.HasNavigationBar="True">
+
+    <RefreshView
+        IsRefreshing="{Binding IsRefreshing}"
+        Command="{Binding RefreshCommand}">
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="20">
+
+                <!-- Header -->
+                <HorizontalStackLayout Spacing="10">
+                    <Label
+                        Text="🔐"
+                        FontSize="30"
+                        VerticalOptions="Center"/>
+                    <VerticalStackLayout>
+                        <Label
+                            Text="Admin Dashboard"
+                            FontFamily="OutfitRegular"
+                            FontSize="26"
+                            FontAttributes="Bold"/>
+                        <Label
+                            Text="System-wide analytics"
+                            FontFamily="OutfitLight"
+                            FontSize="14"
+                            TextColor="Gray"/>
+                    </VerticalStackLayout>
+                </HorizontalStackLayout>
+
+                <!-- Overview Stats -->
+                <Grid>
+                    <RoundRectangle
+                        Fill="#2D4A6E"
+                        CornerRadius="15"/>
+                    <VerticalStackLayout Padding="20" Spacing="15">
+                        <Label
+                            Text="📊 System Overview"
+                            FontFamily="OutfitRegular"
+                            FontSize="20"
+                            FontAttributes="Bold"
+                            TextColor="White"/>
+
+                        <Grid ColumnDefinitions="*, *" RowDefinitions="Auto, Auto, Auto" ColumnSpacing="15" RowSpacing="15">
+
+                            <!-- Total Users -->
+                            <Border Grid.Row="0" Grid.Column="0" 
+                                    BackgroundColor="AliceBlue" 
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="👥 Users"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding TotalUsers}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="28"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Total Deliveries -->
+                            <Border Grid.Row="0" Grid.Column="1" 
+                                    BackgroundColor="AliceBlue" 
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="📦 Deliveries"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding TotalDeliveries}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="28"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Active -->
+                            <Border Grid.Row="1" Grid.Column="0" 
+                                    BackgroundColor="AliceBlue" 
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="🚚 Active"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding ActiveDeliveries}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="28"
+                                        TextColor="#FF9800"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Completed -->
+                            <Border Grid.Row="1" Grid.Column="1" 
+                                    BackgroundColor="AliceBlue" 
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="✅ Completed"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding CompletedDeliveries}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="28"
+                                        TextColor="#4CAF50"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Cancelled -->
+                            <Border Grid.Row="2" Grid.Column="0" 
+                                    BackgroundColor="AliceBlue" 
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="❌ Cancelled"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="{Binding CancelledDeliveries}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="28"
+                                        TextColor="#F44336"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Success Rate -->
+                            <Border Grid.Row="2" Grid.Column="1" 
+                                    BackgroundColor="AliceBlue" 
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="📈 Success"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <HorizontalStackLayout Spacing="2">
+                                        <Label 
+                                            Text="{Binding OverallSuccessRate}"
+                                            FontFamily="OutfitBold"
+                                            FontSize="28"
+                                            TextColor="#4CAF50"/>
+                                        <Label 
+                                            Text="%"
+                                            FontFamily="OutfitBold"
+                                            FontSize="18"
+                                            TextColor="#4CAF50"
+                                            VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+
+                        </Grid>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Time-based Stats -->
+                <Grid>
+                    <RoundRectangle
+                        Fill="AliceBlue"
+                        CornerRadius="15"
+                        Stroke="#2D4A6E"
+                        StrokeThickness="2"/>
+                    <VerticalStackLayout Padding="20" Spacing="15">
+                        <Label
+                            Text="📅 Delivery Timeline"
+                            FontFamily="OutfitRegular"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#2D4A6E"/>
+
+                        <!-- Today -->
+                        <HorizontalStackLayout Spacing="10">
+                            <Label 
+                                Text="Today:"
+                                FontFamily="OutfitLight"
+                                FontSize="16"
+                                TextColor="Gray"
+                                WidthRequest="100"/>
+                            <Label 
+                                Text="{Binding DeliveriesToday}"
+                                FontFamily="OutfitBold"
+                                FontSize="20"
+                                TextColor="#2D4A6E"/>
+                            <Label 
+                                Text="deliveries"
+                                FontFamily="OutfitLight"
+                                FontSize="16"
+                                TextColor="Gray"
+                                VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <!-- This Week -->
+                        <HorizontalStackLayout Spacing="10">
+                            <Label 
+                                Text="This Week:"
+                                FontFamily="OutfitLight"
+                                FontSize="16"
+                                TextColor="Gray"
+                                WidthRequest="100"/>
+                            <Label 
+                                Text="{Binding DeliveriesThisWeek}"
+                                FontFamily="OutfitBold"
+                                FontSize="20"
+                                TextColor="#2D4A6E"/>
+                            <Label 
+                                Text="deliveries"
+                                FontFamily="OutfitLight"
+                                FontSize="16"
+                                TextColor="Gray"
+                                VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <!-- This Month -->
+                        <HorizontalStackLayout Spacing="10">
+                            <Label 
+                                Text="This Month:"
+                                FontFamily="OutfitLight"
+                                FontSize="16"
+                                TextColor="Gray"
+                                WidthRequest="100"/>
+                            <Label 
+                                Text="{Binding DeliveriesThisMonth}"
+                                FontFamily="OutfitBold"
+                                FontSize="20"
+                                TextColor="#2D4A6E"/>
+                            <Label 
+                                Text="deliveries"
+                                FontFamily="OutfitLight"
+                                FontSize="16"
+                                TextColor="Gray"
+                                VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Compartment Status -->
+                <Grid>
+                    <RoundRectangle
+                        Fill="AliceBlue"
+                        CornerRadius="15"
+                        Stroke="#2D4A6E"
+                        StrokeThickness="2"/>
+                    <VerticalStackLayout Padding="20" Spacing="15">
+                        <Label
+                            Text="🔲 Compartment Usage"
+                            FontFamily="OutfitRegular"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#2D4A6E"/>
+
+                        <Label 
+                            Text="{Binding CompartmentUsageText}"
+                            FontFamily="OutfitLight"
+                            FontSize="16"
+                            TextColor="#2D4A6E"/>
+
+                        <Grid ColumnDefinitions="*, *, *" ColumnSpacing="10">
+                            <!-- Compartment 1 -->
+                            <Border Grid.Column="0" 
+                                    BackgroundColor="{Binding Compartment1Color}"
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="📦"
+                                        FontSize="24"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="Slot 1"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="{Binding Compartment1Status}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="14"
+                                        HorizontalOptions="Center"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Compartment 2 -->
+                            <Border Grid.Column="1" 
+                                    BackgroundColor="{Binding Compartment2Color}"
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="📦"
+                                        FontSize="24"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="Slot 2"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="{Binding Compartment2Status}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="14"
+                                        HorizontalOptions="Center"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Compartment 3 -->
+                            <Border Grid.Column="2" 
+                                    BackgroundColor="{Binding Compartment3Color}"
+                                    Padding="15">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10"/>
+                                </Border.StrokeShape>
+                                <VerticalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="📦"
+                                        FontSize="24"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="Slot 3"
+                                        FontFamily="OutfitLight"
+                                        FontSize="12"
+                                        HorizontalOptions="Center"/>
+                                    <Label 
+                                        Text="{Binding Compartment3Status}"
+                                        FontFamily="OutfitBold"
+                                        FontSize="14"
+                                        HorizontalOptions="Center"
+                                        TextColor="#2D4A6E"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Popular Destinations -->
+                <Grid>
+                    <RoundRectangle
+                        Fill="AliceBlue"
+                        CornerRadius="15"
+                        Stroke="#2D4A6E"
+                        StrokeThickness="2"/>
+                    <VerticalStackLayout Padding="20" Spacing="10">
+                        <Label
+                            Text="🎯 Most Popular Destination"
+                            FontFamily="OutfitRegular"
+                            FontSize="18"
+                            FontAttributes="Bold"
+                            TextColor="#2D4A6E"/>
+
+                        <HorizontalStackLayout Spacing="10">
+                            <Label 
+                                Text="📍"
+                                FontSize="32"
+                                VerticalOptions="Center"/>
+                            <VerticalStackLayout>
+                                <Label 
+                                    Text="{Binding MostPopularDestination}"
+                                    FontFamily="OutfitBold"
+                                    FontSize="24"
+                                    TextColor="#2D4A6E"/>
+                                <HorizontalStackLayout Spacing="5">
+                                    <Label 
+                                        Text="{Binding MostPopularDestinationCount}"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                    <Label 
+                                        Text="deliveries"
+                                        FontFamily="OutfitLight"
+                                        FontSize="14"
+                                        TextColor="Gray"/>
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Grid>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>
