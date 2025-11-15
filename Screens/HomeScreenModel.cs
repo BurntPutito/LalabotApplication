@@ -15,6 +15,8 @@ namespace LalabotApplication.Screens
         private readonly FirebaseAuthClient _authClient;
         private readonly FirebaseClient _firebaseDb;
         private readonly IAudioManager _audioManager;
+        private IDisposable _deliveriesSubscription;
+        private bool _isListening = false;
 
         [ObservableProperty]
         private string _username = "User";
@@ -48,6 +50,7 @@ namespace LalabotApplication.Screens
 
             _ = LoadUserInfo();
             _ = LoadDeliveries();
+            StartDeliveryListener();
             _ = ListenForNewDeliveries();
         }
 
@@ -82,7 +85,7 @@ namespace LalabotApplication.Screens
         }
 
         [RelayCommand]
-        private async Task Refresh()
+        public async Task Refresh()
         {
             IsRefreshing = true;
 
@@ -192,6 +195,36 @@ namespace LalabotApplication.Screens
             {
                 // Handle error silently or show message
             }
+        }
+
+        //Real-time listener
+        private void StartDeliveryListener()
+        {
+            if (_isListening) return;
+
+            var user = _authClient.User;
+            if (user == null) return;
+
+            _isListening = true;
+
+            // Listen for changes in delivery_requests
+            _deliveriesSubscription = _firebaseDb
+                .Child("delivery_requests")
+                .AsObservable<DeliveryData>()
+                .Subscribe(change =>
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await LoadDeliveries();
+                    });
+                });
+        }
+
+        //Stop listener when leaving screen
+        public void StopListening()
+        {
+            _isListening = false;
+            _deliveriesSubscription?.Dispose();
         }
 
         [RelayCommand]

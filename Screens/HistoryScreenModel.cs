@@ -10,6 +10,9 @@ namespace LalabotApplication.Screens
     {
         private readonly FirebaseAuthClient _authClient;
         private readonly FirebaseClient _firebaseDb;
+        private IDisposable _deliveriesSubscription;
+        private IDisposable _historySubscription;
+        private bool _isListening = false;
 
         private ObservableCollection<HistoryDeliveryInfo> _allDeliveries = new();
 
@@ -39,10 +42,54 @@ namespace LalabotApplication.Screens
             _authClient = authClient;
             _firebaseDb = firebaseDb;
             _ = LoadDeliveries();
+            StartDeliveryListener();
+        }
+
+        //Real-time listener for both delivery_requests and delivery_history
+        private void StartDeliveryListener()
+        {
+            if (_isListening) return;
+
+            var user = _authClient.User;
+            if (user == null) return;
+
+            _isListening = true;
+
+            // Listen for changes in delivery_requests
+            _deliveriesSubscription = _firebaseDb
+                .Child("delivery_requests")
+                .AsObservable<DeliveryData>()
+                .Subscribe(change =>
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await LoadDeliveries();
+                    });
+                });
+
+            // Listen for changes in delivery_history
+            _historySubscription = _firebaseDb
+                .Child("delivery_history")
+                .AsObservable<DeliveryData>()
+                .Subscribe(change =>
+                {
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await LoadDeliveries();
+                    });
+                });
+        }
+
+        //Stop listener when leaving screen
+        public void StopListening()
+        {
+            _isListening = false;
+            _deliveriesSubscription?.Dispose();
+            _historySubscription?.Dispose();
         }
 
         [RelayCommand]
-        private async Task Refresh()
+        public async Task Refresh()
         {
             IsRefreshing = true;
             await LoadDeliveries();
