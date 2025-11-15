@@ -410,6 +410,41 @@
                     </VerticalStackLayout>
                 </Grid>
 
+                <!--Exit Admin Dashboard-->
+                <Grid>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ExitDashboardTapCommand}" />
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle 
+                        Fill="#FCA6A9"
+                        Stroke="DarkRed"
+                        StrokeThickness="3"
+                        CornerRadius="15"/>
+
+                    <HorizontalStackLayout 
+                        Spacing="5" 
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
+                        Padding="15, 10">
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ExitDashboardTapCommand}"/>
+                        </HorizontalStackLayout.GestureRecognizers>
+
+                        <Image 
+                            Source="logout_red.png"
+                            WidthRequest="30"
+                            HeightRequest="30"
+                            VerticalOptions="Center"/>
+
+                        <Label 
+                            Text="Exit"
+                            TextColor="#5d0505"
+                            FontFamily="OutfitLight"
+                            FontSize="Large"
+                            VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Grid>
+
             </VerticalStackLayout>
         </ScrollView>
     </RefreshView>

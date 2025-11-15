@@ -80,6 +80,12 @@ namespace LalabotApplication.Screens
         }
 
         [RelayCommand]
+        private async Task ExitDashboardTap()
+        {
+            await Shell.Current.GoToAsync("///HomeScreen");
+        }
+
+        [RelayCommand]
         public async Task Refresh()
         {
             IsRefreshing = true;
