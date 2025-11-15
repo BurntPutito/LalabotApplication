@@ -101,6 +101,9 @@
 
         <!-- Admin Dashboard Button -->
         <Grid IsVisible="{Binding IsAdmin}" Margin="0,5,0,5">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NavigateToAdminDashboardCommand}" />
+            </Grid.GestureRecognizers>
             <RoundRectangle 
                 Fill="AliceBlue"
                 Stroke="#2D4A6E"
@@ -132,6 +135,9 @@
 
         <!--about-->
         <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding LogoutCommand}" />
+            </Grid.GestureRecognizers>
             <RoundRectangle 
                 Fill="AliceBlue"
                 Stroke="#2D4A6E"
@@ -164,6 +170,9 @@
 
         <!--logout-->
         <Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding LogoutCommand}" />
+            </Grid.GestureRecognizers>
             <RoundRectangle 
                 Fill="AliceBlue"
                 Stroke="#2D4A6E"
