@@ -296,58 +296,92 @@
                                             </Grid>
 
                                             <!-- Row 1: Delivery Info -->
-                                            <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
-                                                <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                            <Grid Grid.Row="1">
+
+                                                <!-- CASE 1: Show Confirm Files Button (when robot at pickup, files not confirmed) -->
+                                                <VerticalStackLayout Spacing="10" IsVisible="{Binding ShowConfirmFilesButton}" VerticalOptions="Center">
                                                     <Label
-                                                        Text="{Binding CategoryText}"
+                                                        Text="🤖 Lalabot is waiting at pickup location"
+                                                        FontFamily="OutfitRegular"
+                                                        FontSize="18"
+                                                        TextColor="#FF9800"
+                                                        HorizontalOptions="Center"/>
+                                                    <Label
+                                                        Text="Please place your files in the compartment"
                                                         FontFamily="OutfitLight"
+                                                        FontSize="12"
+                                                        TextColor="Gray"
+                                                        HorizontalOptions="Center"/>
+                                                    <Button
+                                                        Text="Confirm Files Placed"
+                                                        BackgroundColor="#4CAF50"
+                                                        TextColor="White"
+                                                        FontFamily="OutfitRegular"
                                                         FontSize="16"
-                                                        TextColor="#2D4A6E"/>
-                                                    <Label
-                                                        Text="{Binding VerificationText}"
-                                                        FontFamily="OutfitRegular"
-                                                        FontSize="16"/>
-                                                    <Label
-                                                        Text="{Binding PickupText}"
-                                                        FontFamily="OutfitLight"
-                                                        FontSize="15"
-                                                        TextColor="Gray"/>
-                                                    <Label
-                                                        Text="{Binding DestinationText}"
-                                                        FontFamily="OutfitLight"
-                                                        FontSize="15"
-                                                        TextColor="Gray"/>
-                                                    <Label
-                                                        Text="{Binding StatusText}"
-                                                        FontFamily="OutfitRegular"
-                                                        FontSize="15"
-                                                        TextColor="#2D4A6E"/>
+                                                        HeightRequest="50"
+                                                        CornerRadius="10"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=ConfirmFilesPlacedCommand}"
+                                                        CommandParameter="{Binding .}"/>
                                                 </VerticalStackLayout>
 
-                                                <Border 
-                                                    Grid.Column="1"
-                                                    BackgroundColor="#FFFFFF"
-                                                    Stroke="#2D4A6E"
-                                                    StrokeThickness="1"
-                                                    Padding="8"
-                                                    VerticalOptions="Fill"
-                                                    IsVisible="{Binding HasMessage}">
-                                                    <Border.StrokeShape>
-                                                        <RoundRectangle CornerRadius="8"/>
-                                                    </Border.StrokeShape>
-                                                    <ScrollView>
+                                                <!-- CASE 2: Show Regular Info (when files confirmed or robot not at pickup yet) -->
+                                                <Grid 
+                                                    ColumnDefinitions="Auto, *" 
+                                                    ColumnSpacing="10"
+                                                    IsVisible="{Binding ShowConfirmFilesButton, Converter={StaticResource InvertedBoolConverter}}">
+                                                    <VerticalStackLayout Grid.Column="0" Spacing="3">
                                                         <Label
-                                                            Text="{Binding Message}"
-                                                            Margin="0, -4"
+                                                            Text="{Binding CategoryText}"
                                                             FontFamily="OutfitLight"
-                                                            FontSize="13"
-                                                            TextColor="#2D4A6E"
-                                                            LineBreakMode="WordWrap"/>
-                                                    </ScrollView>
-                                                </Border>
+                                                            FontSize="16"
+                                                            TextColor="#2D4A6E"/>
+                                                        <Label
+                                                            Text="{Binding VerificationText}"
+                                                            FontFamily="OutfitRegular"
+                                                            FontSize="16"
+                                                            IsVisible="{Binding ShowVerificationCode}"/>
+                                                        <Label
+                                                            Text="{Binding PickupText}"
+                                                            FontFamily="OutfitLight"
+                                                            FontSize="15"
+                                                            TextColor="Gray"/>
+                                                        <Label
+                                                            Text="{Binding DestinationText}"
+                                                            FontFamily="OutfitLight"
+                                                            FontSize="15"
+                                                            TextColor="Gray"/>
+                                                        <Label
+                                                            Text="{Binding StatusText}"
+                                                            FontFamily="OutfitRegular"
+                                                            FontSize="15"
+                                                            TextColor="#2D4A6E"/>
+                                                    </VerticalStackLayout>
+
+                                                    <Border 
+                                                        Grid.Column="1"
+                                                        BackgroundColor="#FFFFFF"
+                                                        Stroke="#2D4A6E"
+                                                        StrokeThickness="1"
+                                                        Padding="8"
+                                                        VerticalOptions="Fill"
+                                                        IsVisible="{Binding HasMessage}">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="8"/>
+                                                        </Border.StrokeShape>
+                                                        <ScrollView>
+                                                            <Label
+                                                                Text="{Binding Message}"
+                                                                Margin="0, -4"
+                                                                FontFamily="OutfitLight"
+                                                                FontSize="13"
+                                                                TextColor="#2D4A6E"
+                                                                LineBreakMode="WordWrap"/>
+                                                        </ScrollView>
+                                                    </Border>
+                                                </Grid>
                                             </Grid>
 
-                                            <!-- Row 2: Progress Tracker -->
+                                            <!-- Row 2: Progress Tracker (only shown after files confirmed) -->
                                             <Grid 
                                                 Grid.Row="2"
                                                 RowDefinitions="Auto, Auto" 
@@ -510,56 +544,115 @@
                                                 LineBreakMode="TailTruncation"
                                                 Margin="0, -5, 0, 0"/>
 
-                                            <!-- Row 1: Delivery Info -->
-                                            <Grid Grid.Row="1" ColumnDefinitions="Auto, *" ColumnSpacing="10">
-                                                <VerticalStackLayout Grid.Column="0" Spacing="3">
+                                            <!-- Row 1: Delivery Info OR Verification/Receipt Confirmation -->
+                                            <Grid Grid.Row="1">
+
+                                                <!-- CASE 1: Show Verification Input (when robot arrived, waiting for code) -->
+                                                <VerticalStackLayout Spacing="10" IsVisible="{Binding ShowVerificationInput}" VerticalOptions="Center">
                                                     <Label
-                                                        Text="{Binding CategoryText}"
+                                                        Text="📦 Delivery has arrived!"
+                                                        FontFamily="OutfitRegular"
+                                                        FontSize="18"
+                                                        TextColor="#4CAF50"
+                                                        HorizontalOptions="Center"/>
+                                                    <Label
+                                                        Text="Enter the verification code to open compartment"
                                                         FontFamily="OutfitLight"
+                                                        FontSize="12"
+                                                        TextColor="Gray"
+                                                        HorizontalOptions="Center"/>
+                                                    <Button
+                                                        Text="Enter Verification Code"
+                                                        BackgroundColor="#2D4A6E"
+                                                        TextColor="White"
+                                                        FontFamily="OutfitRegular"
                                                         FontSize="16"
-                                                        TextColor="#2D4A6E"/>
-                                                    <Label
-                                                        Text="{Binding VerificationText}"
-                                                        FontFamily="OutfitRegular"
-                                                        FontSize="16"/>
-                                                    <Label
-                                                        Text="{Binding PickupText}"
-                                                        FontFamily="OutfitLight"
-                                                        FontSize="15"
-                                                        TextColor="Gray"/>
-                                                    <Label
-                                                        Text="{Binding DestinationText}"
-                                                        FontFamily="OutfitLight"
-                                                        FontSize="15"
-                                                        TextColor="Gray"/>
-                                                    <Label
-                                                        Text="{Binding StatusText}"
-                                                        FontFamily="OutfitRegular"
-                                                        FontSize="15"
-                                                        TextColor="#2D4A6E"/>
+                                                        HeightRequest="50"
+                                                        CornerRadius="10"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=EnterVerificationCodeCommand}"
+                                                        CommandParameter="{Binding .}"/>
                                                 </VerticalStackLayout>
 
-                                                <Border 
-                                                    Grid.Column="1"
-                                                    BackgroundColor="#FFFFFF"
-                                                    Stroke="#2D4A6E"
-                                                    StrokeThickness="1"
-                                                    Padding="8"
-                                                    VerticalOptions="Fill"
-                                                    IsVisible="{Binding HasMessage}">
-                                                    <Border.StrokeShape>
-                                                        <RoundRectangle CornerRadius="8"/>
-                                                    </Border.StrokeShape>
-                                                    <ScrollView>
+                                                <!-- CASE 2: Show Confirm Receipt Button (after successful verification) -->
+                                                <VerticalStackLayout Spacing="10" IsVisible="{Binding ShowConfirmReceiptButton}">
+                                                    <Label
+                                                        Text="📂 Compartment is open"
+                                                        FontFamily="OutfitRegular"
+                                                        FontSize="16"
+                                                        TextColor="#4CAF50"
+                                                        HorizontalOptions="Center"/>
+                                                    <Label
+                                                        Text="Please retrieve your files and confirm receipt"
+                                                        FontFamily="OutfitLight"
+                                                        FontSize="12"
+                                                        TextColor="Gray"
+                                                        HorizontalOptions="Center"/>
+                                                    <Button
+                                                        Text="Confirm Receipt"
+                                                        BackgroundColor="#4CAF50"
+                                                        TextColor="White"
+                                                        FontFamily="OutfitRegular"
+                                                        FontSize="16"
+                                                        HeightRequest="50"
+                                                        CornerRadius="10"
+                                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:HomeScreenModel}}, Path=ConfirmReceiptCommand}"
+                                                        CommandParameter="{Binding .}"/>
+                                                </VerticalStackLayout>
+
+                                                <!-- CASE 3: Show Regular Info (default view) -->
+                                                <Grid 
+                                                    ColumnDefinitions="Auto, *" 
+                                                    ColumnSpacing="10"
+                                                    IsVisible="{Binding ShowRegularInfo}">
+                                                    <VerticalStackLayout Grid.Column="0" Spacing="3">
                                                         <Label
-                                                            Text="{Binding Message}"
-                                                            Margin="0, -5"
+                                                            Text="{Binding CategoryText}"
                                                             FontFamily="OutfitLight"
-                                                            FontSize="13"
-                                                            TextColor="#2D4A6E"
-                                                            LineBreakMode="WordWrap"/>
-                                                    </ScrollView>
-                                                </Border>
+                                                            FontSize="16"
+                                                            TextColor="#2D4A6E"/>
+                                                        <Label
+                                                            Text="{Binding VerificationText}"
+                                                            FontFamily="OutfitRegular"
+                                                            FontSize="16"/>
+                                                        <Label
+                                                            Text="{Binding PickupText}"
+                                                            FontFamily="OutfitLight"
+                                                            FontSize="15"
+                                                            TextColor="Gray"/>
+                                                        <Label
+                                                            Text="{Binding DestinationText}"
+                                                            FontFamily="OutfitLight"
+                                                            FontSize="15"
+                                                            TextColor="Gray"/>
+                                                        <Label
+                                                            Text="{Binding StatusText}"
+                                                            FontFamily="OutfitRegular"
+                                                            FontSize="15"
+                                                            TextColor="#2D4A6E"/>
+                                                    </VerticalStackLayout>
+
+                                                    <Border 
+                                                        Grid.Column="1"
+                                                        BackgroundColor="#FFFFFF"
+                                                        Stroke="#2D4A6E"
+                                                        StrokeThickness="1"
+                                                        Padding="8"
+                                                        VerticalOptions="Fill"
+                                                        IsVisible="{Binding HasMessage}">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="8"/>
+                                                        </Border.StrokeShape>
+                                                        <ScrollView>
+                                                            <Label
+                                                                Text="{Binding Message}"
+                                                                Margin="0, -4"
+                                                                FontFamily="OutfitLight"
+                                                                FontSize="13"
+                                                                TextColor="#2D4A6E"
+                                                                LineBreakMode="WordWrap"/>
+                                                        </ScrollView>
+                                                    </Border>
+                                                </Grid>
                                             </Grid>
 
                                             <!-- Row 2: Progress Tracker -->

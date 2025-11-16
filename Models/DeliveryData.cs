@@ -19,5 +19,12 @@
         public string createdAt { get; set; }
         public string arrivedAt { get; set; }
         public string completedAt { get; set; }
+
+
+        // Additional properties for delivery status
+        public bool filesConfirmed { get; set; } = false;
+        public string confirmationDeadline { get; set; }
+        public bool readyForPickup { get; set; } = false;
+        public bool filesReceived { get; set; } = false;
     }
 }

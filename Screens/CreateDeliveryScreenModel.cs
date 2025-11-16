@@ -224,7 +224,13 @@ namespace LalabotApplication.Screens
                     progressStage = 0,
                     createdAt = philippineTime.ToString("o"),
                     arrivedAt = (string)null,
-                    completedAt = (string)null
+                    completedAt = (string)null,
+
+                    // for delivery status tracking
+                    filesConfirmed = false,
+                    confirmationDeadline = (string)null,
+                    readyForPickup = false,
+                    filesReceived = false
                 };
 
                 // Save delivery

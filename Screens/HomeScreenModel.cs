@@ -155,6 +155,162 @@ namespace LalabotApplication.Screens
             await Shell.Current.GoToAsync("///ProfileScreen");
         }
 
+        [RelayCommand]
+        private async Task ConfirmFilesPlaced(DeliveryCardInfo delivery)
+        {
+            try
+            {
+                bool confirm = await Shell.Current.DisplayAlert(
+                    "Confirm Files Placed",
+                    "Have you placed the files in the robot's compartment?",
+                    "Yes, Start Delivery",
+                    "Not Yet");
+
+                if (!confirm) return;
+
+                // Update delivery in Firebase
+                var deliveryData = await _firebaseDb
+                    .Child("delivery_requests")
+                    .Child(delivery.Id)
+                    .OnceSingleAsync<DeliveryData>();
+
+                if (deliveryData != null)
+                {
+                    deliveryData.filesConfirmed = true;
+                    deliveryData.progressStage = 1; // Move to "In Transit"
+
+                    await _firebaseDb
+                        .Child("delivery_requests")
+                        .Child(delivery.Id)
+                        .PutAsync(deliveryData);
+
+                    await Shell.Current.DisplayAlert(
+                        "Delivery Started!",
+                        "The robot will now proceed to deliver your files.",
+                        "OK");
+
+                    await LoadDeliveries();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to confirm: {ex.Message}", "OK");
+            }
+        }
+
+        [RelayCommand]
+        private async Task EnterVerificationCode(DeliveryCardInfo delivery)
+        {
+            try
+            {
+                string code = await Shell.Current.DisplayPromptAsync(
+                    "Enter Verification Code",
+                    $"Enter the 4-digit code for this delivery:",
+                    placeholder: "0000",
+                    maxLength: 4,
+                    keyboard: Keyboard.Numeric);
+
+                if (string.IsNullOrWhiteSpace(code)) return;
+
+                // Verify the code
+                if (code == delivery.VerificationCode)
+                {
+                    // Correct code - update database
+                    var deliveryData = await _firebaseDb
+                        .Child("delivery_requests")
+                        .Child(delivery.Id)
+                        .OnceSingleAsync<DeliveryData>();
+
+                    if (deliveryData != null)
+                    {
+                        deliveryData.filesReceived = true; // Mark that compartment is now open
+
+                        await _firebaseDb
+                            .Child("delivery_requests")
+                            .Child(delivery.Id)
+                            .PutAsync(deliveryData);
+
+                        // Play success sound
+                        await PlayNotificationSound();
+
+                        await Shell.Current.DisplayAlert(
+                            "✅ Verified!",
+                            "Compartment is now open. Please retrieve your files and confirm receipt.",
+                            "OK");
+
+                        await LoadDeliveries();
+                    }
+                }
+                else
+                {
+                    // Incorrect code
+                    Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(500));
+                    await Shell.Current.DisplayAlert(
+                        "❌ Incorrect Code",
+                        "The verification code you entered is incorrect. Please try again.",
+                        "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to verify: {ex.Message}", "OK");
+            }
+        }
+
+        [RelayCommand]
+        private async Task ConfirmReceipt(DeliveryCardInfo delivery)
+        {
+            try
+            {
+                bool confirm = await Shell.Current.DisplayAlert(
+                    "Confirm Receipt",
+                    "Have you retrieved the files from the compartment?",
+                    "Yes, I Got Them",
+                    "Not Yet");
+
+                if (!confirm) return;
+
+                // Get delivery data
+                var deliveryData = await _firebaseDb
+                    .Child("delivery_requests")
+                    .Child(delivery.Id)
+                    .OnceSingleAsync<DeliveryData>();
+
+                if (deliveryData != null)
+                {
+                    deliveryData.status = "completed";
+                    deliveryData.progressStage = 4; // Optional: add stage 4 for completed
+                    deliveryData.completedAt = DateTime.UtcNow.ToString("o");
+
+                    // Move to history
+                    await _firebaseDb
+                        .Child("delivery_history")
+                        .Child(delivery.Id)
+                        .PutAsync(deliveryData);
+
+                    // Remove from active requests
+                    await _firebaseDb
+                        .Child("delivery_requests")
+                        .Child(delivery.Id)
+                        .DeleteAsync();
+
+                    // Free the compartment
+                    await FreeCompartment(delivery.Id);
+
+                    await Shell.Current.DisplayAlert(
+                        "✅ Delivery Complete!",
+                        "Thank you for confirming. The delivery has been completed.",
+                        "OK");
+
+                    await LoadDeliveries();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Failed to complete: {ex.Message}", "OK");
+            }
+        }
+
         private async Task LoadDeliveries()
         {
             try
@@ -189,7 +345,13 @@ namespace LalabotApplication.Screens
                         Status = data.status ?? "pending",
                         Message = data.message,
                         CurrentLocation = data.currentLocation,
-                        ProgressStage = data.progressStage
+                        ProgressStage = data.progressStage,
+
+                        // delivery status properties
+                        FilesConfirmed = data.filesConfirmed,
+                        ConfirmationDeadline = data.confirmationDeadline,
+                        ReadyForPickup = data.readyForPickup,
+                        FilesReceived = data.filesReceived
                     };
 
                     // Categorize as outgoing or incoming
@@ -658,11 +820,13 @@ namespace LalabotApplication.Screens
             Status == "pending" && ProgressStage == 0;
         public bool IsOutgoing { get; set; }
 
+        /*
         public bool ShowProgressTracker =>
         Status == "pending" ||
         Status == "in_progress" ||
         Status == "arrived" ||
         ProgressStage > 0;
+        */
 
         public string CategoryText => $"📁 {Category}";
         public string SenderText => $"From: {Sender}";
@@ -698,9 +862,9 @@ namespace LalabotApplication.Screens
         public string ProgressText => ProgressStage switch
         {
             0 => "📦 Processing your delivery...",
-            1 => "🚚 Robot is on the way",
+            1 => "🚚 Lalabot is on the way",
             2 => $"📍 Approaching Room {Destination}",
-            3 => "✅ Arrived! Ready for pickup",
+            3 => "✅ Arrived! Waiting for pickup",
             _ => ""
         };
 
@@ -713,6 +877,49 @@ namespace LalabotApplication.Screens
         public string Stage1Icon => ProgressStage >= 1 ? "✓" : "";
         public string Stage2Icon => ProgressStage >= 2 ? "✓" : "";
         public string Stage3Icon => ProgressStage >= 3 ? "✓" : "";
+
+
+        // properties for delivery status
+        public bool FilesConfirmed { get; set; }
+        public string ConfirmationDeadline { get; set; }
+        public bool ReadyForPickup { get; set; }
+        public bool FilesReceived { get; set; }
+
+        // For SENDER - show confirm button when robot at pickup and files not confirmed
+        public bool ShowConfirmFilesButton =>
+            IsOutgoing &&
+            CurrentLocation == Pickup &&
+            !FilesConfirmed &&
+            ProgressStage == 0;
+
+        // Show progress tracker after files confirmed for sender, or for receiver before arrival
+        public bool ShowProgressTracker =>
+            (IsOutgoing && FilesConfirmed) ||
+            (!IsOutgoing && !ReadyForPickup && ProgressStage < 3);
+
+        // For RECEIVER - show verification input when robot arrived
+        public bool ShowVerificationInput =>
+            !IsOutgoing &&
+            ReadyForPickup &&
+            !FilesReceived;
+
+        // For RECEIVER - show confirm receipt button after successful verification
+        public bool ShowConfirmReceiptButton =>
+            !IsOutgoing &&
+            ReadyForPickup &&
+            FilesReceived;
+
+        // Show regular info when no special buttons are shown
+        public bool ShowRegularInfo =>
+            !ShowConfirmFilesButton &&
+            !ShowVerificationInput &&
+            !ShowConfirmReceiptButton;
+
+        // Add this temporarily for debugging
+        public string DebugInfo =>
+            $"IsOutgoing:{IsOutgoing}, FilesConfirmed:{FilesConfirmed}, " +
+            $"CurrentLoc:{CurrentLocation}, Pickup:{Pickup}, " +
+            $"Stage:{ProgressStage}, ReadyForPickup:{ReadyForPickup}";
     }
 
     public class NotificationData
