@@ -109,11 +109,15 @@ class FirebaseHandler:
     def set_confirmation_deadline(self, delivery_id, deadline):
         """Set confirmation deadline timestamp"""
         try:
+            # Convert to ISO 8601 string format to match app expectations
+            from time import localtime
+            deadline_str = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(
+                localtime(deadline)[0], localtime(deadline)[1], localtime(deadline)[2],
+                localtime(deadline)[3], localtime(deadline)[4], localtime(deadline)[5]
+            )
             url = f"{self.base_url}/delivery_requests/{delivery_id}/confirmationDeadline.json"
-            response = urequests.patch(url, data=ujson.dumps(deadline))
+            response = urequests.patch(url, data=ujson.dumps(deadline_str))
             response.close()
-        except Exception as e:
-            print(f"⚠️ Error setting deadline: {e}")
     
     def set_ready_for_pickup(self, delivery_id, ready):
         """Set readyForPickup status"""
@@ -138,14 +142,19 @@ class FirebaseHandler:
     def mark_delivery_completed(self, delivery_id):
         """Mark delivery as completed"""
         try:
+            from time import localtime
+            now = localtime()
+            completed_at = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(
+                now[0], now[1], now[2], now[3], now[4], now[5]
+            )
+        
             url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
             response = urequests.patch(url, data=ujson.dumps({
                 "status": "completed",
-                "completedAt": time.time()
+                "completedAt": completed_at,
+                "progressStage": 4  # Final stage
             }))
             response.close()
-        except Exception as e:
-            print(f"⚠️ Error marking completed: {e}")
     
     def free_compartment(self, compartment):
         """Free up a compartment in robot_status"""

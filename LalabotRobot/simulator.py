@@ -1,31 +1,258 @@
-﻿# main.py - Main entry point
-#import machine
-import time
-#import ujson
-#import network
-#import urequests
-from line_follower import LineFollower
-from firebase_handler import FirebaseHandler
-from compartment_controller import CompartmentController
+"""
+Robot Simulator - Test robot logic without hardware
+Run this on your PC to test the robot's behavior
+"""
 
-class DeliveryRobot:
+import time
+import json
+import requests
+from datetime import datetime
+
+from main import DeliveryRobot
+
+class MockPin:
+    """Mock GPIO Pin"""
+    IN = 0
+    OUT = 1
+    
+    def __init__(self, pin, mode):
+        self.pin = pin
+        self.mode = mode
+        self._value = 1  # Default to white (1)
+    
+    def value(self, val=None):
+        if val is not None:
+            self._value = val
+        return self._value
+
+class MockPWM:
+    """Mock PWM"""
+    def __init__(self, pin):
+        self.pin = pin
+        self._freq = 50
+        self._duty = 0
+    
+    def freq(self, f=None):
+        if f: self._freq = f
+        return self._freq
+    
+    def duty_u16(self, d=None):
+        if d is not None: self._duty = d
+        return self._duty
+
+# Mock machine module
+class machine:
+    Pin = MockPin
+    PWM = MockPWM
+
+# Simulated hardware controllers
+class SimulatedLineFollower:
     def __init__(self):
-        # Robot state
-        self.current_location = 0  # 0 = Base, 1-4 = Rooms
+        print("🤖 [SIM] Line follower initialized")
+        self.running = False
+        self.current_room = 0
+        
+    def start(self):
+        print("🚦 [SIM] Line following started")
+        self.running = True
+    
+    def detect_intersection(self):
+        # Simulate intersection detection
+        return False
+    
+    def stop(self):
+        print("🛑 [SIM] Line follower stopped")
+        self.running = False
+    
+    def move_forward(self):
+        pass
+    
+    def turn_left(self):
+        pass
+    
+    def turn_right(self):
+        pass
+
+class SimulatedCompartments:
+    def __init__(self):
+        print("📦 [SIM] Compartment controller initialized")
+        self.states = {1: "closed", 2: "closed", 3: "closed"}
+    
+    def open(self, compartment):
+        self.states[compartment] = "open"
+        print(f"📂 [SIM] Compartment {compartment} opened")
+    
+    def close(self, compartment):
+        self.states[compartment] = "closed"
+        print(f"🔒 [SIM] Compartment {compartment} closed")
+    
+    def close_all(self):
+        for i in range(1, 4):
+            self.close(i)
+
+class SimulatedFirebase:
+    """Simulated Firebase for testing"""
+    def __init__(self):
+        self.base_url = "https://lalabotapplication-default-rtdb.asia-southeast1.firebasedatabase.app"
+        print("🔥 [SIM] Firebase handler initialized")
+        print("📡 [SIM] Skipping WiFi connection (simulated)")
+    
+    def is_connected(self):
+        return True
+    
+    def reconnect(self):
+        pass
+    
+    def get_pending_deliveries(self):
+        """Get real pending deliveries from Firebase"""
+        try:
+            url = f"{self.base_url}/delivery_requests.json"
+            response = requests.get(url)
+            data = response.json()
+            
+            if data:
+                pending = {k: v for k, v in data.items() if v.get('status') == 'pending'}
+                return pending
+            return {}
+        except Exception as e:
+            print(f"⚠️ [SIM] Error getting deliveries: {e}")
+            return {}
+    
+    def update_delivery_compartment(self, delivery_id, compartment):
+        print(f"🔄 [SIM] Updated compartment: {delivery_id} → {compartment}")
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/compartment.json"
+            requests.patch(url, json=compartment)
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def update_delivery_stage(self, delivery_id, stage):
+        print(f"📍 [SIM] Stage {stage}: {delivery_id}")
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/progressStage.json"
+            requests.patch(url, json=stage)
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def update_delivery_location(self, delivery_id, location):
+        print(f"🗺️ [SIM] Location: Room {location}")
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/currentLocation.json"
+            requests.patch(url, json=location)
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def set_files_confirmed(self, delivery_id, confirmed):
+        print(f"✅ [SIM] Files confirmed: {confirmed}")
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/filesConfirmed.json"
+            requests.patch(url, json=confirmed)
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def get_files_confirmed(self, delivery_id):
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/filesConfirmed.json"
+            response = requests.get(url)
+            return response.json() == True
+        except:
+            return False
+    
+    def set_confirmation_deadline(self, delivery_id, deadline):
+        print(f"⏰ [SIM] Deadline set: {deadline}")
+    
+    def set_ready_for_pickup(self, delivery_id, ready):
+        print(f"📬 [SIM] Ready for pickup: {ready}")
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/readyForPickup.json"
+            requests.patch(url, json=ready)
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def get_files_received(self, delivery_id):
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}/filesReceived.json"
+            response = requests.get(url)
+            return response.json() == True
+        except:
+            return False
+    
+    def mark_delivery_completed(self, delivery_id):
+        print(f"✅ [SIM] Marking completed: {delivery_id}")
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
+            requests.patch(url, json={
+                "status": "completed",
+                "completedAt": datetime.utcnow().isoformat(),
+                "progressStage": 4
+            })
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def free_compartment(self, compartment):
+        print(f"🔓 [SIM] Freed compartment {compartment}")
+        try:
+            url = f"{self.base_url}/robot_status/currentDeliveries/compartment{compartment}.json"
+            requests.patch(url, json="")
+        except Exception as e:
+            print(f"⚠️ [SIM] Error: {e}")
+    
+    def cancel_delivery(self, delivery_id):
+        print(f"❌ [SIM] Cancelled: {delivery_id}")
+    
+    def notify_confirmation_timeout(self, delivery_id):
+        print(f"⏰ [SIM] Timeout: {delivery_id}")
+    
+    def report_error(self, error, location):
+        print(f"🆘 [SIM] Error at Room {location}: {error}")
+
+class SimulatedRobot:
+    """Simulated robot for testing logic"""
+    def __init__(self):
+        self.current_location = 0
         self.is_moving = False
-        self.active_deliveries = []  # Max 3 deliveries (one per compartment)
+        self.active_deliveries = []
         
-        # Hardware controllers
-        self.line_follower = LineFollower()
-        self.firebase = FirebaseHandler()
-        self.compartments = CompartmentController()
+        # Use simulated hardware
+        self.line_follower = SimulatedLineFollower()
+        self.firebase = SimulatedFirebase()
+        self.compartments = SimulatedCompartments()
         
-        # Constants
         self.BASE = 0
         self.MAX_DELIVERIES = 3
-        self.CONFIRMATION_TIMEOUT = 30  # seconds
+        self.CONFIRMATION_TIMEOUT = 30
         
-        print("🤖 Lalabot initialized at BASE")
+        print("🤖 [SIM] Lalabot initialized at BASE")
+        print("\n" + "="*50)
+        print("SIMULATOR MODE - Testing robot logic")
+        print("No hardware required!")
+        print("="*50 + "\n")
+    
+    def navigate_to(self, target_room):
+        """Simulated navigation"""
+        if self.current_location == target_room:
+            print(f"✓ [SIM] Already at Room {target_room}")
+            return
+        
+        print(f"🗺️ [SIM] Simulating navigation: Room {self.current_location} → Room {target_room}")
+        
+        # Simulate travel time (1 second per room)
+        rooms_to_pass = abs(target_room - self.current_location)
+        
+        for i in range(rooms_to_pass):
+            time.sleep(1)  # Simulate movement
+            if target_room > self.current_location:
+                self.current_location += 1
+            else:
+                self.current_location -= 1
+            print(f"   🏠 [SIM] Passing Room {self.current_location}...")
+        
+        print(f"✅ [SIM] Reached Room {target_room}\n")
+    
+    # Copy all other methods from main.py's DeliveryRobot class
+    # (check_for_new_deliveries, process_next_delivery, etc.)
+    # Just paste them here - they'll work with simulated hardware!
+    # main.py - Main entry point
         
     def start(self):
         """Main robot loop"""
@@ -335,4 +562,40 @@ class DeliveryRobot:
 # Initialize and start the robot
 if __name__ == "__main__":
     robot = DeliveryRobot()
+    robot.start()
+    
+    def start(self):
+        """Main simulation loop"""
+        print("🚀 [SIM] Starting delivery robot simulator...")
+        print("💡 Press Ctrl+C to stop\n")
+        
+        try:
+            while True:
+                # Check for new deliveries
+                if len(self.active_deliveries) < self.MAX_DELIVERIES:
+                    self.check_for_new_deliveries()
+                
+                # Process active deliveries
+                if self.active_deliveries and not self.is_moving:
+                    self.process_next_delivery()
+                
+                time.sleep(2)  # Check every 2 seconds
+                
+        except KeyboardInterrupt:
+            print("\n\n🛑 [SIM] Simulator stopped")
+            print("📊 [SIM] Final state:")
+            print(f"   Location: Room {self.current_location}")
+            print(f"   Active deliveries: {len(self.active_deliveries)}")
+            print(f"   Compartments: {self.compartments.states}")
+
+# Run simulator
+if __name__ == "__main__":
+    print("""
+    ╔════════════════════════════════════════╗
+    ║   LALABOT DELIVERY ROBOT SIMULATOR     ║
+    ║   Test without Raspberry Pi hardware   ║
+    ╚════════════════════════════════════════╝
+    """)
+    
+    robot = SimulatedRobot()
     robot.start()

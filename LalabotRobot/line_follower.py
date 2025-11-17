@@ -1,5 +1,5 @@
 ﻿# line_follower.py
-from machine import Pin, PWM
+from machine import Pin, PWM # pyright: ignore[reportMissingImports]
 import time
 
 class LineFollower:
