@@ -1,57 +1,42 @@
-﻿# firebase_handler.py
-import network
-import urequests
-import ujson
+﻿# firebase_handler.py - Firebase Realtime Database handler for Raspberry Pi 5
+import requests
+import json
 import time
+from config import FIREBASE_URL
 
 class FirebaseHandler:
     def __init__(self):
-        self.base_url = "https://lalabotapplication-default-rtdb.asia-southeast1.firebasedatabase.app"
-        self.wlan = network.WLAN(network.STA_IF)
-        
-        # WiFi credentials (replace with yours)
-        self.ssid = "YOUR_WIFI_SSID"
-        self.password = "YOUR_WIFI_PASSWORD"
-        
-        self.connect_wifi()
-    
-    def connect_wifi(self):
-        """Connect to WiFi"""
-        self.wlan.active(True)
-        
-        if not self.wlan.isconnected():
-            print(f"📶 Connecting to WiFi: {self.ssid}")
-            self.wlan.connect(self.ssid, self.password)
-            
-            timeout = 10
-            while not self.wlan.isconnected() and timeout > 0:
-                time.sleep(1)
-                timeout -= 1
-            
-            if self.wlan.isconnected():
-                print(f"✅ Connected! IP: {self.wlan.ifconfig()[0]}")
-            else:
-                print("❌ WiFi connection failed")
+        self.base_url = FIREBASE_URL
+        self.last_connected_time = time.time()
+        print("✅ Firebase handler initialized")
     
     def is_connected(self):
-        """Check if WiFi is connected"""
-        return self.wlan.isconnected()
+        """Check internet connection"""
+        try:
+            requests.get("https://www.google.com", timeout=3)
+            self.last_connected_time = time.time()
+            return True
+        except:
+            return False
     
     def reconnect(self):
-        """Reconnect to WiFi"""
-        self.connect_wifi()
+        """Wait for internet connection"""
+        print("⚠️ Waiting for internet connection...")
+        while not self.is_connected():
+            time.sleep(5)
+        print("✅ Internet connected!")
     
     def get_pending_deliveries(self):
         """Get all pending deliveries from Firebase"""
         try:
             url = f"{self.base_url}/delivery_requests.json"
-            response = urequests.get(url)
+            response = requests.get(url, timeout=10)
             data = response.json()
-            response.close()
             
             if data:
                 # Filter only pending deliveries
-                pending = {k: v for k, v in data.items() if v.get('status') == 'pending'}
+                pending = {k: v for k, v in data.items() 
+                          if v.get('status') == 'pending' and v.get('progressStage', 0) == 0}
                 return pending
             return {}
             
@@ -60,20 +45,18 @@ class FirebaseHandler:
             return {}
     
     def update_delivery_compartment(self, delivery_id, compartment):
-        """Update delivery's assigned compartment"""
+        """Assign compartment to delivery"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/compartment.json"
-            response = urequests.patch(url, data=ujson.dumps(compartment))
-            response.close()
+            requests.put(url, json=compartment, timeout=5)
         except Exception as e:
             print(f"⚠️ Error updating compartment: {e}")
     
     def update_delivery_stage(self, delivery_id, stage):
-        """Update delivery progress stage"""
+        """Update delivery progress stage (0-3)"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/progressStage.json"
-            response = urequests.patch(url, data=ujson.dumps(stage))
-            response.close()
+            requests.put(url, json=stage, timeout=5)
         except Exception as e:
             print(f"⚠️ Error updating stage: {e}")
     
@@ -81,8 +64,7 @@ class FirebaseHandler:
         """Update robot's current location for this delivery"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/currentLocation.json"
-            response = urequests.patch(url, data=ujson.dumps(location))
-            response.close()
+            requests.put(url, json=location, timeout=5)
         except Exception as e:
             print(f"⚠️ Error updating location: {e}")
     
@@ -90,41 +72,32 @@ class FirebaseHandler:
         """Set filesConfirmed status"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/filesConfirmed.json"
-            response = urequests.patch(url, data=ujson.dumps(confirmed))
-            response.close()
+            requests.put(url, json=confirmed, timeout=5)
         except Exception as e:
             print(f"⚠️ Error setting files confirmed: {e}")
     
     def get_files_confirmed(self, delivery_id):
-        """Check if files are confirmed"""
+        """Check if files are confirmed by sender"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/filesConfirmed.json"
-            response = urequests.get(url)
-            data = response.json()
-            response.close()
-            return data == True
+            response = requests.get(url, timeout=5)
+            return response.json() == True
         except:
             return False
     
-    def set_confirmation_deadline(self, delivery_id, deadline):
+    def set_confirmation_deadline(self, delivery_id, deadline_timestamp):
         """Set confirmation deadline timestamp"""
         try:
-            # Convert to ISO 8601 string format to match app expectations
-            from time import localtime
-            deadline_str = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(
-                localtime(deadline)[0], localtime(deadline)[1], localtime(deadline)[2],
-                localtime(deadline)[3], localtime(deadline)[4], localtime(deadline)[5]
-            )
             url = f"{self.base_url}/delivery_requests/{delivery_id}/confirmationDeadline.json"
-            response = urequests.patch(url, data=ujson.dumps(deadline_str))
-            response.close()
+            requests.put(url, json=deadline_timestamp, timeout=5)
+        except Exception as e:
+            print(f"⚠️ Error setting deadline: {e}")
     
     def set_ready_for_pickup(self, delivery_id, ready):
-        """Set readyForPickup status"""
+        """Set readyForPickup status (arrived at destination)"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/readyForPickup.json"
-            response = urequests.patch(url, data=ujson.dumps(ready))
-            response.close()
+            requests.put(url, json=ready, timeout=5)
         except Exception as e:
             print(f"⚠️ Error setting ready for pickup: {e}")
     
@@ -132,36 +105,49 @@ class FirebaseHandler:
         """Check if receiver confirmed receipt"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/filesReceived.json"
-            response = urequests.get(url)
-            data = response.json()
-            response.close()
-            return data == True
+            response = requests.get(url, timeout=5)
+            return response.json() == True
         except:
             return False
     
     def mark_delivery_completed(self, delivery_id):
-        """Mark delivery as completed"""
+        """Mark delivery as completed and move to history"""
         try:
-            from time import localtime
-            now = localtime()
-            completed_at = "{:04d}-{:02d}-{:02d}T{:02d}:{:02d}:{:02d}".format(
-                now[0], now[1], now[2], now[3], now[4], now[5]
-            )
-        
+            # Get delivery data
             url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
-            response = urequests.patch(url, data=ujson.dumps({
-                "status": "completed",
-                "completedAt": completed_at,
-                "progressStage": 4  # Final stage
-            }))
-            response.close()
+            response = requests.get(url, timeout=5)
+            delivery_data = response.json()
+            
+            # Update status
+            delivery_data['status'] = 'completed'
+            delivery_data['completedAt'] = time.time()
+            
+            # Move to history
+            history_url = f"{self.base_url}/delivery_history/{delivery_id}.json"
+            requests.put(history_url, json=delivery_data, timeout=5)
+            
+            # Delete from requests
+            requests.delete(url, timeout=5)
+            
+        except Exception as e:
+            print(f"⚠️ Error marking completed: {e}")
     
-    def free_compartment(self, compartment):
+    def free_compartment(self, delivery_id):
         """Free up a compartment in robot_status"""
         try:
-            url = f"{self.base_url}/robot_status/currentDeliveries/compartment{compartment}.json"
-            response = urequests.patch(url, data=ujson.dumps(""))
-            response.close()
+            # Get current status
+            url = f"{self.base_url}/robot_status/currentDeliveries.json"
+            response = requests.get(url, timeout=5)
+            compartments = response.json() or {}
+            
+            # Find and clear the compartment
+            for comp_num in ['compartment1', 'compartment2', 'compartment3']:
+                if compartments.get(comp_num) == delivery_id:
+                    comp_url = f"{self.base_url}/robot_status/currentDeliveries/{comp_num}.json"
+                    requests.put(comp_url, json="", timeout=5)
+                    print(f"✅ Freed {comp_num}")
+                    break
+                    
         except Exception as e:
             print(f"⚠️ Error freeing compartment: {e}")
     
@@ -169,28 +155,35 @@ class FirebaseHandler:
         """Cancel a delivery"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
-            response = urequests.patch(url, data=ujson.dumps({
+            requests.patch(url, json={
                 "status": "cancelled",
                 "cancelledAt": time.time()
-            }))
-            response.close()
+            }, timeout=5)
         except Exception as e:
             print(f"⚠️ Error cancelling delivery: {e}")
     
-    def notify_confirmation_timeout(self, delivery_id):
-        """Notify app about confirmation timeout"""
-        # App will handle notifications, we just log it
-        print(f"⏰ Confirmation timeout for {delivery_id}")
+    def report_theft(self, reason):
+        """Report theft attempt to Firebase"""
+        try:
+            url = f"{self.base_url}/security_alerts.json"
+            requests.post(url, json={
+                "type": "THEFT_ATTEMPT",
+                "reason": reason,
+                "timestamp": time.time(),
+                "severity": "CRITICAL"
+            }, timeout=5)
+            print(f"🚨 Theft reported: {reason}")
+        except Exception as e:
+            print(f"⚠️ Error reporting theft: {e}")
     
     def report_error(self, error, location):
         """Report critical error to Firebase"""
         try:
             url = f"{self.base_url}/robot_errors.json"
-            response = urequests.post(url, data=ujson.dumps({
-                "error": error,
+            requests.post(url, json={
+                "error": str(error),
                 "location": location,
                 "timestamp": time.time()
-            }))
-            response.close()
+            }, timeout=5)
         except:
             pass
