@@ -320,24 +320,94 @@ class DeliveryRobot:
         # Wait before attempting to continue
         print("⏳ Waiting 10 seconds before retry...")
         time.sleep(10)
-
-    def signal_handler(sig, frame):
-        """Handle Ctrl+C gracefully"""
-        print("\n\n🛑 Shutdown signal received")
-        print("🧹 Cleaning up...")
+        
+    def start(self):
+        """Main robot loop - check for deliveries and process them"""
+        print("🚀 Starting delivery robot...")
+        print("📡 Listening for new delivery requests...\n")
+        
+        self.current_location = 0  # Start at base
+        self.active_deliveries = []
+        self.is_moving = False
         
         try:
-            robot.stop_movement()
-            robot.line_follower.cleanup()
-            robot.compartments.cleanup()
-        except:
-            pass
-        
-        print("✅ Cleanup complete")
-        sys.exit(0)
+            while self.running:
+                # Get active deliveries from Firebase
+                deliveries = self.firebase.get_active_deliveries()
+                
+                if deliveries:
+                    print(f"\n📋 Found {len(deliveries)} active delivery request(s)")
+                    
+                    # Plan optimal route
+                    route = self.plan_route(deliveries)
+                    
+                    # Execute route
+                    for room, tasks in route:
+                        print(f"\n🗺️ Next stop: Room {room}")
+                        
+                        # Navigate to room
+                        self.line_follower.navigate_to_room(room, self.firebase, None)
+                        self.current_location = room
+                        
+                        # Handle all tasks at this room
+                        for delivery, action in tasks:
+                            if action == 'pickup':
+                                success = self.handle_pickup(delivery)
+                                if success:
+                                    self.firebase.update_status(delivery['id'], 'in_progress')
+                            
+                            elif action == 'deliver':
+                                self.handle_delivery(delivery)
+                                self.firebase.mark_completed(delivery['id'])
+                                self.firebase.free_compartment(delivery['id'], delivery['compartment'])
+                    
+                    # Return to base
+                    if self.current_location != 0:
+                        print("\n🏠 Returning to base...")
+                        self.line_follower.navigate_to_room(0, self.firebase, None)
+                        self.current_location = 0
+                    
+                    print("\n✅ All deliveries completed!\n")
+                
+                else:
+                    # No deliveries - wait at base
+                    if self.current_location != 0:
+                        print("📍 No active deliveries - returning to base")
+                        self.line_follower.navigate_to_room(0, self.firebase, None)
+                        self.current_location = 0
+                
+                # Check again in 5 seconds
+                sleep(5)
+                
+        except KeyboardInterrupt:
+            print("\n⚠️ Interrupted by user")
+        except Exception as e:
+            print(f"\n❌ Error in main loop: {e}")
+            self.handle_critical_error(e)
+        finally:
+            self.cleanup()
     
-    # Register signal handler
-    signal.signal(signal.SIGINT, signal_handler)
+    def handle_delivery(self, delivery):
+        """Handle delivery at destination"""
+        delivery_id = delivery['id']
+        compartment = delivery['compartment']
+        
+        print(f"\n📦 DELIVERY - {delivery_id}")
+        print(f"  Compartment: {compartment}")
+        print(f"  For: {delivery['receiver']}")
+        
+        # Open compartment
+        self.compartments.open_compartment(compartment)
+        
+        # Wait for receiver to verify and collect
+        if self.firebase.wait_for_verification(delivery_id):
+            self.compartments.close_compartment(compartment)
+            print(f"  ✓ Delivery complete!\n")
+            return True
+        else:
+            self.compartments.close_compartment(compartment)
+            print(f"  ⚠ Verification timeout\n")
+            return False
     
     # Initialize and start the robot
     if __name__ == "__main__":
