@@ -37,15 +37,20 @@ class FirebaseHandler:
     def update_current_location(self, delivery_id, location):
         """Update robot's current location"""
         try:
-            url = f"{self.base_url}/delivery_requests/{delivery_id}/currentLocation.json"
-            requests.patch(url, json=location)  # Use patch instead of put
-            print(f"  → Location updated: Room {location}")
+            # Use the full path without .json extension for PATCH
+            url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
+            response = requests.patch(url, json={"currentLocation": location})
+            
+            if response.status_code == 200:
+                print(f"  → Location updated: Room {location}")
+            else:
+                print(f"  ⚠ Location update failed: {response.status_code}")
         except Exception as e:
             print(f"❌ Location update failed: {e}")
     
     def wait_for_files_placed(self, delivery_id, timeout=300):
         """Wait for user to confirm files are placed"""
-        print(f"  ⏳ Waiting for files to be placed (timeout: {timeout}s)...")
+        print(f"  ⏳ Waiting for file confirmation (timeout: {timeout}s)...")
         start_time = time.time()
         
         while time.time() - start_time < timeout:
@@ -54,16 +59,36 @@ class FirebaseHandler:
                 response = requests.get(url)
                 if response.status_code == 200:
                     delivery = response.json()
-                    if delivery and delivery.get('filesPlaced') == True:
-                        print("  ✓ Files confirmed placed!")
+                    # Changed from filesPlaced to filesConfirmed
+                    if delivery and delivery.get('filesConfirmed') == True:
+                        print("  ✓ Files confirmed!")
                         return True
                 time.sleep(1)
             except Exception as e:
-                print(f"❌ Error checking filesPlaced: {e}")
+                print(f"❌ Error checking filesConfirmed: {e}")
                 time.sleep(1)
         
-        print("  ⚠ Timeout waiting for files!")
+        print("  ⚠ Timeout waiting for file confirmation!")
         return False
+    
+    def update_progress_stage(self, delivery_id, stage):
+        """Update delivery progress stage (0-3)"""
+        try:
+            url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
+            response = requests.patch(url, json={"progressStage": stage})
+            
+            if response.status_code == 200:
+                stage_names = {
+                    0: "Processing",
+                    1: "In Transit",
+                    2: "Approaching",
+                    3: "Arrived"
+                }
+                print(f"  → Progress: {stage_names.get(stage, 'Unknown')}")
+            else:
+                print(f"  ⚠ Progress update failed: {response.status_code}")
+        except Exception as e:
+            print(f"❌ Progress update failed: {e}")
     
     def wait_for_verification(self, delivery_id, timeout=300):
         """Wait for receiver to verify and confirm receipt"""
