@@ -17,38 +17,46 @@ class MotorController:
         
         # Enable motor driver
         GPIO.gpio_write(self.h, STBY, 1)
+        
         print("✓ Motor controller initialized")
     
-    def forward(self, speed=MOTOR_SPEED):
-        """Move forward"""
+    def forward(self, speed=1):
+        """Move forward at full speed"""
+        # Set direction: both motors forward
         GPIO.gpio_write(self.h, AIN1, 1)
         GPIO.gpio_write(self.h, AIN2, 0)
         GPIO.gpio_write(self.h, BIN1, 1)
         GPIO.gpio_write(self.h, BIN2, 0)
-        GPIO.gpio_write(self.h, PWMA, int(speed))
-        GPIO.gpio_write(self.h, PWMB, int(speed))
+        
+        # Enable motors at full speed
+        GPIO.gpio_write(self.h, PWMA, 1)
+        GPIO.gpio_write(self.h, PWMB, 1)
     
     def stop(self):
         """Stop both motors"""
         GPIO.gpio_write(self.h, PWMA, 0)
         GPIO.gpio_write(self.h, PWMB, 0)
     
-    def turn_left(self, speed=MOTOR_SPEED):
-        """Turn left (only right motor moves forward)"""
+    def turn_left(self, speed=1):
+        """Turn left - stop left motor, run right motor"""
+        # Left motor: stop
         GPIO.gpio_write(self.h, AIN1, 0)
         GPIO.gpio_write(self.h, AIN2, 0)
         GPIO.gpio_write(self.h, PWMA, 0)
         
+        # Right motor: forward
         GPIO.gpio_write(self.h, BIN1, 1)
         GPIO.gpio_write(self.h, BIN2, 0)
-        GPIO.gpio_write(self.h, PWMB, int(speed))
+        GPIO.gpio_write(self.h, PWMB, 1)
     
-    def turn_right(self, speed=MOTOR_SPEED):
-        """Turn right (only left motor moves forward)"""
+    def turn_right(self, speed=1):
+        """Turn right - run left motor, stop right motor"""
+        # Left motor: forward
         GPIO.gpio_write(self.h, AIN1, 1)
         GPIO.gpio_write(self.h, AIN2, 0)
-        GPIO.gpio_write(self.h, PWMA, int(speed))
+        GPIO.gpio_write(self.h, PWMA, 1)
         
+        # Right motor: stop
         GPIO.gpio_write(self.h, BIN1, 0)
         GPIO.gpio_write(self.h, BIN2, 0)
         GPIO.gpio_write(self.h, PWMB, 0)
