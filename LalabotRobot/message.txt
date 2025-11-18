@@ -1,14 +1,8 @@
-rikatozi@raspberrypi:~/LalabotRobot $ sudo apt-get install pigpio python3-pigpio
-Reading package lists... Done
-Building dependency tree... Done
-Reading state information... Done
-Package pigpio is not available, but is referred to by another package.
-This may mean that the package is missing, has been obsoleted, or
-is only available from another source
-
-E: Package 'pigpio' has no installation candidate
-rikatozi@raspberrypi:~/LalabotRobot $ sudo systemctl enable pigpiod
-Failed to enable unit: Unit pigpiod.service does not exist
-rikatozi@raspberrypi:~/LalabotRobot $ sudo systemctl start pigpiod
-Failed to start pigpiod.service: Unit pigpiod.service not found.
-rikatozi@raspberrypi:~/LalabotRobot $ 
+def update_current_location(self, delivery_id, location):
+    """Update robot's current location"""
+    try:
+        url = f"{self.base_url}/delivery_requests/{delivery_id}/currentLocation.json"
+        requests.patch(url, json=location)  # Use patch instead of put
+        print(f"  → Location updated: Room {location}")
+    except Exception as e:
+        print(f"❌ Location update failed: {e}")
