@@ -48,7 +48,7 @@ class FirebaseHandler:
         except Exception as e:
             print(f"❌ Location update failed: {e}")
     
-    def wait_for_files_placed(self, delivery_id, timeout=300):
+    def wait_for_files_placed(self, delivery_id, timeout=100):
         """Wait for user to confirm files are placed"""
         print(f"  ⏳ Waiting for file confirmation (timeout: {timeout}s)...")
         start_time = time.time()
@@ -90,9 +90,9 @@ class FirebaseHandler:
         except Exception as e:
             print(f"❌ Progress update failed: {e}")
     
-    def wait_for_verification(self, delivery_id, timeout=300):
+    def wait_for_verification(self, delivery_id, timeout=300):  # timeout for verification
         """Wait for receiver to verify and confirm receipt"""
-        print(f"  ⏳ Waiting for verification (timeout: {timeout}s)...")
+        print(f"  ⏳ Waiting for receiver verification (timeout: {timeout}s)...")
         start_time = time.time()
         
         while time.time() - start_time < timeout:
@@ -101,12 +101,13 @@ class FirebaseHandler:
                 response = requests.get(url)
                 if response.status_code == 200:
                     delivery = response.json()
-                    if delivery and delivery.get('verified') == True:
-                        print("  ✓ Verification successful!")
+                    # Changed from 'verified' to 'filesReceived'
+                    if delivery and delivery.get('filesReceived') == True:
+                        print("  ✓ Verification successful! Files received by receiver.")
                         return True
                 time.sleep(1)
             except Exception as e:
-                print(f"❌ Error checking verification: {e}")
+                print(f"❌ Error checking filesReceived: {e}")
                 time.sleep(1)
         
         print("  ⚠ Timeout waiting for verification!")
