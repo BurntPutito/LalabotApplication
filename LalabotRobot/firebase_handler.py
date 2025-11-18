@@ -38,7 +38,8 @@ class FirebaseHandler:
         """Update robot's current location"""
         try:
             url = f"{self.base_url}/delivery_requests/{delivery_id}/currentLocation.json"
-            requests.put(url, json=location)
+            requests.patch(url, json=location)  # Use patch instead of put
+            print(f"  → Location updated: Room {location}")
         except Exception as e:
             print(f"❌ Location update failed: {e}")
     
