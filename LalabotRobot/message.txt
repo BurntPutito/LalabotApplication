@@ -1,0 +1,75 @@
+Warnings
+May be ignored if you are happy with your program.
+main.py
+Line 33 : Unused argument 'signum'
+If you want to keep the argument and silence this warning, then add comment "#pylint: disable=unused-argument" as first line in your function body.
+Line 33 : Unused argument 'frame'
+If you want to keep the argument and silence this warning, then add comment "#pylint: disable=unused-argument" as first line in your function body.
+Line 58 : Need type annotation for "route" (hint: "route: dict[<type>, <type>] = ...")  [var-annotated]
+Line 98 : Using an f-string that does not have any interpolated variables
+It looks like we detect an f-string that does not use any interpolation variables, in which case it can be either a normal string or a bug in the code.
+Line 103 : Using an f-string that does not have any interpolated variables
+It looks like we detect an f-string that does not use any interpolation variables, in which case it can be either a normal string or a bug in the code.
+Line 114 : "FirebaseHandler" has no attribute "update_delivery_stage"  [attr-defined]
+Line 123 : "CompartmentController" has no attribute "open"  [attr-defined]
+Line 128 : "FirebaseHandler" has no attribute "update_delivery_location"  [attr-defined]
+Line 129 : "FirebaseHandler" has no attribute "set_files_confirmed"  [attr-defined]
+Line 132 : "DeliveryRobot" has no attribute "CONFIRMATION_TIMEOUT"  [attr-defined]
+Line 134 : "FirebaseHandler" has no attribute "set_confirmation_deadline"  [attr-defined]
+Line 139 : "FirebaseHandler" has no attribute "get_files_confirmed"  [attr-defined]
+Line 145 : "CompartmentController" has no attribute "close"  [attr-defined]
+Line 152 : "FirebaseHandler" has no attribute "update_delivery_stage"  [attr-defined]
+Line 160 : "FirebaseHandler" has no attribute "notify_confirmation_timeout"  [attr-defined]
+Line 163 : "DeliveryRobot" has no attribute "CONFIRMATION_TIMEOUT"  [attr-defined]
+Line 180 : "FirebaseHandler" has no attribute "update_delivery_stage"  [attr-defined]
+Line 186 : "FirebaseHandler" has no attribute "update_delivery_stage"  [attr-defined]
+Line 192 : "FirebaseHandler" has no attribute "update_delivery_stage"  [attr-defined]
+Line 193 : "FirebaseHandler" has no attribute "update_delivery_location"  [attr-defined]
+Line 194 : "FirebaseHandler" has no attribute "set_ready_for_pickup"  [attr-defined]
+Line 197 : Using an f-string that does not have any interpolated variables
+It looks like we detect an f-string that does not use any interpolation variables, in which case it can be either a normal string or a bug in the code.
+Line 206 : "FirebaseHandler" has no attribute "get_files_received"  [attr-defined]
+Line 212 : "CompartmentController" has no attribute "close"  [attr-defined]
+Line 217 : "FirebaseHandler" has no attribute "mark_delivery_completed"; maybe "mark_completed"?  [attr-defined]
+Line 220 : Missing positional argument "compartment" in call to "free_compartment"  [call-arg]
+Line 226 : Access to member 'current_location' before its definition line 255
+It looks like the instance member is accessed before it's actually assigned.
+Line 226 : Cannot determine type of "current_location"  [has-type]
+Line 230 : Access to member 'current_location' before its definition line 255
+It looks like the instance member is accessed before it's actually assigned.
+Line 230 : Cannot determine type of "current_location"  [has-type]
+Line 235 : "LineFollower" has no attribute "start"  [attr-defined]
+Line 238 : Access to member 'current_location' before its definition line 255
+It looks like the instance member is accessed before it's actually assigned.
+Line 238 : Cannot determine type of "current_location"  [has-type]
+Line 245 : "FirebaseHandler" has no attribute "is_connected"  [attr-defined]
+Line 248 : "FirebaseHandler" has no attribute "reconnect"  [attr-defined]
+Line 253 : "LineFollower" has no attribute "detect_intersection"  [attr-defined]
+Line 255 : Cannot determine type of "current_location"  [has-type]
+Line 263 : "LineFollower" has no attribute "stop"  [attr-defined]
+Line 289 : "CompartmentController" has no attribute "close"  [attr-defined]
+Line 292 : "FirebaseHandler" has no attribute "cancel_delivery"  [attr-defined]
+Line 295 : Missing positional argument "compartment" in call to "free_compartment"  [call-arg]
+Line 298 : "DeliveryRobot" has no attribute "active_deliveries"  [attr-defined]
+Line 299 : "DeliveryRobot" has no attribute "active_deliveries"  [attr-defined]
+Line 303 : "LineFollower" has no attribute "stop"  [attr-defined]
+Line 316 : "FirebaseHandler" has no attribute "report_error"  [attr-defined]
+Line 324 : Method 'signal_handler' should have "self" as first argument
+It looks like the method has an attribute different the "self" as first argument. This is considered as an error since this is a so common convention that you shouldn't break it!
+Line 324 : Unused argument 'frame'
+If you want to keep the argument and silence this warning, then add comment "#pylint: disable=unused-argument" as first line in your function body.
+Line 330 : Name "robot" is not defined  [name-defined]
+Line 331 : Name "robot" is not defined  [name-defined]
+Line 332 : Name "robot" is not defined  [name-defined]
+Line 340 : Argument 2 to "signal" has incompatible type "Callable[[DeliveryRobot, Any], Any]"; expected "Callable[[int, FrameType | None], Any] | int | Handlers | None"  [arg-type]
+
+firebase_handler.py
+Line 2 : Unused import json
+It looks like the imported module or variable is not used.
+Line 19 : Unused variable 'key'
+Looks like the variable is defined (or imported) but not used.
+Line 114 : Unused argument 'delivery_id'
+If you want to keep the argument and silence this warning, then add comment "#pylint: disable=unused-argument" as first line in your function body.
+
+motor_controller.py
+Line 2 : Unused import time
