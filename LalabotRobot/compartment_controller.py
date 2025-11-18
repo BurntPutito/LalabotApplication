@@ -2,7 +2,9 @@ from gpiozero import Servo, Device
 from gpiozero.pins.lgpio import LGPIOFactory
 from time import sleep
 from config import *
+import warnings
 
+warnings.filterwarnings('ignore', category=RuntimeWarning)
 Device.pin_factory = LGPIOFactory()
 
 class CompartmentController:
@@ -16,6 +18,12 @@ class CompartmentController:
         
         # Close all compartments on startup
         self.close_all()
+        
+        # Detach servos after positioning to stop jitter
+        sleep(1)
+        for servo in self.servos.values():
+            servo.detach()
+        
         print("✓ Compartment controller initialized (all closed)")
     
     def _angle_to_value(self, angle):
@@ -26,15 +34,19 @@ class CompartmentController:
         """Open specific compartment (90° → 180°)"""
         if compartment_num in self.servos:
             print(f"  → Opening compartment {compartment_num}")
-            self.servos[compartment_num].value = self._angle_to_value(SERVO_OPEN)
+            servo = self.servos[compartment_num]
+            servo.value = self._angle_to_value(SERVO_OPEN)
             sleep(1)  # Wait for servo to reach position
+            servo.detach()  # Stop driving to prevent jitter
     
     def close_compartment(self, compartment_num):
         """Close specific compartment (180° → 90°)"""
         if compartment_num in self.servos:
             print(f"  → Closing compartment {compartment_num}")
-            self.servos[compartment_num].value = self._angle_to_value(SERVO_CLOSED)
+            servo = self.servos[compartment_num]
+            servo.value = self._angle_to_value(SERVO_CLOSED)
             sleep(1)
+            servo.detach()  # Stop driving to prevent jitter
     
     def close_all(self):
         """Close all compartments"""
@@ -45,5 +57,8 @@ class CompartmentController:
     def cleanup(self):
         """Detach all servos"""
         for servo in self.servos.values():
-            servo.detach()
+            try:
+                servo.detach()
+            except:
+                pass
         print("✓ Compartment controller cleaned up")
