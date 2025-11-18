@@ -409,18 +409,19 @@ class DeliveryRobot:
             print(f"  ⚠ Verification timeout\n")
             return False
     
-    # Initialize and start the robot
-    if __name__ == "__main__":
-        print("""
-        ╔════════════════════════════════════════════╗
-        ║     LALABOT DELIVERY ROBOT SYSTEM          ║
-        ║   Autonomous File Delivery Robot v1.0      ║
-        ╚════════════════════════════════════════════╝
-        """)
-        
-        try:
-            robot = DeliveryRobot()
-            robot.start()
-        except Exception as e:
-            print(f"\n❌ Fatal error during startup: {e}")
-            sys.exit(1)
+# Initialize and start the robot
+if __name__ == "__main__":
+    print("""
+    ╔════════════════════════════════════════════╗
+    ║     LALABOT DELIVERY ROBOT SYSTEM          ║
+    ║   Autonomous File Delivery Robot v1.0      ║
+    ╚════════════════════════════════════════════╝
+    """)
+    
+    try:
+        robot = DeliveryRobot()
+        robot.start()
+    except Exception as e:
+        print(f"\n❌ Fatal error during startup: {e}")
+        sys.exit(1)
+
