@@ -3,9 +3,10 @@ import time
 from config import *
 
 class LineFollower:
-    def __init__(self, motor_controller):
+    def __init__(self, motor_controller, obstacle_detector):
         self.h = GPIO.gpiochip_open(0)
         self.motors = motor_controller
+        self.obstacle_detector = obstacle_detector  # Add obstacle detector
         self.current_location = 0
         
         # Setup IR sensors
@@ -38,7 +39,15 @@ class LineFollower:
         return white_count >= WHITE_LINE_THRESHOLD
     
     def follow_line(self):
-        """Follow black line using IR sensors"""
+        """Follow black line using IR sensors with obstacle detection"""
+        # Check for obstacles FIRST before moving
+        if not self.obstacle_detector.is_path_clear():
+            distance = self.obstacle_detector.get_distance()
+            print(f"⚠ OBSTACLE DETECTED! Distance: {distance}cm - STOPPING")
+            self.motors.stop()
+            time.sleep(0.5)
+            return  # Don't proceed with movement
+        
         left, center, right = self.read_sensors()
         
         # 0 = on black line, 1 = off black line (white surface)
@@ -79,21 +88,25 @@ class LineFollower:
                 self.motors.stop()
                 time.sleep(0.2)
     
-    def navigate_to_room(self, target_room, firebase_handler, delivery_id, is_going_to_destination=False):
+    def navigate_to_room(self, target_room, firebase_handler, delivery_id):
         """Navigate to target room, updating Firebase along the way"""
         print(f"\n🎯 Navigating from Room {self.current_location} → Room {target_room}")
         
         rooms_to_pass = self.calculate_rooms_to_pass(target_room)
         print(f"  📏 Need to pass {rooms_to_pass} room(s)")
         
-        # Update to Stage 2 when approaching destination
-        if is_going_to_destination and delivery_id and rooms_to_pass <= 1:
-            firebase_handler.update_progress_stage(delivery_id, 2)
-        
         rooms_passed = 0
         self.white_line_detected = False
         
         while rooms_passed < rooms_to_pass:
+            # Check for obstacles during navigation
+            if not self.obstacle_detector.is_path_clear():
+                distance = self.obstacle_detector.get_distance()
+                print(f"⚠ OBSTACLE! Distance: {distance}cm - Waiting...")
+                self.motors.stop()
+                time.sleep(1)  # Wait 1 second for obstacle to clear
+                continue  # Skip this iteration and check again
+            
             # Follow line
             self.follow_line()
             
