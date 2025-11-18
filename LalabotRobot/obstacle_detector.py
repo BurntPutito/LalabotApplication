@@ -44,5 +44,8 @@ class ObstacleDetector:
         return dist > OBSTACLE_DISTANCE
     
     def cleanup(self):
-        GPIO.gpiochip_close(self.h)
+        try:
+            GPIO.gpiochip_close(self.h)
+        except:
+            pass
         print("✓ Obstacle detector cleaned up")
