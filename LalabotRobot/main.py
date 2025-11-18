@@ -1,4 +1,5 @@
 import time
+import requests 
 from time import sleep
 import signal
 import sys
@@ -89,14 +90,30 @@ class DeliveryRobot:
         print(f"  Compartment: {compartment}")
         print(f"  To: {delivery['receiver']}")
         
+        # Update status
+        self.firebase.update_status(delivery_id, 'at_pickup')
+        
         # Open compartment
         self.compartments.open_compartment(compartment)
         
-        # Wait for user to place files
+        # Reset filesConfirmed to false before waiting
+        try:
+            url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
+            import requests
+            requests.patch(url, json={"filesConfirmed": False})
+            print(f"  → Ready for files (filesConfirmed reset)")
+        except Exception as e:
+            print(f"  ⚠ Could not reset filesConfirmed: {e}")
+        
+        # Wait for user confirmation
         if self.firebase.wait_for_files_placed(delivery_id):
             # Close compartment
             self.compartments.close_compartment(compartment)
             print(f"  ✓ Pickup complete!\n")
+
+            # Update to Stage 1: In Transit
+            self.firebase.update_progress_stage(delivery_id, 1)
+
             return True
         else:
             # Timeout - close and skip
@@ -359,7 +376,13 @@ class DeliveryRobot:
                                     self.firebase.update_status(delivery['id'], 'in_progress')
                             
                             elif action == 'deliver':
+                                # Update to Stage 2 (approaching destination)
+                                self.firebase.update_progress_stage(delivery['id'], 2)
+                                
+                                # Handle the delivery
                                 self.handle_delivery(delivery)
+                                
+                                # Mark as completed
                                 self.firebase.mark_completed(delivery['id'])
                                 self.firebase.free_compartment(delivery['id'], delivery['compartment'])
                     
@@ -397,6 +420,9 @@ class DeliveryRobot:
         print(f"\n📦 DELIVERY - {delivery_id}")
         print(f"  Compartment: {compartment}")
         print(f"  For: {delivery['receiver']}")
+        
+        # Update to Stage 3: Arrived at destination
+        self.firebase.update_progress_stage(delivery_id, 3)
         
         # Open compartment
         self.compartments.open_compartment(compartment)
