@@ -346,9 +346,10 @@ class DeliveryRobot:
                     for room, tasks in route:
                         print(f"\n🗺️ Next stop: Room {room}")
                         
-                        # Navigate to room
-                        self.line_follower.navigate_to_room(room, self.firebase, None)
-                        self.current_location = room
+                        # Navigate to room  
+                        # Get delivery_id from first task at this room
+                        current_delivery_id = tasks[0][0]['id'] if tasks else None
+                        self.line_follower.navigate_to_room(room, self.firebase, current_delivery_id)
                         
                         # Handle all tasks at this room
                         for delivery, action in tasks:
