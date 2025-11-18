@@ -15,12 +15,12 @@ class DeliveryRobot:
         print("🤖 LALABOT DELIVERY SYSTEM STARTING...")
         print("="*60 + "\n")
         
-        # Initialize all components
+        # Initialize all components (ORDER MATTERS!)
         self.firebase = FirebaseHandler()
         self.motors = MotorController()
-        self.line_follower = LineFollower(self.motors)
+        self.obstacle_detector = ObstacleDetector()  # Initialize obstacle detector FIRST
+        self.line_follower = LineFollower(self.motors, self.obstacle_detector)  # Then pass it to line follower
         self.compartments = CompartmentController()
-        self.obstacle_detector = ObstacleDetector()
         
         self.running = True
         
@@ -423,6 +423,15 @@ class DeliveryRobot:
         
         # Update to Stage 3: Arrived at destination
         self.firebase.update_progress_stage(delivery_id, 3)
+        
+        # Set ready for pickup (triggers receiver app to show verification)
+        try:
+            url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
+            import requests
+            requests.patch(url, json={"readyForPickup": True})
+            print(f"  → Ready for pickup (verification enabled)")
+        except Exception as e:
+            print(f"  ⚠ Could not set readyForPickup: {e}")
         
         # Open compartment
         self.compartments.open_compartment(compartment)
