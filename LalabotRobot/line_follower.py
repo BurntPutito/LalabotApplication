@@ -71,8 +71,9 @@ class LineFollower:
                 self.current_location = (self.current_location + 1) % (ROOM_COUNT + 1)
                 print(f"  ✓ Passed Room {self.current_location}")
                 
-                # Update Firebase
-                firebase_handler.update_current_location(delivery_id, self.current_location)
+                # Update Firebase ONLY if delivery_id is provided
+                if delivery_id is not None:
+                    firebase_handler.update_current_location(delivery_id, self.current_location)
                 
                 # Brief pause before continuing
                 time.sleep(0.5)
