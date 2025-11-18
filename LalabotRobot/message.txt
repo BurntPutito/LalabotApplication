@@ -1,34 +1,39 @@
-# ← UN-INDENT FROM HERE (no spaces before def)
-def signal_handler(sig, frame):
-    """Handle Ctrl+C gracefully"""
-    print("\n\n🛑 Shutdown signal received")
-    print("🧹 Cleaning up...")
-    
-    try:
-        robot.stop_movement()
-        robot.line_follower.cleanup()
-        robot.compartments.cleanup()
-    except:
-        pass
-    
-    print("✅ Cleanup complete")
-    sys.exit(0)
+>>> %Run main.py
 
-# Register signal handler
-signal.signal(signal.SIGINT, signal_handler)
-
-# Initialize and start the robot
-if __name__ == "__main__":
-    print("""
     ╔════════════════════════════════════════════╗
     ║     LALABOT DELIVERY ROBOT SYSTEM          ║
     ║   Autonomous File Delivery Robot v1.0      ║
     ╚════════════════════════════════════════════╝
-    """)
     
-    try:
-        robot = DeliveryRobot()
-        robot.start()
-    except Exception as e:
-        print(f"\n❌ Fatal error during startup: {e}")
-        sys.exit(1)
+
+============================================================
+🤖 LALABOT DELIVERY SYSTEM STARTING...
+============================================================
+
+✓ Firebase handler initialized
+✓ Motor controller initialized
+✓ Line follower initialized at Room 0 (Base)
+/usr/lib/python3/dist-packages/gpiozero/output_devices.py:1509: PWMSoftwareFallback: To reduce servo jitter, use the pigpio pin factory.See https://gpiozero.readthedocs.io/en/stable/api_output.html#servo for more info
+  warnings.warn(PWMSoftwareFallback(
+✓ Compartment controller initialized (all closed)
+✓ Obstacle detector initialized
+
+============================================================
+✓ ALL SYSTEMS READY - Robot at Base (Room 0)
+============================================================
+
+🚀 Starting delivery robot...
+📡 Listening for new delivery requests...
+
+
+❌ Error in main loop: name 'sleep' is not defined
+🆘 CRITICAL ERROR: name 'sleep' is not defined
+
+🧹 Cleaning up...
+✓ Motor controller cleaned up
+✓ Compartment controller cleaned up
+✓ Obstacle detector cleaned up
+
+❌ Fatal error during startup: 'unknown handle'
+
+Process ended with exit code 1.
