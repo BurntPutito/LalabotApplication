@@ -1,74 +1,49 @@
-﻿# compartment_controller.py - Compartment door control for Raspberry Pi 5
-import lgpio
-import time
-from config import SERVO_CLOSED_DUTY, SERVO_OPEN_DUTY
+from gpiozero import Servo, Device
+from gpiozero.pins.lgpio import LGPIOFactory
+from time import sleep
+from config import *
+
+Device.pin_factory = LGPIOFactory()
 
 class CompartmentController:
     def __init__(self):
-        # Open GPIO chip
-        self.h = lgpio.gpiochip_open(4)
+        # Initialize servos with correct pulse widths
+        self.servos = {
+            1: Servo(SERVO1_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000),
+            2: Servo(SERVO2_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000),
+            3: Servo(SERVO3_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000)
+        }
         
-        # Servo pins
-        self.servo1_pin = 25
-        self.servo2_pin = 26
-        self.servo3_pin = 33
-        
-        # Claim as outputs
-        lgpio.gpio_claim_output(self.h, self.servo1_pin)
-        lgpio.gpio_claim_output(self.h, self.servo2_pin)
-        lgpio.gpio_claim_output(self.h, self.servo3_pin)
-        
-        # Servo PWM frequency (50Hz for servos)
-        self.servo_frequency = 50
-        
-        # Servo duty cycles (from config)
-        self.closed_duty = SERVO_CLOSED_DUTY
-        self.open_duty = SERVO_OPEN_DUTY
-        
-        # Initialize all closed
+        # Close all compartments on startup
         self.close_all()
-        print("✅ Compartment controller initialized")
+        print("✓ Compartment controller initialized (all closed)")
     
-    def open(self, compartment):
-        """Open specific compartment (1, 2, or 3)"""
-        print(f"📂 Opening compartment {compartment}")
-        
-        if compartment == 1:
-            lgpio.tx_pwm(self.h, self.servo1_pin, self.servo_frequency, self.open_duty)
-        elif compartment == 2:
-            lgpio.tx_pwm(self.h, self.servo2_pin, self.servo_frequency, self.open_duty)
-        elif compartment == 3:
-            lgpio.tx_pwm(self.h, self.servo3_pin, self.servo_frequency, self.open_duty)
-        else:
-            print(f"⚠️ Invalid compartment number: {compartment}")
-            return
-        
-        time.sleep(0.5)  # Wait for servo to move
+    def _angle_to_value(self, angle):
+        """Convert angle (0-180) to servo value (-1 to 1)"""
+        return (angle - 90) / 90
     
-    def close(self, compartment):
-        """Close specific compartment (1, 2, or 3)"""
-        print(f"🔒 Closing compartment {compartment}")
-        
-        if compartment == 1:
-            lgpio.tx_pwm(self.h, self.servo1_pin, self.servo_frequency, self.closed_duty)
-        elif compartment == 2:
-            lgpio.tx_pwm(self.h, self.servo2_pin, self.servo_frequency, self.closed_duty)
-        elif compartment == 3:
-            lgpio.tx_pwm(self.h, self.servo3_pin, self.servo_frequency, self.closed_duty)
-        else:
-            print(f"⚠️ Invalid compartment number: {compartment}")
-            return
-        
-        time.sleep(0.5)  # Wait for servo to move
+    def open_compartment(self, compartment_num):
+        """Open specific compartment (90° → 180°)"""
+        if compartment_num in self.servos:
+            print(f"  → Opening compartment {compartment_num}")
+            self.servos[compartment_num].value = self._angle_to_value(SERVO_OPEN)
+            sleep(1)  # Wait for servo to reach position
+    
+    def close_compartment(self, compartment_num):
+        """Close specific compartment (180° → 90°)"""
+        if compartment_num in self.servos:
+            print(f"  → Closing compartment {compartment_num}")
+            self.servos[compartment_num].value = self._angle_to_value(SERVO_CLOSED)
+            sleep(1)
     
     def close_all(self):
         """Close all compartments"""
-        lgpio.tx_pwm(self.h, self.servo1_pin, self.servo_frequency, self.closed_duty)
-        lgpio.tx_pwm(self.h, self.servo2_pin, self.servo_frequency, self.closed_duty)
-        lgpio.tx_pwm(self.h, self.servo3_pin, self.servo_frequency, self.closed_duty)
-        time.sleep(0.5)
+        for num in self.servos:
+            self.servos[num].value = self._angle_to_value(SERVO_CLOSED)
+        sleep(1)
     
     def cleanup(self):
-        """Cleanup GPIO resources"""
-        self.close_all()
-        lgpio.gpiochip_close(self.h)
+        """Detach all servos"""
+        for servo in self.servos.values():
+            servo.detach()
+        print("✓ Compartment controller cleaned up")
