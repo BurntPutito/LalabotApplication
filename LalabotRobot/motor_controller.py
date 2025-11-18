@@ -57,5 +57,8 @@ class MotorController:
         """Cleanup GPIO"""
         self.stop()
         GPIO.gpio_write(self.h, STBY, 0)
-        GPIO.gpiochip_close(self.h)
+        try:
+            GPIO.gpiochip_close(self.h)
+        except:
+            pass
         print("✓ Motor controller cleaned up")
