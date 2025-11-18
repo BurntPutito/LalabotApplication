@@ -1,3 +1,4 @@
+
 import lgpio as GPIO
 import time
 from config import *
@@ -81,5 +82,9 @@ class LineFollower:
     
     def cleanup(self):
         self.motors.stop()
-        GPIO.gpiochip_close(self.h)
+        try:
+            GPIO.gpiochip_close(self.h)
+        except:
+            pass #handle already closed
         print("✓ Line follower cleaned up")
+
