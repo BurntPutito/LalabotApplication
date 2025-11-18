@@ -1,8 +1,4 @@
-def update_current_location(self, delivery_id, location):
-    """Update robot's current location"""
-    try:
-        url = f"{self.base_url}/delivery_requests/{delivery_id}/currentLocation.json"
-        requests.patch(url, json=location)  # Use patch instead of put
-        print(f"  → Location updated: Room {location}")
-    except Exception as e:
-        print(f"❌ Location update failed: {e}")
+# Navigate to room  
+# Get delivery_id from first task at this room
+current_delivery_id = tasks[0][0]['id'] if tasks else None
+self.line_follower.navigate_to_room(room, self.firebase, current_delivery_id)
