@@ -121,8 +121,8 @@ class FirebaseHandler:
         except Exception as e:
             print(f"❌ Progress update failed: {e}")
     
-    def wait_for_verification(self, delivery_id, timeout=300):
-        """Wait for receiver to verify code - does NOT open compartment"""
+    def wait_for_verification(self, delivery_id, timeout=300):  # timeout for verification
+        """Wait for receiver to verify and confirm receipt"""
         print(f"  ⏳ Waiting for receiver verification (timeout: {timeout}s)...")
         start_time = time.time()
         
@@ -132,13 +132,13 @@ class FirebaseHandler:
                 response = requests.get(url)
                 if response.status_code == 200:
                     delivery = response.json()
-                    # ONLY check if code was verified, NOT filesReceived
-                    if delivery and delivery.get('codeVerified') == True:
-                        print("  ✓ Verification code accepted!")
+                    # Changed from 'verified' to 'filesReceived'
+                    if delivery and delivery.get('filesReceived') == True:
+                        print("  ✓ Verification successful! Files received by receiver.")
                         return True
                 time.sleep(1)
             except Exception as e:
-                print(f"❌ Error checking verification: {e}")
+                print(f"❌ Error checking filesReceived: {e}")
                 time.sleep(1)
         
         print("  ⚠ Timeout waiting for verification!")
