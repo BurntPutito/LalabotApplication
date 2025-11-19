@@ -12,26 +12,30 @@ from config import ROOM_COUNT
 
 class DeliveryRobot:
     def __init__(self):
-        print("\n" + "="*60)
-        print("🤖 LALABOT DELIVERY SYSTEM STARTING...")
-        print("="*60 + "\n")
+        # Initialize servos with correct pulse widths
+        self.servos = {
+            1: Servo(SERVO1_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000),
+            2: Servo(SERVO2_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000),
+            3: Servo(SERVO3_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000)
+        }
         
-        # Initialize all components (ORDER MATTERS!)
-        self.firebase = FirebaseHandler()
-        self.motors = MotorController()
-        self.obstacle_detector = ObstacleDetector()  # Initialize obstacle detector FIRST
-        self.line_follower = LineFollower(self.motors, self.obstacle_detector)  # Then pass it to line follower
-        self.compartments = CompartmentController()
+        # Track compartment states - assume they might be in any position
+        self.states = {1: "unknown", 2: "unknown", 3: "unknown"}
         
-        self.running = True
+        # FORCE close all compartments on startup
+        print("🔒 Forcing all compartments to closed position...")
+        for num in self.servos:
+            servo = self.servos[num]
+            servo.value = self._angle_to_value(SERVO_CLOSED)
+            self.states[num] = "closed"
         
-        # Setup signal handler for clean shutdown
-        signal.signal(signal.SIGINT, self.shutdown)
-        signal.signal(signal.SIGTERM, self.shutdown)
+        sleep(2)  # Give servos time to reach position
         
-        print("\n" + "="*60)
-        print("✓ ALL SYSTEMS READY - Robot at Base (Room 0)")
-        print("="*60 + "\n")
+        # Detach servos after positioning to stop jitter
+        for servo in self.servos.values():
+            servo.detach()
+        
+        print("✓ Compartment controller initialized (all closed and verified)")
     
     def shutdown(self, signum, frame):
         """Clean shutdown handler"""
@@ -505,42 +509,73 @@ class DeliveryRobot:
         delivery_id = delivery['id']
         compartment = delivery['compartment']
         
-        print(f"\n📦 DELIVERY - {delivery_id}")
+        print(f"\n📬 DELIVERY - {delivery_id}")
         print(f"  Compartment: {compartment}")
         print(f"  For: {delivery['receiver']}")
         
         # Update to Stage 3: Arrived at destination
         self.firebase.update_progress_stage(delivery_id, 3)
         
-        # Set ready for pickup (triggers receiver app to show verification)
+        # Reset verification flags and set ready for pickup
         try:
             url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
             import requests
-            requests.patch(url, json={"readyForPickup": True})
-            print(f"  → Ready for pickup (verification enabled)")
+            requests.patch(url, json={
+                "readyForPickup": True,
+                "codeVerified": False,
+                "filesReceived": False
+            })
+            print(f"  🔐 Waiting for receiver to enter verification code...")
         except Exception as e:
             print(f"  ⚠ Could not set readyForPickup: {e}")
         
-        # Open compartment
-        self.compartments.open_compartment(compartment)
-        
-        # Wait for receiver to verify and collect
+        # STEP 1: Wait for receiver to verify code
         if self.firebase.wait_for_verification(delivery_id):
-            self.compartments.close_compartment(compartment)
-            print(f"  ✓ Delivery complete!\n")
-            return True
+            print(f"  ✅ Code verified! Opening compartment...")
+            
+            # STEP 2: Open compartment after verification
+            self.compartments.open_compartment(compartment)
+            
+            # STEP 3: Wait for receiver to press "files received" button
+            print(f"  ⏳ Waiting for receiver to take files and confirm...")
+            if self.wait_for_files_received(delivery_id):
+                # STEP 4: Close compartment after receiver confirms
+                self.compartments.close_compartment(compartment)
+                print(f"  ✓ Delivery complete!\n")
+                return True
+            else:
+                # Timeout waiting for files received - close anyway
+                print(f"  ⚠ Timeout - closing compartment anyway")
+                self.compartments.close_compartment(compartment)
+                return True  # Still consider it complete since they verified
         else:
-            # Timeout - close compartment and CANCEL delivery
-            self.compartments.close_compartment(compartment)
-            print(f"  ⚠ Verification timeout - cancelling delivery\n")
-            
-            # Cancel the delivery in Firebase
+            # Verification timeout - cancel delivery
+            print(f"  ❌ Verification timeout - cancelling delivery\n")
             self.firebase.cancel_delivery(delivery_id, "Delivery timeout - receiver did not verify")
-            
-            # Free the compartment
             self.firebase.free_compartment(delivery_id, compartment)
-            
             return False
+
+    def wait_for_files_received(self, delivery_id, timeout=300):
+        """Wait for receiver to confirm they took the files"""
+        print(f"  ⏳ Waiting for 'files received' confirmation (timeout: {timeout}s)...")
+        start_time = time.time()
+        
+        while time.time() - start_time < timeout:
+            try:
+                url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
+                response = requests.get(url)
+                if response.status_code == 200:
+                    delivery = response.json()
+                    if delivery and delivery.get('filesReceived') == True:
+                        print("  ✅ Receiver confirmed files received!")
+                        return True
+                time.sleep(1)
+            except Exception as e:
+                print(f"  ⚠ Error checking filesReceived: {e}")
+                time.sleep(1)
+        
+        print("  ⚠ Timeout waiting for files received confirmation!")
+        return False
     
 # Initialize and start the robot
 if __name__ == "__main__":
