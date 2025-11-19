@@ -33,6 +33,37 @@ class FirebaseHandler:
             print(f"  → Status updated: {status}")
         except Exception as e:
             print(f"❌ Update failed: {e}")
+            
+    def cancel_delivery(self, delivery_id, reason):
+        """Cancel a delivery and move it to history"""
+        try:
+            # Get delivery data
+            url = f"{self.base_url}/delivery_requests/{delivery_id}.json"
+            response = requests.get(url)
+            
+            if response.status_code == 200:
+                delivery = response.json()
+                
+                if delivery:
+                    # Update status
+                    delivery['status'] = 'cancelled'
+                    delivery['cancelledAt'] = time.strftime('%Y-%m-%dT%H:%M:%S')
+                    delivery['cancellationReason'] = reason
+                    
+                    # Move to history
+                    history_url = f"{self.base_url}/delivery_history/{delivery_id}.json"
+                    requests.put(history_url, json=delivery)
+                    
+                    # Delete from active requests
+                    requests.delete(url)
+                    
+                    print(f"  ✗ Delivery {delivery_id} cancelled: {reason}")
+                    return True
+            
+            return False
+        except Exception as e:
+            print(f"❌ Error cancelling delivery: {e}")
+            return False
     
     def update_current_location(self, delivery_id, location):
         """Update robot's current location"""
@@ -48,7 +79,7 @@ class FirebaseHandler:
         except Exception as e:
             print(f"❌ Location update failed: {e}")
     
-    def wait_for_files_placed(self, delivery_id, timeout=100):
+    def wait_for_files_placed(self, delivery_id, timeout=10): #time for user to place the file
         """Wait for user to confirm files are placed"""
         print(f"  ⏳ Waiting for file confirmation (timeout: {timeout}s)...")
         start_time = time.time()
