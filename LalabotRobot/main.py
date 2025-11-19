@@ -8,6 +8,7 @@ from motor_controller import MotorController
 from line_follower import LineFollower
 from compartment_controller import CompartmentController
 from obstacle_detector import ObstacleDetector
+from config import ROOM_COUNT
 
 class DeliveryRobot:
     def __init__(self):
@@ -81,6 +82,60 @@ class DeliveryRobot:
         
         return sorted_route
     
+    def plan_route_from_current_location(self, deliveries):
+        """
+        Plan route starting from CURRENT location with proper task ordering
+        Ensures pickups happen before deliveries for each delivery
+        Allows multiple visits to same room if needed (circular route)
+        
+        Returns: List of (room, tasks) in circular order from current location
+        """
+        pickup_status = {}  # delivery_id: picked_up (True/False)
+        
+        # Initialize pickup status for all deliveries
+        for delivery in deliveries:
+            pickup_status[delivery['id']] = False
+        
+        sorted_route = []
+        remaining_deliveries = set(d['id'] for d in deliveries)
+        
+        # Make TWO full loops maximum (to handle deliveries that need second pass)
+        for loop in range(2):
+            if not remaining_deliveries:
+                break  # All deliveries handled
+            
+            # Visit rooms in circular order: current → next → ... → current
+            for offset in range(1, ROOM_COUNT + 1):
+                room = (self.current_location + offset) % (ROOM_COUNT + 1)
+                
+                # Skip base (Room 0) unless we're delivering there
+                if room == 0:
+                    continue
+                
+                room_tasks = []
+                
+                # Step 1: Add PICKUPS at this room (only if not picked up yet)
+                for delivery in deliveries:
+                    if (delivery['pickup'] == room and 
+                        not pickup_status[delivery['id']] and
+                        delivery['id'] in remaining_deliveries):
+                        room_tasks.append((delivery, 'pickup'))
+                        pickup_status[delivery['id']] = True  # Mark as picked up
+                
+                # Step 2: Add DELIVERIES at this room (only if already picked up)
+                for delivery in deliveries:
+                    if (delivery['destination'] == room and 
+                        pickup_status[delivery['id']] and
+                        delivery['id'] in remaining_deliveries):
+                        room_tasks.append((delivery, 'deliver'))
+                        remaining_deliveries.discard(delivery['id'])  # Mark as will be delivered
+                
+                # Only add room to route if there are tasks
+                if room_tasks:
+                    sorted_route.append((room, room_tasks))
+        
+        return sorted_route
+    
     def handle_pickup(self, delivery):
         """Handle pickup at current location"""
         delivery_id = delivery['id']
@@ -110,15 +165,22 @@ class DeliveryRobot:
             # Close compartment
             self.compartments.close_compartment(compartment)
             print(f"  ✓ Pickup complete!\n")
-
+            
             # Update to Stage 1: In Transit
             self.firebase.update_progress_stage(delivery_id, 1)
-
+            
             return True
         else:
-            # Timeout - close and skip
+            # Timeout - close compartment and CANCEL delivery
             self.compartments.close_compartment(compartment)
-            print(f"  ⚠ Pickup timeout - skipping delivery\n")
+            print(f"  ⚠ Pickup timeout - cancelling delivery\n")
+            
+            # Cancel the delivery in Firebase
+            self.firebase.cancel_delivery(delivery_id, "Pickup timeout - sender did not confirm files")
+            
+            # Free the compartment
+            self.firebase.free_compartment(delivery_id, compartment)
+            
             return False
 
     def go_to_pickup(self, delivery):
@@ -344,65 +406,91 @@ class DeliveryRobot:
         print("🚀 Starting delivery robot...")
         print("📡 Listening for new delivery requests...\n")
         
-        self.current_location = 0  # Start at base
+        self.current_location = 0
         self.active_deliveries = []
         self.is_moving = False
+        self.completed_deliveries = set()
+        self.picked_up_deliveries = set()
+        self.cancelled_deliveries = set()  # NEW: Track cancelled deliveries
         
         try:
             while self.running:
-                # Get active deliveries from Firebase
-                deliveries = self.firebase.get_active_deliveries()
+                # Check for new deliveries
+                all_deliveries = self.firebase.get_active_deliveries()
                 
-                if deliveries:
-                    print(f"\n📋 Found {len(deliveries)} active delivery request(s)")
+                # Filter out completed AND cancelled deliveries
+                new_deliveries = [
+                    d for d in all_deliveries 
+                    if d['id'] not in self.completed_deliveries 
+                    and d['id'] not in self.cancelled_deliveries  # Skip cancelled ones
+                ]
+                
+                if new_deliveries:
+                    print(f"\n📋 Found {len(new_deliveries)} active delivery request(s)")
                     
-                    # Plan optimal route
-                    route = self.plan_route(deliveries)
+                    # Plan route from CURRENT location
+                    route = self.plan_route_from_current_location(new_deliveries)
                     
-                    # Execute route
-                    for room, tasks in route:
-                        print(f"\n🗺️ Next stop: Room {room}")
-                        
-                        # Navigate to room  
-                        # Get delivery_id from first task at this room
-                        current_delivery_id = tasks[0][0]['id'] if tasks else None
-                        self.line_follower.navigate_to_room(room, self.firebase, current_delivery_id)
-                        
-                        # Handle all tasks at this room
-                        for delivery, action in tasks:
-                            if action == 'pickup':
-                                success = self.handle_pickup(delivery)
-                                if success:
-                                    self.firebase.update_status(delivery['id'], 'in_progress')
+                    if route:
+                        # Execute route
+                        for room, tasks in route:
+                            print(f"\n🗺️ Next stop: Room {room}")
                             
-                            elif action == 'deliver':
-                                # Update to Stage 2 (approaching destination)
-                                self.firebase.update_progress_stage(delivery['id'], 2)
+                            # Navigate to room
+                            current_delivery_id = tasks[0][0]['id'] if tasks else None
+                            self.line_follower.navigate_to_room(room, self.firebase, current_delivery_id)
+                            self.current_location = room
+                            
+                            # Handle all tasks at this room
+                            for delivery, action in tasks:
+                                if action == 'pickup':
+                                    success = self.handle_pickup(delivery)
+                                    if success:
+                                        self.firebase.update_status(delivery['id'], 'in_progress')
+                                        self.picked_up_deliveries.add(delivery['id'])
+                                    else:
+                                        # Pickup failed - mark as cancelled
+                                        self.cancelled_deliveries.add(delivery['id'])
                                 
-                                # Handle the delivery
-                                self.handle_delivery(delivery)
-                                
-                                # Mark as completed
-                                self.firebase.mark_completed(delivery['id'])
-                                self.firebase.free_compartment(delivery['id'], delivery['compartment'])
-                    
-                    # Return to base
-                    if self.current_location != 0:
-                        print("\n🏠 Returning to base...")
-                        self.line_follower.navigate_to_room(0, self.firebase, None)
-                        self.current_location = 0
-                    
-                    print("\n✅ All deliveries completed!\n")
+                                elif action == 'deliver':
+                                    # SAFETY CHECK: Only deliver if pickup happened
+                                    if delivery['id'] not in self.picked_up_deliveries:
+                                        print(f"  ⚠ Skipping delivery {delivery['id']} - not picked up yet!")
+                                        continue
+                                    
+                                    # Update to Stage 2 (approaching destination)
+                                    self.firebase.update_progress_stage(delivery['id'], 2)
+                                    
+                                    # Handle the delivery
+                                    success = self.handle_delivery(delivery)
+                                    
+                                    if success:
+                                        # Mark as completed
+                                        self.firebase.mark_completed(delivery['id'])
+                                        self.firebase.free_compartment(delivery['id'], delivery['compartment'])
+                                        self.completed_deliveries.add(delivery['id'])
+                                        self.picked_up_deliveries.discard(delivery['id'])
+                                    else:
+                                        # Delivery failed - mark as cancelled
+                                        self.cancelled_deliveries.add(delivery['id'])
+                                        self.picked_up_deliveries.discard(delivery['id'])
+                        
+                        print("\n✅ Current route completed!\n")
+                    else:
+                        print("📍 No deliveries to handle from current location")
                 
                 else:
-                    # No deliveries - wait at base
+                    # No active deliveries - return to base if not already there
                     if self.current_location != 0:
-                        print("📍 No active deliveries - returning to base")
+                        print("\n🏠 No active deliveries - returning to base...")
                         self.line_follower.navigate_to_room(0, self.firebase, None)
                         self.current_location = 0
+                        self.completed_deliveries.clear()
+                        self.picked_up_deliveries.clear()
+                        self.cancelled_deliveries.clear()  # Reset cancelled tracking
                 
-                # Check again in 5 seconds
-                sleep(5)
+                # Check again in 3 seconds
+                sleep(3)
                 
         except KeyboardInterrupt:
             print("\n⚠️ Interrupted by user")
@@ -442,8 +530,16 @@ class DeliveryRobot:
             print(f"  ✓ Delivery complete!\n")
             return True
         else:
+            # Timeout - close compartment and CANCEL delivery
             self.compartments.close_compartment(compartment)
-            print(f"  ⚠ Verification timeout\n")
+            print(f"  ⚠ Verification timeout - cancelling delivery\n")
+            
+            # Cancel the delivery in Firebase
+            self.firebase.cancel_delivery(delivery_id, "Delivery timeout - receiver did not verify")
+            
+            # Free the compartment
+            self.firebase.free_compartment(delivery_id, compartment)
+            
             return False
     
 # Initialize and start the robot
