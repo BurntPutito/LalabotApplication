@@ -29,8 +29,8 @@ FIREBASE_API_KEY = "AIzaSyDbUDCax6orMurh6hSBKbKg51luC8xa1GQ"
 
 # Robot Settings
 MOTOR_SPEED = 0.7  # 70% speed (adjust as needed)
-SERVO_CLOSED = 90  # 9 o'clock position
-SERVO_OPEN = 180   # 12 o'clock position
-OBSTACLE_DISTANCE = 20  # cm - stop if obstacle closer than this
+SERVO_OPEN = 45  # (90) 9 o'clock position
+SERVO_CLOSED = 90   #(180) 12 o'clock position
+OBSTACLE_DISTANCE = 40  # cm - stop if obstacle closer than this
 WHITE_LINE_THRESHOLD = 3  # Number of sensors needed to detect white line
 ROOM_COUNT = 4  # Total rooms (1, 2, 3, 4) + base (0)
