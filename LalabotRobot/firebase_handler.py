@@ -79,7 +79,7 @@ class FirebaseHandler:
         except Exception as e:
             print(f"❌ Location update failed: {e}")
     
-    def wait_for_files_placed(self, delivery_id, timeout=10): #time for user to place the file
+    def wait_for_files_placed(self, delivery_id, timeout=100): #time for user to place the file
         """Wait for user to confirm files are placed"""
         print(f"  ⏳ Waiting for file confirmation (timeout: {timeout}s)...")
         start_time = time.time()
