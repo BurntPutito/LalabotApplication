@@ -16,11 +16,7 @@ class CompartmentController:
             3: Servo(SERVO3_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000)
         }
         
-        # Track compartment states
-        self.states = {1: "closed", 2: "closed", 3: "closed"}
-        
         # Close all compartments on startup
-        print("🔒 Closing all compartments on startup...")
         self.close_all()
         
         # Detach servos after positioning to stop jitter
@@ -35,53 +31,31 @@ class CompartmentController:
         return (angle - 90) / 90
     
     def open_compartment(self, compartment_num):
-        """Open specific compartment ONLY if it's currently closed"""
+        """Open specific compartment (90° → 180°)"""
         if compartment_num in self.servos:
-            # Check current state
-            if self.states[compartment_num] == "open":
-                print(f"  ⚠️ Compartment {compartment_num} is already open - skipping")
-                return
-            
-            print(f"  📂 Opening compartment {compartment_num}")
+            print(f"  → Opening compartment {compartment_num}")
             servo = self.servos[compartment_num]
             servo.value = self._angle_to_value(SERVO_OPEN)
-            sleep(1.5)  # Increased wait time
-            servo.detach()
-            
-            # Update state
-            self.states[compartment_num] = "open"
-            print(f"  ✓ Compartment {compartment_num} is now OPEN")
-
+            sleep(1)  # Wait for servo to reach position
+            servo.detach()  # Stop driving to prevent jitter
+    
     def close_compartment(self, compartment_num):
-        """Close specific compartment ONLY if it's currently open"""
+        """Close specific compartment (180° → 90°)"""
         if compartment_num in self.servos:
-            # Check current state
-            if self.states[compartment_num] == "closed":
-                print(f"  ⚠️ Compartment {compartment_num} is already closed - skipping")
-                return
-            
-            print(f"  🔒 Closing compartment {compartment_num}")
+            print(f"  → Closing compartment {compartment_num}")
             servo = self.servos[compartment_num]
             servo.value = self._angle_to_value(SERVO_CLOSED)
-            sleep(1.5)  # Increased wait time
-            servo.detach()
-            
-            # Update state
-            self.states[compartment_num] = "closed"
-            print(f"  ✓ Compartment {compartment_num} is now CLOSED")
+            sleep(1)
+            servo.detach()  # Stop driving to prevent jitter
     
     def close_all(self):
         """Close all compartments"""
         for num in self.servos:
-            servo = self.servos[num]
-            servo.value = self._angle_to_value(SERVO_CLOSED)
-            self.states[num] = "closed"
+            self.servos[num].value = self._angle_to_value(SERVO_CLOSED)
         sleep(1)
     
     def cleanup(self):
-        """Close all and detach all servos"""
-        print("🧹 Closing all compartments before cleanup...")
-        self.close_all()
+        """Detach all servos"""
         for servo in self.servos.values():
             try:
                 servo.detach()
