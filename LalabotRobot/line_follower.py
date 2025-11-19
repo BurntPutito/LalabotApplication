@@ -38,55 +38,109 @@ class LineFollower:
         
         return white_count >= WHITE_LINE_THRESHOLD
     
+    def debug_sensors(self):
+        """Print sensor readings for debugging"""
+        left, center, right = self.read_sensors()
+        
+        # Visual representation
+        l_char = "█" if left == 0 else "░"
+        c_char = "█" if center == 0 else "░"
+        r_char = "█" if right == 0 else "░"
+        
+        print(f"[{l_char}] [{c_char}] [{r_char}]  (L={left} C={center} R={right})")
+    
     def follow_line(self):
         """Follow black line using IR sensors with obstacle detection"""
-        # Check for obstacles FIRST before moving
+        # Check for obstacles FIRST
         if not self.obstacle_detector.is_path_clear():
             distance = self.obstacle_detector.get_distance()
             print(f"⚠ OBSTACLE DETECTED! Distance: {distance}cm - STOPPING")
             self.motors.stop()
             time.sleep(0.5)
-            return  # Don't proceed with movement
+            return
         
         left, center, right = self.read_sensors()
         
-        # 0 = on black line, 1 = off black line (white surface)
+        # 0 = on black line, 1 = off black line
         
-        if center == 0:
-            # Center sensor on black line - go straight
+        # PRIORITY 1: Perfect alignment - only center sees black
+        if left == 1 and center == 0 and right == 1:
             self.motors.forward()
             self.last_valid_reading = 'center'
-            
-        elif left == 0 and right == 1:
-            # Only left sensor sees black - turn left
+        
+        # PRIORITY 2: Slight left deviation - left + center on black
+        elif left == 0 and center == 0 and right == 1:
             self.motors.turn_left()
             self.last_valid_reading = 'left'
-            
-        elif right == 0 and left == 1:
-            # Only right sensor sees black - turn right
+        
+        # PRIORITY 3: Slight right deviation - right + center on black
+        elif left == 1 and center == 0 and right == 0:
             self.motors.turn_right()
             self.last_valid_reading = 'right'
-            
-        elif left == 0 and center == 0:
-            # Left + center on black - turn left slightly
+        
+        # PRIORITY 4: Strong left deviation - only left sees black
+        elif left == 0 and center == 1 and right == 1:
             self.motors.turn_left()
             self.last_valid_reading = 'left'
-            
-        elif right == 0 and center == 0:
-            # Right + center on black - turn right slightly
+        
+        # PRIORITY 5: Strong right deviation - only right sees black
+        elif left == 1 and center == 1 and right == 0:
             self.motors.turn_right()
             self.last_valid_reading = 'right'
-            
-        else:
-            # All sensors see white or lost line
-            if left == 1 and center == 1 and right == 1:
-                # This is a white line marker - do nothing, let navigate_to_room() handle it
-                pass
+        
+        # PRIORITY 6: All on black (wide line or intersection)
+        elif left == 0 and center == 0 and right == 0:
+            # Continue in last known direction
+            if self.last_valid_reading == 'left':
+                self.motors.turn_left()
+            elif self.last_valid_reading == 'right':
+                self.motors.turn_right()
             else:
-                # Lost line - stop briefly
-                print("⚠ Lost line!")
-                self.motors.stop()
-                time.sleep(0.2)
+                self.motors.forward()  # Default to forward
+        
+        # All white (lost line or white marker)
+        elif left == 1 and center == 1 and right == 1:
+            # White line marker - let navigate_to_room() handle it
+            pass
+        
+        # Lost line - stop briefly
+        else:
+            print("⚠ Lost line!")
+            self.motors.stop()
+            time.sleep(0.1)
+            
+        # Add to line_follower.py for testing
+    def test_line_following(self):
+        """Test line following for 10 seconds"""
+        print("Testing line following...")
+        start = time.time()
+        
+        while time.time() - start < 10:
+            left, center, right = self.read_sensors()
+            print(f"L={left} C={center} R={right}", end=" → ")
+            
+            if left == 1 and center == 0 and right == 1:
+                print("FORWARD (perfect)")
+                self.motors.forward()
+            elif left == 0 and center == 0:
+                print("TURN LEFT (slight)")
+                self.motors.turn_left()
+            elif center == 0 and right == 0:
+                print("TURN RIGHT (slight)")
+                self.motors.turn_right()
+            elif left == 0 and center == 1:
+                print("TURN LEFT (strong)")
+                self.motors.turn_left()
+            elif center == 1 and right == 0:
+                print("TURN RIGHT (strong)")
+                self.motors.turn_right()
+            else:
+                print("FORWARD (all black)")
+                self.motors.forward()
+            
+            time.sleep(0.1)
+        
+        self.motors.stop()
     
     def navigate_to_room(self, target_room, firebase_handler, delivery_id):
         """Navigate to target room, updating Firebase along the way"""
@@ -99,6 +153,9 @@ class LineFollower:
         self.white_line_detected = False
         
         while rooms_passed < rooms_to_pass:
+            # Debug sensors every second
+            if int(time.time()) % 1 == 0:
+                self.debug_sensors()
             # Check for obstacles during navigation
             if not self.obstacle_detector.is_path_clear():
                 distance = self.obstacle_detector.get_distance()
