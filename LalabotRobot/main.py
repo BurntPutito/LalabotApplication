@@ -12,30 +12,26 @@ from config import ROOM_COUNT
 
 class DeliveryRobot:
     def __init__(self):
-        # Initialize servos with correct pulse widths
-        self.servos = {
-            1: Servo(SERVO1_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000),
-            2: Servo(SERVO2_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000),
-            3: Servo(SERVO3_PIN, min_pulse_width=1/1000, max_pulse_width=2/1000)
-        }
+        print("\n" + "="*60)
+        print("🤖 LALABOT DELIVERY SYSTEM STARTING...")
+        print("="*60 + "\n")
         
-        # Track compartment states - assume they might be in any position
-        self.states = {1: "unknown", 2: "unknown", 3: "unknown"}
+        # Initialize all components (ORDER MATTERS!)
+        self.firebase = FirebaseHandler()
+        self.motors = MotorController()
+        self.obstacle_detector = ObstacleDetector()  # Initialize obstacle detector FIRST
+        self.line_follower = LineFollower(self.motors, self.obstacle_detector)  # Then pass it to line follower
+        self.compartments = CompartmentController()
         
-        # FORCE close all compartments on startup
-        print("🔒 Forcing all compartments to closed position...")
-        for num in self.servos:
-            servo = self.servos[num]
-            servo.value = self._angle_to_value(SERVO_CLOSED)
-            self.states[num] = "closed"
+        self.running = True
         
-        sleep(2)  # Give servos time to reach position
+        # Setup signal handler for clean shutdown
+        signal.signal(signal.SIGINT, self.shutdown)
+        signal.signal(signal.SIGTERM, self.shutdown)
         
-        # Detach servos after positioning to stop jitter
-        for servo in self.servos.values():
-            servo.detach()
-        
-        print("✓ Compartment controller initialized (all closed and verified)")
+        print("\n" + "="*60)
+        print("✓ ALL SYSTEMS READY - Robot at Base (Room 0)")
+        print("="*60 + "\n")
     
     def shutdown(self, signum, frame):
         """Clean shutdown handler"""
@@ -516,43 +512,43 @@ class DeliveryRobot:
         # Update to Stage 3: Arrived at destination
         self.firebase.update_progress_stage(delivery_id, 3)
         
-        # Reset verification flags and set ready for pickup
+        # Set ready for pickup (triggers receiver app to show verification)
         try:
             url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
             import requests
-            requests.patch(url, json={
-                "readyForPickup": True,
-                "codeVerified": False,
-                "filesReceived": False
-            })
-            print(f"  🔐 Waiting for receiver to enter verification code...")
+            requests.patch(url, json={"readyForPickup": True, "filesReceived": False})
+            print(f"  ⏳ Waiting for receiver to verify code...")
         except Exception as e:
             print(f"  ⚠ Could not set readyForPickup: {e}")
         
-        # STEP 1: Wait for receiver to verify code
+        # Wait for receiver to verify code (this will open compartment in app)
         if self.firebase.wait_for_verification(delivery_id):
-            print(f"  ✅ Code verified! Opening compartment...")
-            
-            # STEP 2: Open compartment after verification
+            # Verification successful - NOW open the compartment
+            print(f"  ✅ Verification successful!")
             self.compartments.open_compartment(compartment)
+            print(f"  📂 Compartment opened - waiting for receiver to take files...")
             
-            # STEP 3: Wait for receiver to press "files received" button
-            print(f"  ⏳ Waiting for receiver to take files and confirm...")
+            # Wait for receiver to press "files received" button
             if self.wait_for_files_received(delivery_id):
-                # STEP 4: Close compartment after receiver confirms
+                # Close compartment after receiver confirms
                 self.compartments.close_compartment(compartment)
                 print(f"  ✓ Delivery complete!\n")
                 return True
             else:
                 # Timeout waiting for files received - close anyway
-                print(f"  ⚠ Timeout - closing compartment anyway")
                 self.compartments.close_compartment(compartment)
+                print(f"  ⚠ Timeout waiting for files received confirmation\n")
                 return True  # Still consider it complete since they verified
         else:
-            # Verification timeout - cancel delivery
-            print(f"  ❌ Verification timeout - cancelling delivery\n")
+            # Timeout - CANCEL delivery (compartment never opened)
+            print(f"  ⚠ Verification timeout - cancelling delivery\n")
+            
+            # Cancel the delivery in Firebase
             self.firebase.cancel_delivery(delivery_id, "Delivery timeout - receiver did not verify")
+            
+            # Free the compartment
             self.firebase.free_compartment(delivery_id, compartment)
+            
             return False
 
     def wait_for_files_received(self, delivery_id, timeout=300):
