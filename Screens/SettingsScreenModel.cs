@@ -58,6 +58,11 @@ namespace LalabotApplication.Screens
             {
                 try
                 {
+                    // Clear saved credentials
+                    SecureStorage.Remove("saved_email");
+                    SecureStorage.Remove("saved_password");
+                    SecureStorage.Remove("remember_me");
+
                     // Sign out from Firebase
                     _authClient.SignOut();
 
