@@ -146,21 +146,38 @@
                                 </VerticalStackLayout>
                             </Border>
 
-                            <!-- This Week -->
+                            <!-- This Week/Filtered Time -->
                             <Border Grid.Row="1" Grid.Column="0" 
                                     BackgroundColor="White" 
                                     Stroke="#2D4A6E" 
                                     StrokeThickness="1"
                                     Padding="10">
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ShowTimeFilterOptionsCommand}"/>
+                                </Border.GestureRecognizers>
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="10"/>
                                 </Border.StrokeShape>
                                 <VerticalStackLayout Spacing="2">
-                                    <Label 
-                                        Text="📅 This Week"
-                                        FontFamily="OutfitLight"
-                                        FontSize="12"
-                                        TextColor="Gray"/>
+                                    <HorizontalStackLayout Spacing="3">
+                                        <Label 
+                                            Text="📅"
+                                            FontFamily="OutfitLight"
+                                            FontSize="12"
+                                            TextColor="Gray"/>
+                                        <Label 
+                                            Text="{Binding TimeFilterDisplayText}"
+                                            FontFamily="OutfitLight"
+                                            FontSize="12"
+                                            TextColor="Gray"
+                                            LineBreakMode="TailTruncation"/>
+                                        <Label 
+                                            Text="▼"
+                                            FontFamily="OutfitLight"
+                                            FontSize="8"
+                                            TextColor="Gray"
+                                            VerticalOptions="Center"/>
+                                    </HorizontalStackLayout>
                                     <Label 
                                         Text="{Binding ThisWeekTotal}"
                                         FontFamily="OutfitBold"

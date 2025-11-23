@@ -52,6 +52,32 @@ namespace LalabotApplication.Screens
         [ObservableProperty]
         private bool _showAnalytics = false;
 
+        [ObservableProperty]
+        private string _selectedTimeFilter = "This Week";
+
+        [ObservableProperty]
+        private string _timeFilterDisplayText = "This Week";
+
+        [RelayCommand]
+        private async Task ShowTimeFilterOptions()
+        {
+            string action = await Shell.Current.DisplayActionSheet(
+                "Select Time Period",
+                "Cancel",
+                null,
+                "Today",
+                "This Week",
+                "This Month",
+                "Overall");
+
+            if (action == "Cancel" || string.IsNullOrEmpty(action))
+                return;
+
+            SelectedTimeFilter = action;
+            TimeFilterDisplayText = action;
+            await LoadAnalytics();
+        }
+
         public bool HasOutgoingDeliveries => OutgoingDeliveries?.Count > 0;
         public bool HasIncomingDeliveries => IncomingDeliveries?.Count > 0;
         public bool HasNoDeliveries => !HasOutgoingDeliveries && !HasIncomingDeliveries;
@@ -414,16 +440,32 @@ namespace LalabotApplication.Screens
                 TotalSent = userDeliveries.Count(d => d.senderUid == user.Uid);
                 TotalReceived = userDeliveries.Count(d => d.receiverUid == user.Uid);
 
-                // This week's deliveries
-                var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
-                ThisWeekTotal = userDeliveries.Count(d =>
+                // Time-filtered deliveries
+                DateTime filterDate = SelectedTimeFilter switch
                 {
-                    if (DateTime.TryParse(d.createdAt, out var date))
+                    "Today" => DateTime.UtcNow.Date,
+                    "This Week" => DateTime.UtcNow.AddDays(-7),
+                    "This Month" => DateTime.UtcNow.AddMonths(-1),
+                    _ => DateTime.MinValue // Overall
+                };
+
+                if (SelectedTimeFilter == "Overall")
+                {
+                    ThisWeekTotal = userDeliveries.Count;
+                }
+                else
+                {
+                    ThisWeekTotal = userDeliveries.Count(d =>
                     {
-                        return date >= oneWeekAgo;
-                    }
-                    return false;
-                });
+                        if (DateTime.TryParse(d.createdAt, out var date))
+                        {
+                            return SelectedTimeFilter == "Today"
+                                ? date.Date == filterDate
+                                : date >= filterDate;
+                        }
+                        return false;
+                    });
+                }
 
                 // Success rate calculation
                 var totalDeliveries = userDeliveries.Count;

@@ -21,6 +21,12 @@ namespace LalabotApplication.Screens
         private ObservableCollection<HistoryDeliveryInfo> _filteredDeliveries = new();
 
         [ObservableProperty]
+        private string _selectedTimeFilter = "Overall";
+
+        [ObservableProperty]
+        private string _timeFilterDisplayText = "Overall";
+
+        [ObservableProperty]
         private string _currentFilter = "delivered";
 
         [ObservableProperty]
@@ -112,6 +118,26 @@ namespace LalabotApplication.Screens
             OnPropertyChanged(nameof(PendingTextColor));
         }
 
+        [RelayCommand]
+        private async Task ShowTimeFilterOptions()
+        {
+            string action = await Shell.Current.DisplayActionSheet(
+                "Select Time Period",
+                "Cancel",
+                null,
+                "Today",
+                "This Week",
+                "This Month",
+                "Overall");
+
+            if (action == "Cancel" || string.IsNullOrEmpty(action))
+                return;
+
+            SelectedTimeFilter = action;
+            TimeFilterDisplayText = action;
+            ApplyFilter();
+        }
+
         private async Task LoadDeliveries()
         {
             try
@@ -191,7 +217,8 @@ namespace LalabotApplication.Screens
         {
             FilteredDeliveries.Clear();
 
-            var filtered = _allDeliveries.Where(d =>
+            // First filter by status
+            var statusFiltered = _allDeliveries.Where(d =>
             {
                 return CurrentFilter switch
                 {
@@ -200,9 +227,27 @@ namespace LalabotApplication.Screens
                     "pending" => (d.Status == "pending" || d.Status == "in_progress" || d.Status == "arrived") && d.ProgressStage < 3,
                     _ => false
                 };
-            }).ToList();
+            });
 
-            foreach (var item in filtered)
+            // Then filter by time
+            DateTime filterDate = SelectedTimeFilter switch
+            {
+                "Today" => DateTime.UtcNow.Date,
+                "This Week" => DateTime.UtcNow.AddDays(-7),
+                "This Month" => DateTime.UtcNow.AddMonths(-1),
+                _ => DateTime.MinValue // Overall
+            };
+
+            var timeFiltered = statusFiltered;
+            if (SelectedTimeFilter != "Overall")
+            {
+                timeFiltered = statusFiltered.Where(d =>
+                    SelectedTimeFilter == "Today"
+                        ? d.CreatedAt.Date == filterDate
+                        : d.CreatedAt >= filterDate);
+            }
+
+            foreach (var item in timeFiltered)
             {
                 FilteredDeliveries.Add(item);
             }

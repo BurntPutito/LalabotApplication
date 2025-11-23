@@ -57,6 +57,40 @@
                         CommandParameter="pending"/>
                 </Grid>
 
+                <!-- Time Filter Button -->
+                <Grid HorizontalOptions="Center" Margin="0,10,0,0">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShowTimeFilterOptionsCommand}"/>
+                    </Grid.GestureRecognizers>
+                    <RoundRectangle
+                            Fill="AliceBlue"
+                            Stroke="#2D4A6E"
+                            StrokeThickness="2"
+                            CornerRadius="10"/>
+                    <HorizontalStackLayout 
+                            Spacing="5" 
+                            Padding="15,10"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                        <Label 
+                            Text="📅"
+                            FontSize="14"
+                            TextColor="#2D4A6E"
+                            VerticalOptions="Center"/>
+                        <Label 
+                            Text="{Binding TimeFilterDisplayText}"
+                            FontFamily="OutfitLight"
+                            FontSize="14"
+                            TextColor="#2D4A6E"
+                            VerticalOptions="Center"/>
+                        <Label 
+                            Text="▼"
+                            FontSize="10"
+                            TextColor="#2D4A6E"
+                            VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Grid>
+
                 <!-- Delivery History List -->
                 <CollectionView
                     ItemsSource="{Binding FilteredDeliveries}"
