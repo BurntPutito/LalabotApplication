@@ -158,9 +158,15 @@ namespace LalabotApplication.Screens
                     return;
                 }
 
+                // Debug: Show the URL
+                System.Diagnostics.Debug.WriteLine($"Uploaded image URL: {imageUrl}");
+
                 // Set the custom avatar URL
                 SelectedAvatarUrl = imageUrl;
                 SelectedAvatarIndex = -1; // -1 indicates custom photo
+
+                // Force the avatar source to update
+                OnPropertyChanged(nameof(SelectedAvatarUrl));
 
                 UpdateVisualFeedback();
 

@@ -35,6 +35,10 @@ namespace LalabotApplication.Services
                     var responseContent = await response.Content.ReadAsStringAsync();
                     var result = JsonSerializer.Deserialize<ImgBBResponse>(responseContent);
 
+                    // Debug: Check what URL we got
+                    System.Diagnostics.Debug.WriteLine($"Upload response: {responseContent}");
+                    System.Diagnostics.Debug.WriteLine($"Image URL: {result?.data?.url}");
+
                     return result?.data?.url ?? string.Empty;
                 }
 

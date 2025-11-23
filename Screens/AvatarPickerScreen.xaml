@@ -62,7 +62,7 @@
                                     </Image.Source>
                                 </Image>
                             </Grid>
-                            
+
                             <!-- Custom Photo Preview (when uploaded) -->
                             <Grid IsVisible="{Binding HasCustomPhoto}">
                                 <Ellipse 
