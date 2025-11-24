@@ -22,9 +22,11 @@ class MotorController:
     
     def forward(self, speed=1):
         """Move forward at full speed"""
-        # Set direction: both motors forward
-        GPIO.gpio_write(self.h, AIN1, 1)
-        GPIO.gpio_write(self.h, AIN2, 0)
+        # Motor A (left) is reversed - forward is 0,1
+        GPIO.gpio_write(self.h, AIN1, 0)
+        GPIO.gpio_write(self.h, AIN2, 1)
+        
+        # Motor B (right) normal - forward is 1,0
         GPIO.gpio_write(self.h, BIN1, 1)
         GPIO.gpio_write(self.h, BIN2, 0)
         
@@ -38,28 +40,28 @@ class MotorController:
         GPIO.gpio_write(self.h, PWMB, 0)
     
     def turn_left(self, speed=1):
-        """Turn left - stop left motor, run right motor"""
-        # Left motor: stop
-        GPIO.gpio_write(self.h, AIN1, 0)
+        """Turn left - left motor backward, right motor forward (sharp turn)"""
+        # Motor A (left) reversed - backward is 1,0
+        GPIO.gpio_write(self.h, AIN1, 1)
         GPIO.gpio_write(self.h, AIN2, 0)
-        GPIO.gpio_write(self.h, PWMA, 0)
+        GPIO.gpio_write(self.h, PWMA, 1)
         
-        # Right motor: forward
+        # Motor B (right) forward - forward is 1,0
         GPIO.gpio_write(self.h, BIN1, 1)
         GPIO.gpio_write(self.h, BIN2, 0)
         GPIO.gpio_write(self.h, PWMB, 1)
     
     def turn_right(self, speed=1):
-        """Turn right - run left motor, stop right motor"""
-        # Left motor: forward
-        GPIO.gpio_write(self.h, AIN1, 1)
-        GPIO.gpio_write(self.h, AIN2, 0)
+        """Turn right - left motor forward, right motor backward (sharp turn)"""
+        # Motor A (left) reversed - forward is 0,1
+        GPIO.gpio_write(self.h, AIN1, 0)
+        GPIO.gpio_write(self.h, AIN2, 1)
         GPIO.gpio_write(self.h, PWMA, 1)
         
-        # Right motor: stop
+        # Motor B (right) backward - backward is 0,1
         GPIO.gpio_write(self.h, BIN1, 0)
-        GPIO.gpio_write(self.h, BIN2, 0)
-        GPIO.gpio_write(self.h, PWMB, 0)
+        GPIO.gpio_write(self.h, BIN2, 1)
+        GPIO.gpio_write(self.h, PWMB, 1)
     
     def cleanup(self):
         """Cleanup GPIO"""
