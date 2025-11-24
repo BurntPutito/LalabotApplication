@@ -505,7 +505,7 @@ class DeliveryRobot:
         delivery_id = delivery['id']
         compartment = delivery['compartment']
         
-        print(f"\n📬 DELIVERY - {delivery_id}")
+        print(f"\n📦 DELIVERY - {delivery_id}")
         print(f"  Compartment: {compartment}")
         print(f"  For: {delivery['receiver']}")
         
@@ -516,31 +516,22 @@ class DeliveryRobot:
         try:
             url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
             import requests
-            requests.patch(url, json={"readyForPickup": True, "filesReceived": False})
-            print(f"  ⏳ Waiting for receiver to verify code...")
+            requests.patch(url, json={"readyForPickup": True})
+            print(f"  → Ready for pickup (verification enabled)")
         except Exception as e:
             print(f"  ⚠ Could not set readyForPickup: {e}")
         
-        # Wait for receiver to verify code (this will open compartment in app)
+        # Open compartment
+        self.compartments.open_compartment(compartment)
+        
+        # Wait for receiver to verify and collect
         if self.firebase.wait_for_verification(delivery_id):
-            # Verification successful - NOW open the compartment
-            print(f"  ✅ Verification successful!")
-            self.compartments.open_compartment(compartment)
-            print(f"  📂 Compartment opened - waiting for receiver to take files...")
-            
-            # Wait for receiver to press "files received" button
-            if self.wait_for_files_received(delivery_id):
-                # Close compartment after receiver confirms
-                self.compartments.close_compartment(compartment)
-                print(f"  ✓ Delivery complete!\n")
-                return True
-            else:
-                # Timeout waiting for files received - close anyway
-                self.compartments.close_compartment(compartment)
-                print(f"  ⚠ Timeout waiting for files received confirmation\n")
-                return True  # Still consider it complete since they verified
+            self.compartments.close_compartment(compartment)
+            print(f"  ✓ Delivery complete!\n")
+            return True
         else:
-            # Timeout - CANCEL delivery (compartment never opened)
+            # Timeout - close compartment and CANCEL delivery
+            self.compartments.close_compartment(compartment)
             print(f"  ⚠ Verification timeout - cancelling delivery\n")
             
             # Cancel the delivery in Firebase
@@ -550,28 +541,6 @@ class DeliveryRobot:
             self.firebase.free_compartment(delivery_id, compartment)
             
             return False
-
-    def wait_for_files_received(self, delivery_id, timeout=300):
-        """Wait for receiver to confirm they took the files"""
-        print(f"  ⏳ Waiting for 'files received' confirmation (timeout: {timeout}s)...")
-        start_time = time.time()
-        
-        while time.time() - start_time < timeout:
-            try:
-                url = f"{self.firebase.base_url}/delivery_requests/{delivery_id}.json"
-                response = requests.get(url)
-                if response.status_code == 200:
-                    delivery = response.json()
-                    if delivery and delivery.get('filesReceived') == True:
-                        print("  ✅ Receiver confirmed files received!")
-                        return True
-                time.sleep(1)
-            except Exception as e:
-                print(f"  ⚠ Error checking filesReceived: {e}")
-                time.sleep(1)
-        
-        print("  ⚠ Timeout waiting for files received confirmation!")
-        return False
     
 # Initialize and start the robot
 if __name__ == "__main__":
@@ -588,4 +557,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n❌ Fatal error during startup: {e}")
         sys.exit(1)
-
