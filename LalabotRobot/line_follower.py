@@ -63,53 +63,38 @@ class LineFollower:
         
         # 0 = on black line, 1 = off black line
         
-        # PRIORITY 1: Perfect alignment - only center sees black
-        if left == 1 and center == 0 and right == 1:
-            self.motors.forward()
-            self.last_valid_reading = 'center'
-        
-        # PRIORITY 2: Slight left deviation - left + center on black
-        elif left == 0 and center == 0 and right == 1:
-            self.motors.turn_left()
-            self.last_valid_reading = 'left'
-        
-        # PRIORITY 3: Slight right deviation - right + center on black
-        elif left == 1 and center == 0 and right == 0:
-            self.motors.turn_right()
-            self.last_valid_reading = 'right'
-        
-        # PRIORITY 4: Strong left deviation - only left sees black
-        elif left == 0 and center == 1 and right == 1:
-            self.motors.turn_left()
-            self.last_valid_reading = 'left'
-        
-        # PRIORITY 5: Strong right deviation - only right sees black
-        elif left == 1 and center == 1 and right == 0:
-            self.motors.turn_right()
-            self.last_valid_reading = 'right'
-        
-        # PRIORITY 6: All on black (wide line or intersection)
-        elif left == 0 and center == 0 and right == 0:
-            # Continue in last known direction
-            if self.last_valid_reading == 'left':
+        # Center on line - move forward
+        if center == 0:
+            if left == 1 and right == 1:
+                # Perfect alignment - only center sees black
+                self.motors.forward()
+                self.last_valid_reading = 'center'
+            elif left == 0:
+                # Slightly left - gentle correction (sharp turn)
                 self.motors.turn_left()
-            elif self.last_valid_reading == 'right':
+                self.last_valid_reading = 'left'
+            elif right == 0:
+                # Slightly right - gentle correction (sharp turn)
                 self.motors.turn_right()
-            else:
-                self.motors.forward()  # Default to forward
+                self.last_valid_reading = 'right'
         
-        # All white (lost line or white marker)
-        elif left == 1 and center == 1 and right == 1:
-            # White line marker - let navigate_to_room() handle it
-            pass
+        # Center lost line - use left/right to correct
+        elif left == 0:
+            # Line is to the left - turn left (sharp turn)
+            self.motors.turn_left()
+            self.last_valid_reading = 'left'
         
-        # Lost line - stop briefly
+        elif right == 0:
+            # Line is to the right - turn right (sharp turn)
+            self.motors.turn_right()
+            self.last_valid_reading = 'right'
+        
+        # All white - either lost or room marker (handled by navigate_to_room)
         else:
-            print("⚠ Lost line!")
             self.motors.stop()
-            time.sleep(0.1)
+            time.sleep(0.05)
             
-        # Add to line_follower.py for testing
+    # Add to line_follower.py for testing
     def test_line_following(self):
         """Test line following for 10 seconds"""
         print("Testing line following...")
