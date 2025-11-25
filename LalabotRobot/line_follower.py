@@ -66,30 +66,30 @@ class LineFollower:
         # Center on line - move forward
         if center == 0:
             if left == 1 and right == 1:
-                # Perfect alignment - only center sees black
+                # Perfect alignment
                 self.motors.forward()
                 self.last_valid_reading = 'center'
             elif left == 0:
-                # Slightly left - gentle correction (sharp turn)
+                # Slightly left - gentle correction
                 self.motors.turn_left()
                 self.last_valid_reading = 'left'
             elif right == 0:
-                # Slightly right - gentle correction (sharp turn)
+                # Slightly right - gentle correction
                 self.motors.turn_right()
                 self.last_valid_reading = 'right'
         
         # Center lost line - use left/right to correct
         elif left == 0:
-            # Line is to the left - turn left (sharp turn)
+            # Line is to the left - turn left
             self.motors.turn_left()
             self.last_valid_reading = 'left'
         
         elif right == 0:
-            # Line is to the right - turn right (sharp turn)
+            # Line is to the right - turn right
             self.motors.turn_right()
             self.last_valid_reading = 'right'
         
-        # All white - either lost or room marker (handled by navigate_to_room)
+        # All white - stop
         else:
             self.motors.stop()
             time.sleep(0.05)
@@ -138,23 +138,23 @@ class LineFollower:
         self.white_line_detected = False
         
         while rooms_passed < rooms_to_pass:
-            # Debug sensors every second
-            if int(time.time()) % 1 == 0:
-                self.debug_sensors()
             # Check for obstacles during navigation
             if not self.obstacle_detector.is_path_clear():
                 distance = self.obstacle_detector.get_distance()
                 print(f"⚠ OBSTACLE! Distance: {distance}cm - Waiting...")
                 self.motors.stop()
-                time.sleep(1)  # Wait 1 second for obstacle to clear
-                continue  # Skip this iteration and check again
+                time.sleep(1)
+                continue
             
             # Follow line
             self.follow_line()
             
-            # Check for white line (room marker)
-            if self.is_white_line() and not self.white_line_detected:
-                print(f"  🏁 White line detected!")
+            # Check for white line (room marker) - more reliable detection
+            left, center, right = self.read_sensors()
+            white_count = (left == 1) + (center == 1) + (right == 1)
+            
+            if white_count >= 3 and not self.white_line_detected:
+                print(f"  🏁 White line detected! (L={left} C={center} R={right})")
                 self.white_line_detected = True
                 self.motors.stop()
                 
@@ -170,14 +170,18 @@ class LineFollower:
                 # Move past white line to avoid re-detection
                 print(f"  → Moving past white line...")
                 self.motors.forward()
-                time.sleep(1.0)  # Increased time to fully pass white line
+                time.sleep(1.5)  # Longer time to fully pass white line
                 self.motors.stop()
                 
                 # Reset detection flag
                 self.white_line_detected = False
-                time.sleep(0.3)
+                time.sleep(0.5)
             
-            # Small delay to prevent overwhelming CPU
+            elif white_count < 3:
+                # Reset flag when back on black line
+                self.white_line_detected = False
+            
+            # Match test file timing
             time.sleep(0.05)
         
         print(f"✓ Arrived at Room {target_room}\n")
